@@ -9,7 +9,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=DM+Sans:wght@400;500;600;650;700;750&display=swap');
 
-    /* ================= ROOT & RESET ================= */
     :root {
       color-scheme: dark;
       --outer-bg: #070b09;
@@ -18,7 +17,6 @@
       --panel-2: #1c2821;
       --line: #2c3a31;
       --lime: #c2f568;
-      --lime-dim: rgba(194, 245, 104, .14);
       --text: #f3f5ec;
       --muted: #9ea99c;
       --danger: #ff6559;
@@ -28,361 +26,130 @@
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      margin: 0;
-      background: var(--outer-bg);
-      color: var(--text);
-      font: 15px/1.45 var(--body);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { margin: 0; background: var(--outer-bg); color: var(--text); font: 15px/1.45 var(--body); min-height: 100vh; -webkit-font-smoothing: antialiased; }
     button, input, select, textarea { font: inherit; }
     a { color: inherit; text-decoration: none; }
     button, a, select { touch-action: manipulation; }
     button { cursor: pointer; }
-    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-      outline: 2px solid var(--lime);
-      outline-offset: 2px;
-    }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
     button:disabled { opacity: .5; }
     .hidden, [hidden] { display: none !important; }
 
-    /* ================= APP FRAME ================= */
-    .app-frame {
-      width: 100%;
-      max-width: 540px;
-      min-height: 100vh;
-      margin: 0 auto;
-      background: var(--bg);
-      position: relative;
-      box-shadow: 0 0 0 1px #1e2922, 0 24px 60px rgba(0, 0, 0, .65);
-      display: flex;
-      flex-direction: column;
-    }
+    /* App Frame */
+    .app-frame { width: 100%; max-width: 540px; min-height: 100vh; margin: 0 auto; background: var(--bg); position: relative; box-shadow: 0 0 0 1px #1e2922, 0 24px 60px rgba(0, 0, 0, .65); display: flex; flex-direction: column; }
 
-    /* ================= PUBLIC TOPBAR ================= */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(14, 21, 17, .92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid #222e26;
-      padding: 0 16px;
-    }
-    .top-inner {
-      height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
+    /* Topbar */
+    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(14, 21, 17, .92); backdrop-filter: blur(14px); border-bottom: 1px solid #222e26; padding: 0 16px; }
+    .top-inner { height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-icon {
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      background: var(--lime);
-      width: 36px;
-      height: 36px;
-      color: #132012;
-      font: italic 800 18px/1 var(--title);
-      letter-spacing: -.04em;
-      overflow: hidden;
-      flex: none;
-    }
+    .brand-icon { display: grid; place-items: center; border-radius: 10px; background: var(--lime); width: 36px; height: 36px; color: #132012; font: italic 800 18px/1 var(--title); letter-spacing: -.04em; overflow: hidden; flex: none; }
     .brand-icon img { height: 100%; width: 100%; object-fit: contain; }
     .brand-icon.photo { background: none; }
     .brand b { display: block; font: italic 800 21px/.92 var(--title); letter-spacing: -.03em; }
     .brand i { color: var(--lime); font-style: italic; }
-    .brand small {
-      display: block;
-      color: var(--muted);
-      font-size: 9.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      margin-top: 2px;
-    }
-    .menu-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-    }
+    .brand small { display: block; color: var(--muted); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-top: 2px; }
+    .menu-btn { width: 40px; height: 40px; border-radius: 11px; background: var(--panel); border: 1px solid var(--line); color: var(--text); display: grid; place-items: center; }
     .menu-btn:hover { border-color: var(--lime); color: var(--lime); }
 
     .ico { width: 1.2em; height: 1.2em; display: inline-block; vertical-align: -.2em; flex: none; }
     .skip { position: absolute; left: -200vw; }
     .skip:focus { left: 10px; top: 10px; z-index: 50; background: #17251f; padding: 10px; }
 
-    /* ================= SLIDE-OUT SIDE DRAWER ================= */
-    .drawer-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(4, 8, 6, .72);
-      backdrop-filter: blur(4px);
-      z-index: 40;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .22s ease;
-    }
+    /* Slide Drawer */
+    .drawer-backdrop { position: fixed; inset: 0; background: rgba(4, 8, 6, .72); backdrop-filter: blur(4px); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .22s ease; }
     .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
-    .drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: min(310px, 84vw);
-      background: #131c17;
-      border-left: 1px solid #2b382f;
-      z-index: 45;
-      transform: translateX(100%);
-      transition: transform .25s cubic-bezier(.22, 1, .36, 1);
-      display: flex;
-      flex-direction: column;
-      padding: 18px;
-      overflow-y: auto;
-    }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(310px, 84vw); background: #131c17; border-left: 1px solid #2b382f; z-index: 45; transform: translateX(100%); transition: transform .25s cubic-bezier(.22, 1, .36, 1); display: flex; flex-direction: column; padding: 18px; overflow-y: auto; }
     .drawer.open { transform: translateX(0); }
-    .drawer-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 14px;
-    }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
     .drawer-head strong { font: italic 800 22px/1 var(--title); text-transform: uppercase; letter-spacing: -.02em; }
     .drawer-head strong span { color: var(--lime); }
     .drawer-nav { display: grid; gap: 9px; }
-    .drawer-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 13px 15px;
-      border-radius: 12px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-weight: 650;
-      font-size: 14px;
-      text-align: left;
-      width: 100%;
-    }
+    .drawer-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); color: var(--text); font-weight: 650; font-size: 14px; text-align: left; width: 100%; }
     .drawer-item-left { display: flex; align-items: center; gap: 11px; }
     .drawer-item:hover { border-color: var(--lime); background: var(--panel-2); }
     .drawer-item.accent { background: var(--lime); color: #132012; border-color: var(--lime); font-weight: 750; }
     .drawer-item.accent:hover { background: #d5ff89; }
     .drawer-sep { height: 1px; background: var(--line); margin: 6px 0; }
 
-    /* ================= MAIN CONTENT & TYPOGRAPHY ================= */
+    /* Main Content */
     main.container { padding: 16px 16px 96px; flex: 1; }
     #public-shell h1, #public-shell h2, #public-shell h3, #public-shell p { margin: 0; }
     #public-shell h1, #public-shell h2, #public-shell h3 { font-family: var(--title); line-height: 1.02; }
     #public-shell h1, #public-shell h2 { text-transform: uppercase; }
     .loading, .notice { margin: 18px 0; color: var(--muted); }
 
-    /* Hero Card */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      border: 1px solid #354738;
-      border-radius: 18px;
-      background: radial-gradient(circle at 85% 20%, rgba(194, 245, 104, .22), transparent 52%),
-                  linear-gradient(135deg, #16291c 0%, #1d3524 60%, #2c4727 100%);
-      padding: 22px 20px;
-    }
+    /* Hero */
+    .hero { position: relative; overflow: hidden; isolation: isolate; border: 1px solid #354738; border-radius: 18px; background: radial-gradient(circle at 85% 20%, rgba(194, 245, 104, .22), transparent 52%), linear-gradient(135deg, #16291c 0%, #1d3524 60%, #2c4727 100%); padding: 22px 20px; }
     .hero:before, .hero:after { content: ""; position: absolute; inset: 0; z-index: -1; }
     .hero:before { background: url('./assets/pitch.jpg') center/cover no-repeat; opacity: .35; }
     .hero:after { background: linear-gradient(180deg, rgba(10, 22, 14, .45), rgba(10, 22, 14, .92)); }
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 10.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--lime);
-    }
+    .hero-kicker { display: inline-flex; align-items: center; gap: 7px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--lime); }
     .hero-kicker:before { content: ""; width: 16px; height: 2px; background: var(--lime); }
     .hero h1 { font-size: 52px; font-weight: 800; font-style: italic; letter-spacing: -.04em; line-height: .88; margin-top: 8px; }
     .hero h1 span { color: var(--lime); }
-    .hero-bottom {
-      margin-top: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .hero-bottom { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
     .hero-actions { display: flex; gap: 8px; }
-    .primary, .secondary, .link-btn, .seg, .tool-input {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-weight: 700;
-    }
+    .primary, .secondary, .link-btn, .seg, .tool-input { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; }
     .primary, .secondary { border-radius: 10px; padding: 9px 14px; border: 1px solid transparent; font-size: 13px; }
     .primary { background: var(--lime); color: #142013; }
     .secondary { background: rgba(24, 38, 28, .85); border-color: #465a48; color: var(--text); }
     .primary:hover { background: #d7ff91; }
     .secondary:hover { border-color: var(--lime); }
-    .stats {
-      display: inline-flex;
-      gap: 14px;
-      padding: 7px 12px;
-      background: rgba(12, 20, 15, .75);
-      border: 1px solid rgba(194, 245, 104, .22);
-      border-radius: 10px;
-    }
+    .stats { display: inline-flex; gap: 14px; padding: 7px 12px; background: rgba(12, 20, 15, .75); border: 1px solid rgba(194, 245, 104, .22); border-radius: 10px; }
     .stats > div + div { padding-left: 14px; border-left: 1px solid #354738; }
     .stats strong { font: 700 20px/1 var(--title); color: var(--lime); display: block; }
     .stats small { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; margin-top: 2px; }
 
-    /* Sections & Cards */
+    /* Cards & Lists */
     .section { margin-top: 22px; }
     .sect-head, .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
     .sect-head h2 { font-size: 26px; font-style: italic; letter-spacing: -.02em; }
     .link-btn { font-size: 12.5px; color: var(--lime); background: none; border: none; padding: 4px 0; }
-    .card, .fixture, .team-tile, .rank-row, .sport-table, .live-article {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      border-radius: 14px;
-    }
+    .card, .fixture, .team-tile, .rank-row, .sport-table, .live-article { border: 1px solid var(--line); background: var(--panel); border-radius: 14px; }
     .empty { padding: 16px; display: flex; align-items: center; gap: 14px; }
-    .empty-icon {
-      width: 40px;
-      height: 40px;
-      border: 1px solid #3a4c3d;
-      background: #1f2e24;
-      border-radius: 11px;
-      display: grid;
-      place-items: center;
-      color: var(--lime);
-      flex: none;
-    }
+    .empty-icon { width: 40px; height: 40px; border: 1px solid #3a4c3d; background: #1f2e24; border-radius: 11px; display: grid; place-items: center; color: var(--lime); flex: none; }
     .empty strong { font-size: 14.5px; display: block; }
     .empty p, .muted, .hint { color: var(--muted); font-size: 13px; margin-top: 2px; }
 
-    /* Announcements Strip on Home & Pages */
+    /* Announcements & Contacts */
     .announce-list { display: grid; gap: 8px; }
-    .announce-card {
-      padding: 13px 15px;
-      border-radius: 13px;
-      background: linear-gradient(90deg, rgba(194, 245, 104, .11), rgba(22, 32, 26, .95));
-      border: 1px solid rgba(194, 245, 104, .32);
-      display: flex;
-      gap: 11px;
-      align-items: flex-start;
-    }
-    .announce-badge {
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: var(--lime);
-      color: #132012;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      flex: none;
-      margin-top: 2px;
-    }
+    .announce-card { padding: 13px 15px; border-radius: 13px; background: linear-gradient(90deg, rgba(194, 245, 104, .11), rgba(22, 32, 26, .95)); border: 1px solid rgba(194, 245, 104, .32); display: flex; gap: 11px; align-items: flex-start; }
+    .announce-badge { padding: 3px 7px; border-radius: 6px; background: var(--lime); color: #132012; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; flex: none; margin-top: 2px; }
     .announce-card strong { display: block; font-size: 14.5px; color: var(--text); }
     .announce-card p { font-size: 13px; color: var(--muted); margin-top: 3px; }
 
-    /* Teams Grid */
+    .contact-card { padding: 14px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .contact-info { min-width: 0; display: grid; gap: 2px; }
+    .contact-info b { font: 700 20px/1.1 var(--title); letter-spacing: .01em; color: var(--text); }
+    .contact-role { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--lime); }
+    .contact-num { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .call-btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 15px; border-radius: 10px; background: var(--lime); color: #132012; font-weight: 750; font-size: 13.5px; flex: none; }
+    .call-btn:hover { background: #d6ff8e; }
+
+    /* Teams */
     .teams-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .team-tile {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 13px 12px;
-      position: relative;
-      overflow: hidden;
-      text-align: left;
-      width: 100%;
-    }
+    .team-tile { display: flex; align-items: center; gap: 11px; padding: 13px 12px; position: relative; overflow: hidden; text-align: left; width: 100%; }
     .team-tile:before { position: absolute; top: 0; left: 0; bottom: 0; width: 3.5px; background: var(--team); content: ""; }
     .team-tile b, .team-line b { font: 700 20px/1.05 var(--title); letter-spacing: .01em; }
     .team-caption { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
-    .crest {
-      width: 40px;
-      height: 40px;
-      background: color-mix(in srgb, var(--team) 18%, #18221b);
-      border: 1px solid color-mix(in srgb, var(--team) 45%, #344437);
-      border-radius: 10px;
-      display: inline-grid;
-      place-items: center;
-      color: var(--text);
-      flex: none;
-      font: 700 18px/1 var(--title);
-      overflow: hidden;
-    }
+    .crest { width: 40px; height: 40px; background: color-mix(in srgb, var(--team) 18%, #18221b); border: 1px solid color-mix(in srgb, var(--team) 45%, #344437); border-radius: 10px; display: inline-grid; place-items: center; color: var(--text); flex: none; font: 700 18px/1 var(--title); overflow: hidden; }
     .crest img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
 
-    /* Floating App Bottom Navigation */
-    .bottom {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 540px;
-      z-index: 25;
-      border-top: 1px solid #2b382f;
-      background: rgba(14, 21, 17, .94);
-      backdrop-filter: blur(14px);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+    /* Bottom Navigation */
+    .bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 540px; z-index: 25; border-top: 1px solid #2b382f; background: rgba(14, 21, 17, .94); backdrop-filter: blur(14px); padding-bottom: env(safe-area-inset-bottom); }
     .nav-inner { display: flex; justify-content: space-around; }
-    .nav-inner a {
-      flex: 1;
-      color: var(--muted);
-      min-height: 60px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      font-weight: 650;
-      font-size: 10.5px;
-      position: relative;
-    }
+    .nav-inner a { flex: 1; color: var(--muted); min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-weight: 650; font-size: 10.5px; position: relative; }
     .nav-inner a .ico { width: 19px; height: 19px; }
     .nav-inner a[aria-current=page] { color: var(--lime); }
-    .nav-inner a[aria-current=page]:after {
-      content: "";
-      height: 3px;
-      background: var(--lime);
-      width: 30px;
-      position: absolute;
-      top: 0;
-      border-radius: 0 0 3px 3px;
-    }
+    .nav-inner a[aria-current=page]:after { content: ""; height: 3px; background: var(--lime); width: 30px; position: absolute; top: 0; border-radius: 0 0 3px 3px; }
 
-    /* Fixtures & Match Cards */
+    /* Fixtures & Standings */
     .page-head { margin: 6px 0 16px; display: block; }
     .page-head h1 { font-size: 40px; font-style: italic; letter-spacing: -.03em; }
     .page-head p { color: var(--muted); margin-top: 4px; font-size: 13.5px; }
     .tools, .chip-row { display: flex; gap: 7px; flex-wrap: wrap; }
     .tools { margin-bottom: 16px; }
-    .seg, .tool-input {
-      font-size: 12.5px;
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 7px 11px;
-    }
+    .seg, .tool-input { font-size: 12.5px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 7px 11px; }
     .seg.active { background: var(--lime); border-color: var(--lime); color: #142013; }
     .tool-input { max-width: 100%; min-height: 36px; }
     .fixture-list, .rank-list { display: grid; gap: 10px; }
@@ -390,42 +157,21 @@
     .fixture:hover, .team-tile:hover, .rank-row summary:hover { border-color: #628554; background: var(--panel-2); }
     .info-line, .foot-line { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
     .fixture-sport, .meta { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-    .tag {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      border: 1px solid #3f4f41;
-      color: #c0c9bc;
-      background: #202d23;
-      border-radius: 6px;
-      padding: 2px 7px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
+    .tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; border: 1px solid #3f4f41; color: #c0c9bc; background: #202d23; border-radius: 6px; padding: 2px 7px; display: inline-flex; align-items: center; gap: 5px; }
     .tag.live { color: #cbff9a; border-color: #53864b; background: #253e29; }
     .tag.live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); animation: pulse 1.5s infinite; }
     .tag.finished { color: #c2d6f8; }
+    .tag.stopped { color: #f9d452; border-color: #6e5d28; background: #2d2716; }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
 
     .team-line { display: flex; align-items: center; gap: 9px; margin-top: 9px; min-width: 0; }
     .team-line strong { margin-left: auto; font: 700 22px var(--title); }
     .team-line .crest, .stand-team .crest { width: 26px; height: 26px; border-radius: 7px; font-size: 12px; }
-    .foot-line {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid #28352c;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      color: var(--muted);
-      font-size: 11.5px;
-    }
+    .foot-line { margin-top: 10px; padding-top: 8px; border-top: 1px solid #28352c; flex-wrap: wrap; justify-content: flex-start; color: var(--muted); font-size: 11.5px; }
     .fixture-title { margin-top: 8px; font-size: 22px; }
     .day-title { font-size: 18px; margin: 16px 0 8px; color: var(--lime); }
     .group { margin: 12px 0 22px; }
 
-    /* Standings Table */
     .sport-table { overflow: auto; }
     #public-shell table { border-collapse: collapse; width: 100%; text-align: center; font-size: 13px; }
     #public-shell th, #public-shell td { padding: 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
@@ -433,16 +179,7 @@
     #public-shell tbody tr:last-child td { border-bottom: 0; }
     #public-shell th:nth-child(2), #public-shell td:nth-child(2) { text-align: left; }
     .stand-team { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-    .live-pill-mini {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: #27432b;
-      color: var(--lime);
-      border: 1px solid #4e7e46;
-      letter-spacing: .06em;
-    }
+    .live-pill-mini { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px; background: #27432b; color: var(--lime); border: 1px solid #4e7e46; letter-spacing: .06em; }
 
     /* Leaderboard */
     .rank-row summary { cursor: pointer; display: flex; align-items: center; gap: 11px; padding: 12px 14px; list-style: none; }
@@ -455,201 +192,44 @@
     .rank-points small { font: 600 10px var(--body); color: var(--muted); margin-left: 3px; }
     .award-list { padding: 0 14px 12px 48px; font-size: 13px; color: var(--muted); }
     .award-list li { margin: 4px 0; }
-    .badge-count {
-      font: 700 11px var(--body);
-      vertical-align: middle;
-      margin-left: 6px;
-      color: var(--lime);
-      background: #253623;
-      border: 1px solid #465d41;
-      border-radius: 99px;
-      padding: 2px 8px;
-    }
+    .badge-count { font: 700 11px var(--body); vertical-align: middle; margin-left: 6px; color: var(--lime); background: #253623; border: 1px solid #465d41; border-radius: 99px; padding: 2px 8px; }
 
-    /* Live Match Detail & Interactive Pitch / Court */
+    /* Match Detail & Clock */
     .live-article { padding: 16px; margin-top: 12px; }
-    .match-clock-banner {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 99px;
-      background: #1f3324;
-      border: 1px solid #476d44;
-      color: var(--lime);
-      font: 700 13px/1 var(--body);
-      font-variant-numeric: tabular-nums;
-    }
-    .match-score {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 10px;
-      text-align: center;
-      padding: 18px 0;
-    }
+    .match-clock-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; }
+    .match-clock-banner { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 99px; background: #1f3324; border: 1px solid #476d44; color: var(--lime); font: 700 13.5px/1 var(--body); font-variant-numeric: tabular-nums; }
+    .match-clock-banner.stopped { background: #2b2617; border-color: #6b5a27; color: #f9d452; }
+    .extra-time-pill { display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(249, 212, 82, .16); border: 1px solid rgba(249, 212, 82, .45); color: #f9d452; font: 800 10.5px/1.1 var(--body); letter-spacing: .04em; }
+    .match-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; padding: 18px 0; }
     .match-side { display: grid; justify-items: center; gap: 7px; font: 700 18px/1.1 var(--title); }
     .match-score > strong { font: 800 44px/1 var(--title); color: var(--lime); white-space: nowrap; }
-    .match-score > strong small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
+    .match-score > strong > small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
     .subhead { font-size: 21px; margin: 20px 0 8px; }
 
-    /* Interactive Pitch & Volleyball Court */
+    /* Interactive Pitch & Court */
     .pitch-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-    .pitch-tab {
-      flex: 1;
-      padding: 8px 10px;
-      border-radius: 9px;
-      background: #1b271f;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 12.5px;
-    }
+    .pitch-tab { flex: 1; padding: 8px 10px; border-radius: 9px; background: #1b271f; border: 1px solid var(--line); color: var(--muted); font-weight: 700; font-size: 12.5px; }
     .pitch-tab.active { background: var(--lime); color: #132012; border-color: var(--lime); }
-    .pitch-stage {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      max-height: 440px;
-      border-radius: 14px;
-      border: 2px solid #678e6a;
-      background:
-        radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.22) 14.5%, rgba(255,255,255,.22) 15.5%, transparent 16%),
-        linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.25) 49.8%, rgba(255,255,255,.25) 50.2%, transparent 50.4%),
-        repeating-linear-gradient(to top, #1f3d29 0 28px, #254731 28px 56px);
-      overflow: hidden;
-      user-select: none;
-    }
-    .pitch-stage.volley-court {
-      aspect-ratio: 1 / 1.05;
-      max-height: 360px;
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,.35) 33%, rgba(255,255,255,.35) 33.8%, transparent 33.8%),
-        linear-gradient(180deg, #b86a35 0%, #9e5627 100%);
-      border-color: #f3f5ec;
-    }
-    .pitch-stage.volley-court:before {
-      content: "NET";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 22px;
-      background: rgba(14, 21, 17, .82);
-      color: var(--lime);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .16em;
-      display: grid;
-      place-items: center;
-      border: none;
-    }
+    .pitch-stage { position: relative; width: 100%; aspect-ratio: 3 / 4; max-height: 440px; border-radius: 14px; border: 2px solid #678e6a; background: radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.22) 14.5%, rgba(255,255,255,.22) 15.5%, transparent 16%), linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.25) 49.8%, rgba(255,255,255,.25) 50.2%, transparent 50.4%), repeating-linear-gradient(to top, #1f3d29 0 28px, #254731 28px 56px); overflow: hidden; user-select: none; }
+    .pitch-stage.volley-court { aspect-ratio: 1 / 1.05; max-height: 360px; background: linear-gradient(to bottom, rgba(255,255,255,.35) 33%, rgba(255,255,255,.35) 33.8%, transparent 33.8%), linear-gradient(180deg, #b86a35 0%, #9e5627 100%); border-color: #f3f5ec; }
+    .pitch-stage.volley-court:before { content: "NET"; position: absolute; top: 0; left: 0; right: 0; height: 22px; background: rgba(14, 21, 17, .82); color: var(--lime); font-size: 10px; font-weight: 800; letter-spacing: .16em; display: grid; place-items: center; border: none; }
     .pitch-stage.volley-court:after { display: none; }
-
-    .pitch-stage:not(.volley-court):before, .pitch-stage:not(.volley-court):after {
-      content: "";
-      position: absolute;
-      left: 24%;
-      right: 24%;
-      height: 15%;
-      border: 1.5px solid rgba(255,255,255,.24);
-      pointer-events: none;
-    }
+    .pitch-stage:not(.volley-court):before, .pitch-stage:not(.volley-court):after { content: ""; position: absolute; left: 24%; right: 24%; height: 15%; border: 1.5px solid rgba(255,255,255,.24); pointer-events: none; }
     .pitch-stage:not(.volley-court):before { top: 0; border-top: 0; }
     .pitch-stage:not(.volley-court):after { bottom: 0; border-bottom: 0; }
-
-    .pitch-node {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      z-index: 2;
-      cursor: pointer;
-      max-width: 88px;
-      text-align: center;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-    .pitch-dot {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--team, var(--lime));
-      border: 2px solid #ffffff;
-      color: #0d1410;
-      font: 800 11px/1 var(--body);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,.45);
-      transition: transform .15s;
-    }
-    .pitch-dot.libero {
-      background: #f9d452;
-      color: #132012;
-      border-color: #132012;
-    }
+    .pitch-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; z-index: 2; cursor: pointer; max-width: 88px; text-align: center; background: none; border: none; padding: 0; }
+    .pitch-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--team, var(--lime)); border: 2px solid #ffffff; color: #0d1410; font: 800 11px/1 var(--body); display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.45); transition: transform .15s; }
+    .pitch-dot.libero { background: #f9d452; color: #132012; border-color: #132012; }
     .pitch-node:hover .pitch-dot, .pitch-node.selected .pitch-dot { transform: scale(1.16); outline: 3px solid var(--lime); }
-    .pitch-label {
-      background: rgba(11, 18, 14, .88);
-      color: #f3f5ec;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-size: 10.5px;
-      font-weight: 650;
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 84px;
-      border: 1px solid rgba(255,255,255,.14);
-    }
-    .player-spotlight {
-      margin-top: 8px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #1b2820;
-      border: 1px solid #3c4f40;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-    }
+    .pitch-label { background: rgba(11, 18, 14, .88); color: #f3f5ec; padding: 2px 6px; border-radius: 5px; font-size: 10.5px; font-weight: 650; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 84px; border: 1px solid rgba(255,255,255,.14); }
+    .player-spotlight { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #1b2820; border: 1px solid #3c4f40; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
     .subs-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
-    .sub-chip {
-      padding: 6px 10px;
-      border-radius: 8px;
-      background: #1a261f;
-      border: 1px solid var(--line);
-      font-size: 12.5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .sub-chip { padding: 6px 10px; border-radius: 8px; background: #1a261f; border: 1px solid var(--line); font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
     .sub-chip.subbed { border-color: #4f7a49; color: var(--lime); }
-    .volley-meta-bar {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 10px;
-      background: #1a261f;
-      border: 1px solid var(--line);
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
+    .volley-meta-bar { display: flex; justify-content: space-between; gap: 8px; padding: 8px 12px; border-radius: 10px; background: #1a261f; border: 1px solid var(--line); font-size: 12px; margin-bottom: 10px; }
 
     .timeline { list-style: none; padding: 0; margin: 0; }
-    .timeline li, .attempt-row, .set-row {
-      padding: 9px 0;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-size: 13.5px;
-    }
+    .timeline li, .attempt-row, .set-row { padding: 9px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: center; font-size: 13.5px; }
     .timeline time { color: var(--lime); min-width: 34px; font-weight: 700; }
     .notice { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: #2b2d1d; border-radius: 10px; font-size: 13px; }
     .status-msg { color: var(--muted); font-size: 12.5px; }
@@ -658,28 +238,11 @@
     .card-mark.yellow { background: #f9d452; }
     .card-mark.red { background: #ff6559; }
 
-    /* ================= ADMIN CONTROL ROOM STYLES ================= */
-    #admin-shell {
-      --forest: #142b22;
-      --admin-lime: #c4f66a;
-      --ink: #192820;
-      --admin-muted: #55675c;
-      --admin-line: #d6ded5;
-      --admin-bg: #f3f5ee;
-      color-scheme: light;
-      font-family: 'DM Sans', system-ui, sans-serif;
-      color: var(--ink);
-      background: var(--admin-bg);
-      min-height: 100vh;
-    }
+    /* ================= ADMIN CONTROL ROOM ================= */
+    #admin-shell { --forest: #142b22; --admin-lime: #c4f66a; --ink: #192820; --admin-muted: #55675c; --admin-line: #d6ded5; --admin-bg: #f3f5ee; color-scheme: light; font-family: 'DM Sans', system-ui, sans-serif; color: var(--ink); background: var(--admin-bg); min-height: 100vh; }
     #admin-shell > header { background: var(--forest); color: white; border-bottom: 3px solid var(--admin-lime); }
     #admin-shell .header-inner, #admin-shell main { max-width: 820px; margin: auto; padding: 0 18px; }
-    #admin-shell .header-inner, #admin-shell .intro, #admin-shell .bar, #admin-shell .item, #admin-shell .actions, #admin-shell .account {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
+    #admin-shell .header-inner, #admin-shell .intro, #admin-shell .bar, #admin-shell .item, #admin-shell .actions, #admin-shell .account { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     #admin-shell .header-inner { height: 64px; }
     #admin-shell .brand { font-family: 'Barlow Condensed', Impact, sans-serif; font-size: 25px; font-weight: 800; color: white; display: flex; align-items: center; gap: 10px; }
     #admin-shell .brand em { color: var(--admin-lime); font-style: italic; }
@@ -690,15 +253,7 @@
     #admin-shell h1 { font-size: clamp(32px, 5vw, 48px); }
     #admin-shell h2 { font-size: 28px; }
     #admin-shell h3 { font-size: 22px; }
-    #admin-shell button {
-      cursor: pointer;
-      background: white;
-      border: 1px solid #cbd5cb;
-      border-radius: 9px;
-      color: var(--ink);
-      font: 600 .9rem 'DM Sans', system-ui;
-      padding: 9px 14px;
-    }
+    #admin-shell button { cursor: pointer; background: white; border: 1px solid #cbd5cb; border-radius: 9px; color: var(--ink); font: 600 .9rem 'DM Sans', system-ui; padding: 9px 14px; }
     #admin-shell button:hover { border-color: #738a78; }
     #admin-shell button.primary, #admin-shell button.active { background: var(--forest); color: white; border-color: var(--forest); }
     #admin-shell button.accent { background: var(--admin-lime); color: var(--forest); border-color: var(--admin-lime); }
@@ -708,18 +263,10 @@
     #admin-shell .login { max-width: 440px; }
     #admin-shell .login input { width: 100%; }
     #admin-shell .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
+    #admin-shell .fields-3 { display: grid; grid-template-columns: 1.2fr 1fr 1.1fr auto; align-items: end; gap: 10px; margin: 12px 0; }
     #admin-shell .full { grid-column: 1 / -1; }
     #admin-shell label.field { display: grid; gap: 6px; font-size: .88rem; font-weight: 600; color: var(--ink); }
-    #admin-shell input, #admin-shell select, #admin-shell textarea {
-      font: inherit;
-      color: var(--ink);
-      padding: 9px 10px;
-      background: white;
-      border: 1px solid #b8c7bb;
-      border-radius: 8px;
-      min-width: 0;
-      max-width: 100%;
-    }
+    #admin-shell input, #admin-shell select, #admin-shell textarea { font: inherit; color: var(--ink); padding: 9px 10px; background: white; border: 1px solid #b8c7bb; border-radius: 8px; min-width: 0; max-width: 100%; }
     #admin-shell input[type=checkbox], #admin-shell input[type=radio] { accent-color: #31583d; }
     #admin-shell .check { display: flex; align-items: center; gap: 7px; min-height: 30px; color: var(--ink); font-size: .9rem; }
     #admin-shell .pick { max-height: 170px; overflow: auto; padding: 8px; background: #f6f8f4; border-radius: 8px; }
@@ -738,93 +285,20 @@
     #admin-shell summary { cursor: pointer; font-weight: 650; color: var(--ink); }
     #notice:not(:empty) { padding: 11px 14px; background: #e1efcf; color: var(--ink); border-radius: 9px; margin-bottom: 14px; font-weight: 500; font-size: .9rem; }
     #notice.error { color: #862b20; background: #ffeae6; }
-    #admin-shell .award-row {
-      display: grid;
-      grid-template-columns: .7fr 1.3fr 1.3fr .8fr auto;
-      align-items: end;
-      gap: 8px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--admin-line);
-    }
+    #admin-shell .award-row { display: grid; grid-template-columns: .7fr 1.3fr 1.3fr .8fr auto; align-items: end; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--admin-line); }
     #admin-shell main { padding-bottom: 55px; }
 
-    /* Admin Interactive Formation & Court Designer */
+    /* Admin Pitch & Court Designer */
     .adm-pitch-wrap { margin-top: 12px; }
-    .adm-pitch-board {
-      position: relative;
-      width: 100%;
-      max-width: 340px;
-      aspect-ratio: 3 / 4;
-      margin: 10px auto;
-      border-radius: 12px;
-      border: 2px solid #486b4c;
-      background:
-        radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.25) 14.5%, rgba(255,255,255,.25) 15.5%, transparent 16%),
-        linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.28) 49.8%, rgba(255,255,255,.28) 50.2%, transparent 50.4%),
-        repeating-linear-gradient(to top, #23472f 0 26px, #2a5338 26px 52px);
-      touch-action: none;
-      user-select: none;
-      overflow: hidden;
-    }
-    .adm-pitch-board.volley-board {
-      aspect-ratio: 1 / 1.05;
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,.4) 33%, rgba(255,255,255,.4) 33.8%, transparent 33.8%),
-        linear-gradient(180deg, #b86a35 0%, #9e5627 100%);
-      border-color: #142b22;
-    }
-    .adm-dot {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      cursor: grab;
-      z-index: 3;
-      touch-action: none;
-    }
+    .adm-pitch-board { position: relative; width: 100%; max-width: 340px; aspect-ratio: 3 / 4; margin: 10px auto; border-radius: 12px; border: 2px solid #486b4c; background: radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.25) 14.5%, rgba(255,255,255,.25) 15.5%, transparent 16%), linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.28) 49.8%, rgba(255,255,255,.28) 50.2%, transparent 50.4%), repeating-linear-gradient(to top, #23472f 0 26px, #2a5338 26px 52px); touch-action: none; user-select: none; overflow: hidden; }
+    .adm-pitch-board.volley-board { aspect-ratio: 1 / 1.05; background: linear-gradient(to bottom, rgba(255,255,255,.4) 33%, rgba(255,255,255,.4) 33.8%, transparent 33.8%), linear-gradient(180deg, #b86a35 0%, #9e5627 100%); border-color: #142b22; }
+    .adm-dot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: grab; z-index: 3; touch-action: none; }
     .adm-dot:active { cursor: grabbing; }
-    .adm-dot span {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #c4f66a;
-      border: 2px solid #142b22;
-      color: #142b22;
-      font: 800 12px/1 var(--body);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,.4);
-      pointer-events: none;
-    }
+    .adm-dot span { width: 32px; height: 32px; border-radius: 50%; background: #c4f66a; border: 2px solid #142b22; color: #142b22; font: 800 12px/1 var(--body); display: grid; place-items: center; box-shadow: 0 3px 8px rgba(0,0,0,.4); pointer-events: none; }
     .adm-dot.libero-dot span { background: #f9d452; }
     .adm-dot.active span { background: #ffffff; border-color: #142b22; transform: scale(1.16); box-shadow: 0 0 0 3px #c4f66a; }
-    .adm-dot small {
-      background: rgba(16, 28, 20, .92);
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      max-width: 84px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      pointer-events: none;
-    }
-    .adm-dot-picker {
-      background: #f4f7f2;
-      border: 1px solid #c5d1c6;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .adm-dot small { background: rgba(16, 28, 20, .92); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10.5px; font-weight: 600; max-width: 84px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+    .adm-dot-picker { background: #f4f7f2; border: 1px solid #c5d1c6; border-radius: 10px; padding: 10px 12px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 
     /* Scoring Desk & Stopwatch */
     .sc-console { font-family: inherit; color: #1b3024; }
@@ -833,81 +307,26 @@
     .sc-head h3, .sc-box h4 { margin: .25rem 0 .7rem; color: #1b3024; }
     .sc-state { padding: .25rem .65rem; border-radius: 99px; background: #e9eee7; text-transform: capitalize; font-weight: 700; }
     .sc-state.live { background: #c4f66a; }
-    .sc-board {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      text-align: center;
-      background: #17251f;
-      color: white;
-      border-radius: 12px;
-      padding: 1rem;
-      gap: 1rem;
-    }
+    .sc-board { display: grid; grid-template-columns: 1fr 1fr; text-align: center; background: #17251f; color: white; border-radius: 12px; padding: 1rem; gap: 1rem; }
     .sc-board > div { display: grid; gap: .2rem; }
     .sc-board > div + div { border-left: 1px solid #4b5850; }
     .sc-board strong { font-size: 2.2rem; line-height: 1; }
-    .sc-timer-box {
-      background: #17251f;
-      color: white;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin: 12px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .sc-clock-display {
-      font: 800 32px/1 var(--title);
-      color: #c4f66a;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: .03em;
-    }
-    .sc-custom-time {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: #24352c;
-      padding: 4px 8px;
-      border-radius: 8px;
-    }
-    .sc-custom-time input {
-      width: 52px !important;
-      min-height: 32px !important;
-      padding: 4px 6px !important;
-      text-align: center;
-      font-weight: 700;
-    }
+    .sc-timer-box { background: #17251f; color: white; border-radius: 12px; padding: 14px 16px; margin: 12px 0; display: grid; gap: 12px; }
+    .sc-timer-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .sc-clock-display { font: 800 34px/1 var(--title); color: #c4f66a; font-variant-numeric: tabular-nums; letter-spacing: .03em; }
+    .sc-extra-badge { display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 6px; background: rgba(249, 212, 82, .2); border: 1px solid #f9d452; color: #f9d452; font-size: 11px; font-weight: 700; }
+    .sc-timer-subbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-top: 10px; border-top: 1px solid #2d3e34; }
+    .sc-custom-time { display: inline-flex; align-items: center; gap: 5px; background: #24352c; padding: 4px 8px; border-radius: 8px; font-size: 12px; }
+    .sc-custom-time input { width: 50px !important; min-height: 30px !important; padding: 3px 5px !important; text-align: center; font-weight: 700; }
     .sc-period, .sc-sets { text-align: center; margin: .6rem 0; font-weight: 650; }
     .sc-box { border: 1px solid #dce4da; border-radius: 10px; padding: 1rem; margin: 1rem 0; background: white; }
     .sc-box summary { cursor: pointer; font-weight: 650; }
     .sc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; }
     .sc-field { display: grid; gap: .25rem; margin: .45rem 0; font-weight: 600; }
-    .sc-field select, .sc-field input {
-      width: 100%;
-      max-width: 100%;
-      min-height: 42px;
-      padding: .5rem;
-      border: 1px solid #a8b7aa;
-      border-radius: 6px;
-      background: white;
-      color: #1b3024;
-      font: inherit;
-    }
-    .sc-btn {
-      font: inherit;
-      font-weight: 650;
-      cursor: pointer;
-      min-height: 40px;
-      padding: .45rem .8rem;
-      border: 1px solid #b2c1b1;
-      background: white;
-      color: #1b3024;
-      border-radius: 7px;
-      margin: .15rem .15rem .15rem 0;
-    }
+    .sc-field select, .sc-field input { width: 100%; max-width: 100%; min-height: 42px; padding: .5rem; border: 1px solid #a8b7aa; border-radius: 6px; background: white; color: #1b3024; font: inherit; }
+    .sc-btn { font: inherit; font-weight: 650; cursor: pointer; min-height: 38px; padding: .42rem .75rem; border: 1px solid #b2c1b1; background: white; color: #1b3024; border-radius: 7px; margin: .12rem .12rem .12rem 0; }
     .sc-primary { background: #c4f66a !important; border-color: #a1c954 !important; color: #1b3024 !important; }
+    .sc-pause { background: #fff3cd !important; border-color: #e6c665 !important; color: #5c4500 !important; }
     .sc-stop { background: #ffe4e1 !important; border-color: #e69d94 !important; color: #8c2318 !important; }
     .sc-feedback { color: #992e1a; font-weight: 600; }
     .sc-history { padding-left: 1.5em; margin: .35rem 0; }
@@ -918,7 +337,7 @@
       #admin-shell .header-inner, #admin-shell main { padding-left: 14px; padding-right: 14px; }
       #admin-shell .intro { align-items: flex-start; }
       #admin-shell .account { align-items: flex-end; flex-direction: column; }
-      #admin-shell .fields, #admin-shell .two { grid-template-columns: 1fr; }
+      #admin-shell .fields, #admin-shell .two, #admin-shell .fields-3 { grid-template-columns: 1fr; }
       #admin-shell .award-row { grid-template-columns: 1fr 1fr; }
       #admin-shell .bar, #admin-shell .item { flex-wrap: wrap; }
       .sc-grid { grid-template-columns: 1fr; }
@@ -927,7 +346,7 @@
 </head>
 <body>
 
-  <!-- ================= PUBLIC MATCH CENTRE SHELL ================= -->
+  <!-- PUBLIC MATCH CENTRE -->
   <div id="public-shell" class="app-frame">
     <a class="skip" href="#content">Skip to match centre</a>
     <header class="topbar">
@@ -943,10 +362,8 @@
     </header>
 
     <main class="container" id="content" tabindex="-1"><div class="loading">Loading match centre…</div></main>
-
     <nav class="bottom" aria-label="Main navigation"><div class="nav-inner" id="navigation"></div></nav>
 
-    <!-- Slide-out Side Drawer (Clean Menu Links Only) -->
     <div class="drawer-backdrop" id="drawer-backdrop"></div>
     <aside class="drawer" id="side-drawer" aria-label="Menu">
       <div class="drawer-head">
@@ -954,28 +371,16 @@
         <button type="button" class="menu-btn" id="close-drawer" aria-label="Close menu"><span data-icon="close"></span></button>
       </div>
       <div class="drawer-nav">
-        <a class="drawer-item" href="#announcements">
-          <span class="drawer-item-left"><span data-icon="announce"></span><span>Announcements</span></span>
-          <span>›</span>
-        </a>
-        <a class="drawer-item" href="#committee">
-          <span class="drawer-item-left"><span data-icon="people"></span><span>Sports Committee</span></span>
-          <span>›</span>
-        </a>
-        <a class="drawer-item" href="#contact">
-          <span class="drawer-item-left"><span data-icon="phone"></span><span>Contact Details</span></span>
-          <span>›</span>
-        </a>
+        <a class="drawer-item" href="#announcements"><span class="drawer-item-left"><span data-icon="announce"></span><span>Announcements</span></span><span>›</span></a>
+        <a class="drawer-item" href="#committee"><span class="drawer-item-left"><span data-icon="people"></span><span>Sports Committee</span></span><span>›</span></a>
+        <a class="drawer-item" href="#contact"><span class="drawer-item-left"><span data-icon="phone"></span><span>Contact Details</span></span><span>›</span></a>
         <div class="drawer-sep"></div>
-        <a class="drawer-item accent" href="#admin">
-          <span class="drawer-item-left"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></span>
-          <span>→</span>
-        </a>
+        <a class="drawer-item accent" href="#admin"><span class="drawer-item-left"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></span><span>→</span></a>
       </div>
     </aside>
   </div>
 
-  <!-- ================= STAFF CONTROL ROOM SHELL ================= -->
+  <!-- STAFF CONTROL ROOM -->
   <div id="admin-shell" hidden>
     <header>
       <div class="header-inner">
@@ -999,26 +404,17 @@
   <noscript>Please turn on JavaScript to see live scores.</noscript>
 
   <script type="module">
-    /* ================= 1. SUPABASE BACKEND ================= */
+    /* 1. SUPABASE BACKEND */
     const base = 'https://jkelyomdaylljxnvhuhi.supabase.co';
     const key = 'sb_publishable_nM0-WI_TOSBJsr5N4MaT9Q_6Ju3JEVO';
     const sessionKey = 'levelup.gala.session';
     const META_ID = '00000000-0000-0000-0000-000000000026';
-    let renewing;
-    let generation = 0;
+    let renewing, generation = 0;
 
-    function readSession() {
-      try { return JSON.parse(sessionStorage.getItem(sessionKey)); }
-      catch { return null; }
-    }
-
+    function readSession() { try { return JSON.parse(sessionStorage.getItem(sessionKey)); } catch { return null; } }
     function writeSession(data) {
       if (!data?.access_token) return false;
-      sessionStorage.setItem(sessionKey, JSON.stringify({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-        expires: Date.now() + data.expires_in * 1000
-      }));
+      sessionStorage.setItem(sessionKey, JSON.stringify({ access_token: data.access_token, refresh_token: data.refresh_token, expires: Date.now() + data.expires_in * 1000 }));
       return true;
     }
 
@@ -1042,29 +438,20 @@
       if (!renewing) {
         const start = generation;
         renewing = request('/auth/v1/token?grant_type=refresh_token', { refresh_token: session.refresh_token })
-          .then(data => {
-            if (generation !== start) return readSession()?.access_token;
-            writeSession(data);
-            return data.access_token;
-          }).catch(error => {
-            if (generation === start && [400, 401, 403].includes(error.status)) {
-              sessionStorage.removeItem(sessionKey);
-              throw new Error('Your session expired. Please sign in again.');
-            }
-            throw error;
-          }).finally(() => { renewing = undefined; });
+          .then(data => { if (generation !== start) return readSession()?.access_token; writeSession(data); return data.access_token; })
+          .catch(error => { if (generation === start && [400, 401, 403].includes(error.status)) { sessionStorage.removeItem(sessionKey); throw new Error('Your session expired. Please sign in again.'); } throw error; })
+          .finally(() => { renewing = undefined; });
       }
       return renewing;
     }
 
-    async function rpc(name, args) {
-      return request('/rest/v1/rpc/gala_' + name, args, await accessToken());
-    }
+    async function rpc(name, args) { return request('/rest/v1/rpc/gala_' + name, args, await accessToken()); }
 
     function logoUrl(path) {
-      if (/^\/api\/photo\/[a-z0-9-]+$/i.test(path || '')) return 'https://campus-auction-arena.vercel.app' + path;
-      if (/^https:\/\//i.test(path || '') || /^data:image\/(png|jpeg|webp|gif);base64,/i.test(path || '')) return path;
-      return '';
+      if (!path || typeof path !== 'string') return '';
+      if (path.startsWith('/')) return 'https://campus-auction-arena.vercel.app' + path;
+      if (/^https?:\/\//i.test(path) || /^data:image\//i.test(path)) return path;
+      return 'https://jkelyomdaylljxnvhuhi.supabase.co/storage/v1/object/public/' + path.replace(/^\/+/, '');
     }
 
     async function snapshot() {
@@ -1072,105 +459,60 @@
       for (const team of result.teams) team.logo = logoUrl(team.logo);
       result.branding.logo = logoUrl(result.branding.logo);
       const metaRec = (result.fixtures || []).find(f => f.id === META_ID || f.details?.isSiteMeta);
-      result.siteMeta = metaRec?.details?.siteMeta || {
-        announcements: [
-          { title: 'Welcome to Level Up ’26', body: 'Follow live match updates, standings and championship points right here.' }
-        ],
-        committee: [
-          { role: 'General Convenor', name: 'Sports Committee · Level Up ’26' },
-          { role: 'Match Control', name: 'Gala Technical Desk' }
-        ],
-        contact: 'For fixture enquiries or protests, visit the Gala Control Desk at the main venue.'
+      const rawMeta = metaRec?.details?.siteMeta || {};
+      const contacts = Array.isArray(rawMeta.contacts)
+        ? rawMeta.contacts
+        : (typeof rawMeta.contact === 'string' && rawMeta.contact.trim()
+            ? [{ name: 'Gala Control Desk', role: 'Match Helpdesk', phone: rawMeta.contact.trim() }]
+            : [{ name: 'Gala Control Desk', role: 'General Convenor', phone: '+91 98765 43210' }]);
+
+      result.siteMeta = {
+        announcements: Array.isArray(rawMeta.announcements) ? rawMeta.announcements : [{ title: 'Welcome to Level Up ’26', body: 'Follow live match updates, standings and championship points right here.' }],
+        committee: Array.isArray(rawMeta.committee) ? rawMeta.committee : [{ role: 'General Convenor', name: 'Sports Committee · Level Up ’26' }, { role: 'Match Control', name: 'Gala Technical Desk' }],
+        contacts
       };
       result.metaRecord = metaRec || null;
       result.fixtures = (result.fixtures || []).filter(f => f.id !== META_ID && !f.details?.isSiteMeta);
       return result;
     }
 
-    function save(id, version, section, value = {}) {
-      return rpc('save', { p_id: id, p_version: version, p_section: section, p_value: value });
-    }
+    function save(id, version, section, value = {}) { return rpc('save', { p_id: id, p_version: version, p_section: section, p_value: value }); }
+    function manager(email, permissions, assigned, remove = false) { return rpc('manager', { p_email: email, p_permissions: permissions, p_assigned: assigned, p_remove: remove }); }
+    async function login(email, password) { const data = await request('/auth/v1/token?grant_type=password', { email: email.trim(), password }); generation++; writeSession(data); }
+    async function register(email, password) { const data = await request('/auth/v1/signup', { email: email.trim(), password }); generation++; const signedIn = writeSession(data); return { signedIn, confirmationRequired: !signedIn }; }
+    async function logout() { const token = readSession()?.access_token; generation++; sessionStorage.removeItem(sessionKey); if (token) await request('/auth/v1/logout?scope=local', {}, token).catch(() => {}); }
 
-    function manager(email, permissions, assigned, remove = false) {
-      return rpc('manager', { p_email: email, p_permissions: permissions, p_assigned: assigned, p_remove: remove });
-    }
-
-    async function login(email, password) {
-      const data = await request('/auth/v1/token?grant_type=password', { email: email.trim(), password });
-      generation++;
-      writeSession(data);
-    }
-
-    async function register(email, password) {
-      const data = await request('/auth/v1/signup', { email: email.trim(), password });
-      generation++;
-      const signedIn = writeSession(data);
-      return { signedIn, confirmationRequired: !signedIn };
-    }
-
-    async function logout() {
-      const token = readSession()?.access_token;
-      generation++;
-      sessionStorage.removeItem(sessionKey);
-      if (token) await request('/auth/v1/logout?scope=local', {}, token).catch(() => {});
-    }
-
-    /* ================= 2. STOPWATCH & SCORING ENGINE ================= */
-    const sides = ['home', 'away'];
-    const sideKey = side => side === 'home' ? 'Home' : 'Away';
-    const opponent = side => side === 'home' ? 'away' : 'home';
+    /* 2. STOPWATCH, EXTRA TIME & SCORING */
+    const sides = ['home', 'away'], sideKey = s => s === 'home' ? 'Home' : 'Away', opponent = s => s === 'home' ? 'away' : 'home';
     const integer = (v, min = 0) => Number.isSafeInteger(v) && v >= min;
-    const check = (condition, message) => { if (!condition) throw new Error(message); };
-    const number = (v, fallback) => integer(Number(v), 1) ? Number(v) : fallback;
+    const check = (c, m) => { if (!c) throw new Error(m); };
+    const number = (v, fb) => integer(Number(v), 1) ? Number(v) : fb;
 
     function computeClock(history = [], status = 'scheduled') {
-      let accMs = 0;
-      let runningSince = null;
+      let accMs = 0, runningSince = null, stateLabel = 'stopped', extraMins = 0;
       for (const e of history) {
-        if (e.kind === 'start' && runningSince === null) {
-          runningSince = Date.parse(e.at);
-        } else if (e.kind === 'timer_start') {
-          if (typeof e.baseSec === 'number') accMs = e.baseSec * 1000;
-          runningSince = Date.parse(e.at);
-        } else if (e.kind === 'timer_pause' || e.kind === 'finish') {
-          if (runningSince !== null) {
-            accMs += Math.max(0, Date.parse(e.at) - runningSince);
-            runningSince = null;
-          }
-          if (typeof e.baseSec === 'number') accMs = e.baseSec * 1000;
-        } else if (e.kind === 'timer_set') {
-          accMs = (Number(e.baseSec) || 0) * 1000;
-          if (runningSince !== null) runningSince = Date.parse(e.at);
-        } else if (e.kind === 'period' && e.period === 'Half time' && runningSince !== null) {
-          accMs += Math.max(0, Date.parse(e.at) - runningSince);
-          runningSince = null;
-        }
+        if (e.kind === 'start') { if (runningSince === null) runningSince = Date.parse(e.at); stateLabel = 'running'; }
+        else if (e.kind === 'timer_start') { if (typeof e.baseSec === 'number') accMs = e.baseSec * 1000; runningSince = Date.parse(e.at); stateLabel = 'running'; }
+        else if (e.kind === 'timer_pause') { if (runningSince !== null) { accMs += Math.max(0, Date.parse(e.at) - runningSince); runningSince = null; } if (typeof e.baseSec === 'number') accMs = e.baseSec * 1000; stateLabel = 'paused'; }
+        else if (e.kind === 'timer_stop' || e.kind === 'finish') { if (runningSince !== null) { accMs += Math.max(0, Date.parse(e.at) - runningSince); runningSince = null; } if (typeof e.baseSec === 'number') accMs = e.baseSec * 1000; stateLabel = 'stopped'; }
+        else if (e.kind === 'timer_set') { accMs = (Number(e.baseSec) || 0) * 1000; if (runningSince !== null) runningSince = Date.parse(e.at); }
+        else if (e.kind === 'extra_time') { extraMins = Math.max(0, Number(e.extraMins) || 0); }
+        else if (e.kind === 'period' && e.period === 'Half time') { if (runningSince !== null) { accMs += Math.max(0, Date.parse(e.at) - runningSince); runningSince = null; } stateLabel = 'stopped'; }
       }
-      if (status === 'finished') runningSince = null;
-      return { accMs, runningSince };
+      if (status === 'finished') { runningSince = null; stateLabel = 'stopped'; }
+      return { accMs, runningSince, stateLabel, extraMins };
     }
 
     function formatClock(clock, now = Date.now()) {
       const extra = clock.runningSince ? Math.max(0, now - clock.runningSince) : 0;
       const totalSec = Math.floor((clock.accMs + extra) / 1000);
-      const mins = Math.floor(totalSec / 60);
-      const secs = totalSec % 60;
-      return {
-        mins,
-        secs,
-        text: String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0'),
-        running: Boolean(clock.runningSince)
-      };
+      const mins = Math.floor(totalSec / 60), secs = totalSec % 60;
+      return { mins, secs, text: String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0'), running: Boolean(clock.runningSince), stateLabel: clock.stateLabel, extraMins: clock.extraMins || 0 };
     }
 
     function volleyballRules(details) {
       const bestOf = number(details.bestOf, 3);
-      return {
-        toWin: Math.floor(bestOf / 2) + 1,
-        target: number(details.pointLimit, 25),
-        deciding: number(details.decidingLimit, 15),
-        margin: details.winByTwo === false ? 1 : 2
-      };
+      return { toWin: Math.floor(bestOf / 2) + 1, target: number(details.pointLimit, 25), deciding: number(details.decidingLimit, 15), margin: details.winByTwo === false ? 1 : 2 };
     }
 
     function settleSet(score, rules) {
@@ -1182,74 +524,37 @@
       score.setsWon[lead]++;
       score.timeouts = { home: 0, away: 0 };
       if (score.setsWon[lead] >= rules.toWin) score.winner = lead;
-      else {
-        score.home = 0;
-        score.away = 0;
-        score.period = 'Set ' + (score.sets.length + 1);
-      }
+      else { score.home = 0; score.away = 0; score.period = 'Set ' + (score.sets.length + 1); }
     }
 
     function replay(details, history = []) {
       const initHome = (details.positionsHome?.length ? details.positionsHome.map(p => p.playerId) : details.lineupHome) || [];
       const initAway = (details.positionsAway?.length ? details.positionsAway.map(p => p.playerId) : details.lineupAway) || [];
-      const score = {
-        status: 'scheduled', home: 0, away: 0, period: '', sets: [],
-        setsWon: { home: 0, away: 0 }, timeouts: { home: 0, away: 0 },
-        attempts: {}, results: {}, winner: null,
-        activeLineups: { home: [...initHome], away: [...initAway] },
-        timeline: history
-      };
+      const score = { status: 'scheduled', home: 0, away: 0, period: '', sets: [], setsWon: { home: 0, away: 0 }, timeouts: { home: 0, away: 0 }, attempts: {}, results: {}, winner: null, activeLineups: { home: [...initHome], away: [...initAway] }, timeline: history };
       for (const e of history) {
         switch (e.kind) {
-          case 'start':
-            score.status = 'live';
-            score.period = e.period || '';
-            break;
-          case 'finish':
-            score.status = 'finished';
-            if (!score.winner && details.format !== 'individual' && score.home !== score.away && details.sport !== 'volleyball') {
-              score.winner = score.home > score.away ? 'home' : 'away';
-            }
-            break;
+          case 'start': score.status = 'live'; score.period = e.period || ''; break;
+          case 'finish': score.status = 'finished'; if (!score.winner && details.format !== 'individual' && score.home !== score.away && details.sport !== 'volleyball') score.winner = score.home > score.away ? 'home' : 'away'; break;
           case 'period': score.period = e.period; break;
           case 'goal': case 'point': score[e.side]++; break;
           case 'yellow': case 'red':
             if (e.kind === 'red') {
               score.activeLineups[e.side] = score.activeLineups[e.side].filter(id => id !== e.playerId);
-              if (details.sport === 'volleyball' && !score.winner) {
-                const opp = opponent(e.side);
-                score[opp]++;
-                settleSet(score, e.rules || volleyballRules(details));
-              }
+              if (details.sport === 'volleyball' && !score.winner) { score[opponent(e.side)]++; settleSet(score, e.rules || volleyballRules(details)); }
             }
             break;
-          case 'sub':
-            score.activeLineups[e.side] = score.activeLineups[e.side].map(id => id === e.playerId ? e.otherPlayerId : id);
-            break;
-          case 'timeout':
-            score.timeouts[e.side] = (score.timeouts[e.side] || 0) + 1;
-            break;
-          case 'rally':
-            score[e.side]++;
-            settleSet(score, e.rules);
-            break;
+          case 'sub': score.activeLineups[e.side] = score.activeLineups[e.side].map(id => id === e.playerId ? e.otherPlayerId : id); break;
+          case 'timeout': score.timeouts[e.side] = (score.timeouts[e.side] || 0) + 1; break;
+          case 'rally': score[e.side]++; settleSet(score, e.rules); break;
           case 'correct':
             score.home = e.home; score.away = e.away;
             if (Array.isArray(e.sets)) {
               score.sets = e.sets.map(s => ({ home: Number(s.home) || 0, away: Number(s.away) || 0 }));
-              score.setsWon = {
-                home: score.sets.filter(s => s.home > s.away).length,
-                away: score.sets.filter(s => s.away > s.home).length
-              };
+              score.setsWon = { home: score.sets.filter(s => s.home > s.away).length, away: score.sets.filter(s => s.away > s.home).length };
             }
             if (e.rules) settleSet(score, e.rules);
             break;
-          case 'hit': case 'miss': {
-            const attempt = score.attempts[e.playerId] ||= { hits: 0, total: 0 };
-            attempt.total++;
-            if (e.kind === 'hit') attempt.hits++;
-            break;
-          }
+          case 'hit': case 'miss': { const attempt = score.attempts[e.playerId] ||= { hits: 0, total: 0 }; attempt.total++; if (e.kind === 'hit') attempt.hits++; break; }
           case 'result': score.results[e.playerId] = e.value; break;
         }
       }
@@ -1258,15 +563,10 @@
 
     function record(details, previous, input) {
       const timeline = [...(previous.timeline || [])];
-      if (input.kind === 'undo') {
-        check(timeline.length, 'There are no recorded actions to undo.');
-        timeline.pop();
-        return replay(details, timeline);
-      }
+      if (input.kind === 'undo') { check(timeline.length, 'There are no recorded actions to undo.'); timeline.pop(); return replay(details, timeline); }
       const s = replay(details, timeline);
       const e = { ...input, at: new Date().toISOString() };
-      const sport = details.sport;
-      const individual = details.format === 'individual';
+      const sport = details.sport, individual = details.format === 'individual';
       if (e.kind === 'start') {
         check(s.status === 'scheduled', 'This event has already started.');
         e.period = individual ? '' : sport === 'football' ? 'First half' : sport === 'volleyball' ? 'Set 1' : '';
@@ -1274,11 +574,7 @@
         check(s.status === 'live', 'Go live before recording a score.');
         if (['goal', 'yellow', 'red', 'sub', 'point', 'rally', 'timeout'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
         switch (e.kind) {
-          case 'finish':
-          case 'timer_start':
-          case 'timer_pause':
-          case 'timer_set':
-            break;
+          case 'finish': case 'timer_start': case 'timer_pause': case 'timer_stop': case 'timer_set': case 'extra_time': break;
           case 'goal': case 'yellow': case 'red': case 'sub': case 'period':
             if (sport === 'volleyball' && ['yellow', 'red', 'sub'].includes(e.kind)) {
               if (e.kind === 'sub') check(e.playerId && e.otherPlayerId && e.otherPlayerId !== e.playerId, 'Select court player and substitute.');
@@ -1293,27 +589,14 @@
               if (e.kind === 'sub') check(e.otherPlayerId && e.otherPlayerId !== e.playerId, 'Choose the player coming on.');
             }
             break;
-          case 'timeout':
-            check(sport === 'volleyball' && !individual, 'Timeouts are for volleyball matches.');
-            check((s.timeouts[e.side] || 0) < 2, 'This team has already used both timeouts in this set.');
-            break;
-          case 'rally':
-            check(sport === 'volleyball' && !individual && !s.winner, 'The final set is complete.');
-            e.rules = volleyballRules(details);
-            break;
+          case 'timeout': check(sport === 'volleyball' && !individual, 'Timeouts are for volleyball matches.'); check((s.timeouts[e.side] || 0) < 2, 'Both timeouts already used in this set.'); break;
+          case 'rally': check(sport === 'volleyball' && !individual && !s.winner, 'The final set is complete.'); e.rules = volleyballRules(details); break;
           case 'point': check(!individual && sport === 'custom', 'Choose a team event.'); break;
-          case 'correct':
-            check(!individual && (!s.winner || sport === 'volleyball'), 'Undo the last action to edit a completed match.');
-            check(integer(e.home) && integer(e.away), 'Scores must be whole numbers of zero or more.');
-            if (sport === 'volleyball') e.rules = volleyballRules(details);
-            break;
+          case 'correct': check(!individual && (!s.winner || sport === 'volleyball'), 'Undo the last action to edit a completed match.'); check(integer(e.home) && integer(e.away), 'Scores must be whole numbers.'); if (sport === 'volleyball') e.rules = volleyballRules(details); break;
           case 'hit': case 'miss': case 'result':
             check(individual && (details.playerIds || []).includes(e.playerId), 'Choose a registered participant.');
             if (e.kind === 'result') check(Number.isFinite(e.value), 'Enter a valid result.');
-            else {
-              check(sport === 'crossbar', 'Attempts are available for crossbar challenges.');
-              check((s.attempts[e.playerId]?.total || 0) < number(details.attemptLimit, 5), 'This player has used all attempts.');
-            }
+            else { check(sport === 'crossbar', 'Attempts are for crossbar challenges.'); check((s.attempts[e.playerId]?.total || 0) < number(details.attemptLimit, 5), 'All attempts used.'); }
             break;
           default: throw new Error('Unknown scoring action.');
         }
@@ -1322,59 +605,30 @@
       return replay(details, timeline);
     }
 
-    function node(tag, title, className) {
-      const el = document.createElement(tag);
-      if (title != null) el.textContent = title;
-      if (className) el.className = className;
-      return el;
-    }
-    function scSelect(items) {
-      const el = node('select');
-      for (const [value, text] of items) el.add(new Option(text, value));
-      return el;
-    }
-    function numeric(value, min = 0, max = null) {
-      const el = node('input');
-      el.type = 'number'; el.value = value; el.min = min;
-      if (max != null) el.max = max;
-      return el;
-    }
-    function scField(label, control) {
-      const el = node('label', label, 'sc-field'); el.append(control); return el;
-    }
+    function node(tag, title, className) { const el = document.createElement(tag); if (title != null) el.textContent = title; if (className) el.className = className; return el; }
+    function scSelect(items) { const el = node('select'); for (const [v, t] of items) el.add(new Option(t, v)); return el; }
+    function numeric(value, min = 0, max = null) { const el = node('input'); el.type = 'number'; el.value = value; el.min = min; if (max != null) el.max = max; return el; }
+    function scField(label, control) { const el = node('label', label, 'sc-field'); el.append(control); return el; }
 
     let adminClockInterval = null;
     function mountScoring(container, fixture, data, onSave) {
       if (adminClockInterval) { clearInterval(adminClockInterval); adminClockInterval = null; }
-      const d = fixture.details;
-      const score = replay(d, fixture.score?.timeline || []);
-      const teams = new Map((data.teams || []).map(t => [t.id, t]));
-      const players = new Map((data.players || []).map(p => [p.id, p]));
-      const team = side => teams.get(d[side + 'Id'])?.name || sideKey(side);
-      const player = id => players.get(id)?.name || 'Player';
+      const d = fixture.details, score = replay(d, fixture.score?.timeline || []);
+      const teams = new Map((data.teams || []).map(t => [t.id, t])), players = new Map((data.players || []).map(p => [p.id, p]));
+      const team = side => teams.get(d[side + 'Id'])?.name || sideKey(side), player = id => players.get(id)?.name || 'Player';
       const individual = d.format === 'individual';
       const panel = node('section', null, 'sc-console'); container.replaceChildren(panel);
-      const title = node('div', null, 'sc-head');
-      title.append(node('h3', 'Scoring desk'), node('span', score.status, 'sc-state ' + score.status));
-      panel.append(title);
+      const title = node('div', null, 'sc-head'); title.append(node('h3', 'Scoring desk'), node('span', score.status, 'sc-state ' + score.status)); panel.append(title);
       const feedback = node('p', '', 'sc-feedback'); feedback.setAttribute('role', 'alert');
       let busy = false;
       async function submit(action) {
         if (busy) return;
-        try {
-          const next = record(d, fixture.score || {}, action);
-          busy = true; panel.inert = true; feedback.textContent = '';
-          await onSave(next);
-        } catch (error) { feedback.textContent = error.message || 'Could not save this action.'; }
+        try { const next = record(d, fixture.score || {}, action); busy = true; panel.inert = true; feedback.textContent = ''; await onSave(next); }
+        catch (error) { feedback.textContent = error.message || 'Could not save this action.'; }
         finally { busy = false; panel.inert = false; }
       }
-      function button(label, run, style = '') {
-        const b = node('button', label, 'sc-btn ' + style);
-        b.type = 'button'; b.addEventListener('click', run); return b;
-      }
-      function section(name) {
-        const box = node('div', null, 'sc-box'); box.append(node('h4', name)); panel.append(box); return box;
-      }
+      function button(label, run, style = '') { const b = node('button', label, 'sc-btn ' + style); b.type = 'button'; b.addEventListener('click', run); return b; }
+      function section(name) { const box = node('div', null, 'sc-box'); box.append(node('h4', name)); panel.append(box); return box; }
       const statusLabel = score.status === 'live' ? score.period || 'Live' : score.status === 'finished' ? 'Final result' : 'Scheduled';
       if (!individual) {
         const board = node('div', null, 'sc-board');
@@ -1387,54 +641,60 @@
         if (score.sets.length) panel.append(node('p', score.sets.map((set, i) => 'Set ' + (i + 1) + ' · ' + set.home + '–' + set.away).join('   /   '), 'sc-sets'));
       }
 
-      /* Full Stopwatch Controls */
       if (score.status === 'live') {
-        const clockData = computeClock(score.timeline, score.status);
-        const curSnap = formatClock(clockData);
+        const clockData = computeClock(score.timeline, score.status), curSnap = formatClock(clockData);
         const timerBox = node('div', null, 'sc-timer-box');
-        const left = node('div');
-        const clockEl = node('div', curSnap.text, 'sc-clock-display');
-        const subEl = node('small', clockData.running ? 'Clock running' : 'Clock paused / stopped');
-        subEl.style.color = '#b0b9ac';
-        left.append(clockEl, subEl);
+        const topRow = node('div', null, 'sc-timer-top'), left = node('div');
+        const clockEl = node('div', curSnap.text, 'sc-clock-display'); left.append(clockEl);
+        if (curSnap.extraMins > 0) left.append(node('div', '+' + curSnap.extraMins + ' min Added / Extra Time', 'sc-extra-badge'));
+        const subEl = node('div', clockData.stateLabel === 'running' ? 'Clock running' : clockData.stateLabel === 'paused' ? 'Clock paused' : 'Clock stopped (Half / Break)');
+        subEl.style.color = '#b0b9ac'; subEl.style.fontSize = '12px'; subEl.style.marginTop = '4px'; left.append(subEl);
 
-        const right = node('div', null, 'sc-row');
+        const mainBtns = node('div', null, 'sc-row');
         if (clockData.running) {
-          right.append(button('Pause / Stop', () => {
-            const cur = formatClock(clockData);
-            submit({ kind: 'timer_pause', baseSec: cur.mins * 60 + cur.secs, label: 'Timer paused at ' + cur.text });
-          }, 'sc-stop'));
+          mainBtns.append(button('Pause', () => { const cur = formatClock(clockData); submit({ kind: 'timer_pause', baseSec: cur.mins * 60 + cur.secs, label: 'Timer paused at ' + cur.text }); }, 'sc-pause'));
+          mainBtns.append(button('Stop (Half / Break)', () => { const cur = formatClock(clockData); submit({ kind: 'timer_stop', baseSec: cur.mins * 60 + cur.secs, label: 'Timer stopped at ' + cur.text }); }, 'sc-stop'));
         } else {
-          right.append(button('Start / Resume', () => {
-            const cur = formatClock(clockData);
-            submit({ kind: 'timer_start', baseSec: cur.mins * 60 + cur.secs, label: 'Timer started at ' + cur.text });
-          }, 'sc-primary'));
+          mainBtns.append(button('Start / Resume', () => { const cur = formatClock(clockData); submit({ kind: 'timer_start', baseSec: cur.mins * 60 + cur.secs, label: 'Timer started at ' + cur.text }); }, 'sc-primary'));
+          if (clockData.stateLabel === 'paused') {
+            mainBtns.append(button('Stop (Half / Break)', () => { const cur = formatClock(clockData); submit({ kind: 'timer_stop', baseSec: cur.mins * 60 + cur.secs, label: 'Timer stopped at ' + cur.text }); }, 'sc-stop'));
+          }
         }
-        right.append(button('00:00', () => submit({ kind: 'timer_set', baseSec: 0, label: 'Timer reset to 00:00' })));
-        right.append(button('45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
+        topRow.append(left, mainBtns);
+
+        const subBar = node('div', null, 'sc-timer-subbar'), presetGroup = node('div', null, 'sc-row');
+        presetGroup.append(button('00:00', () => submit({ kind: 'timer_set', baseSec: 0, label: 'Timer reset to 00:00' })));
+        presetGroup.append(button('45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
 
         const customWrap = node('div', null, 'sc-custom-time');
-        const minInp = numeric(curSnap.mins, 0, 999);
-        const secInp = numeric(curSnap.secs, 0, 59);
-        const setCustomBtn = button('Set', () => {
-          const m = Math.max(0, Number(minInp.value) || 0);
-          const s = Math.max(0, Math.min(59, Number(secInp.value) || 0));
+        const minInp = numeric(curSnap.mins, 0, 999), secInp = numeric(curSnap.secs, 0, 59);
+        const setCustomBtn = button('Set Clock', () => {
+          const m = Math.max(0, Number(minInp.value) || 0), s = Math.max(0, Math.min(59, Number(secInp.value) || 0));
           submit({ kind: 'timer_set', baseSec: m * 60 + s, label: 'Timer set to ' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') });
         });
-        setCustomBtn.style.minHeight = '32px';
-        setCustomBtn.style.padding = '4px 10px';
+        setCustomBtn.style.minHeight = '30px'; setCustomBtn.style.padding = '3px 9px';
         customWrap.append(minInp, node('span', ':'), secInp, setCustomBtn);
-        right.append(customWrap);
+        presetGroup.append(customWrap);
 
-        timerBox.append(left, right);
-        panel.append(timerBox);
-
-        if (clockData.running) {
-          adminClockInterval = setInterval(() => {
-            if (!document.body.contains(clockEl)) { clearInterval(adminClockInterval); return; }
-            clockEl.textContent = formatClock(clockData).text;
-          }, 1000);
+        const extraWrap = node('div', null, 'sc-custom-time');
+        extraWrap.append(node('span', 'Extra +'));
+        const extraInp = numeric(curSnap.extraMins || 0, 0, 60);
+        const setExtraBtn = button('Set Extra', () => {
+          const ex = Math.max(0, Number(extraInp.value) || 0);
+          submit({ kind: 'extra_time', extraMins: ex, label: ex > 0 ? 'Added time: +' + ex + ' min' : 'Added time cleared' });
+        }, 'sc-primary');
+        setExtraBtn.style.minHeight = '30px'; setExtraBtn.style.padding = '3px 9px';
+        extraWrap.append(extraInp, node('span', 'm'), setExtraBtn);
+        if (curSnap.extraMins > 0) {
+          const clearExBtn = button('Clear', () => submit({ kind: 'extra_time', extraMins: 0, label: 'Added time cleared' }));
+          clearExBtn.style.minHeight = '30px'; clearExBtn.style.padding = '3px 8px';
+          extraWrap.append(clearExBtn);
         }
+
+        subBar.append(presetGroup, extraWrap);
+        timerBox.append(topRow, subBar);
+        panel.append(timerBox);
+        if (clockData.running) adminClockInterval = setInterval(() => { if (!document.body.contains(clockEl)) { clearInterval(adminClockInterval); return; } clockEl.textContent = formatClock(clockData).text; }, 1000);
       }
 
       if (score.status === 'scheduled') panel.append(button('Go live & start timer', () => submit({ kind: 'start', label: 'Event started' }), 'sc-primary'));
@@ -1442,18 +702,16 @@
         if (!individual && d.sport === 'football') {
           const controls = section('Match incident');
           const period = scSelect(['First half', 'Half time', 'Second half', 'Extra time', 'Penalties'].map(s => [s, s])); period.value = score.period;
-          controls.append(scField('Period (Half time auto-pauses clock)', period), button('Update period', () => submit({ kind: 'period', period: period.value, label: period.value })));
+          controls.append(scField('Period (Half time auto-stops clock)', period), button('Update period', () => submit({ kind: 'period', period: period.value, label: period.value })));
           const side = scSelect(sides.map(k => [k, team(k)]));
           const currentMin = formatClock(computeClock(score.timeline, score.status)).mins;
           const minute = numeric(currentMin || [...score.timeline].reverse().find(e => integer(e.minute))?.minute || 0, 0, 999);
           const who = scSelect([]), incoming = scSelect([]);
           const fill = () => {
-            const k = side.value; const roster = (data.players || []).filter(p => p.teamId === d[k + 'Id']);
-            const active = score.activeLineups[k].filter(Boolean);
-            const hasLineup = active.length > 0;
+            const k = side.value, roster = (data.players || []).filter(p => p.teamId === d[k + 'Id']);
+            const active = score.activeLineups[k].filter(Boolean), hasLineup = active.length > 0;
             const sentOff = new Set(score.timeline.filter(e => e.side === k && e.kind === 'red').map(e => e.playerId));
-            who.replaceChildren(new Option('Select player', ''));
-            incoming.replaceChildren(new Option('Select substitute', ''));
+            who.replaceChildren(new Option('Select player', '')); incoming.replaceChildren(new Option('Select substitute', ''));
             for (const p of roster.filter(p => !sentOff.has(p.id))) {
               if (!hasLineup || active.includes(p.id)) who.add(new Option(p.name, p.id));
               if (!hasLineup || !active.includes(p.id)) incoming.add(new Option(p.name, p.id));
@@ -1464,103 +722,49 @@
           form.append(scField('Team', side), scField('Minute', minute), scField('Player', who), scField('Coming on (for Sub)', incoming)); controls.append(form);
           const row = node('div', null, 'sc-row'); controls.append(row);
           for (const [kind, label] of [['goal', 'Goal'], ['yellow', 'Yellow card'], ['red', 'Red card'], ['sub', 'Substitution']]) {
-            row.append(button(label, () => submit({
-              kind, side: side.value, playerId: who.value, otherPlayerId: kind === 'sub' ? incoming.value : '', minute: minute.valueAsNumber,
-              label: label + ' · ' + team(side.value) + (who.value ? ' · ' + player(who.value) : '') + (kind === 'sub' ? ' / ' + player(incoming.value) : '')
-            }), kind === 'goal' ? 'sc-primary' : ''));
+            row.append(button(label, () => submit({ kind, side: side.value, playerId: who.value, otherPlayerId: kind === 'sub' ? incoming.value : '', minute: minute.valueAsNumber, label: label + ' · ' + team(side.value) + (who.value ? ' · ' + player(who.value) : '') + (kind === 'sub' ? ' / ' + player(incoming.value) : '') }), kind === 'goal' ? 'sc-primary' : ''));
           }
         } else if (!individual && d.sport === 'volleyball') {
           const box = section('Volleyball Live Rally & Events');
-          if (score.winner) {
-            box.append(node('p', team(score.winner) + ' won the match.'));
-          } else {
-            const vSide = scSelect(sides.map(k => [k, team(k)]));
-            const vWho = scSelect([]), vSubIn = scSelect([]);
-            const vReason = scSelect([
-              ['Spike / Kill', 'Spike / Kill'],
-              ['Service Ace', 'Service Ace'],
-              ['Block', 'Block'],
-              ['Opponent Error', 'Opponent Error'],
-              ['Rally Point', 'Rally Point']
-            ]);
+          if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
+          else {
+            const vSide = scSelect(sides.map(k => [k, team(k)])), vWho = scSelect([]), vSubIn = scSelect([]);
+            const vReason = scSelect([['Spike / Kill', 'Spike / Kill'], ['Service Ace', 'Service Ace'], ['Block', 'Block'], ['Opponent Error', 'Opponent Error'], ['Rally Point', 'Rally Point']]);
             const fillVolley = () => {
-              const k = vSide.value;
-              const roster = (data.players || []).filter(p => p.teamId === d[k + 'Id']);
-              const active = score.activeLineups[k].filter(Boolean);
-              const hasLineup = active.length > 0;
-              vWho.replaceChildren(new Option('Player (Optional)', ''));
-              vSubIn.replaceChildren(new Option('Sub In (for Substitution)', ''));
+              const k = vSide.value, roster = (data.players || []).filter(p => p.teamId === d[k + 'Id']);
+              const active = score.activeLineups[k].filter(Boolean), hasLineup = active.length > 0;
+              vWho.replaceChildren(new Option('Player (Optional)', '')); vSubIn.replaceChildren(new Option('Sub In (for Substitution)', ''));
               for (const p of roster) {
                 if (!hasLineup || active.includes(p.id)) vWho.add(new Option(p.name, p.id));
                 if (!hasLineup || !active.includes(p.id)) vSubIn.add(new Option(p.name, p.id));
               }
             };
             vSide.onchange = fillVolley; fillVolley();
-
             const quickRow = node('div', null, 'sc-row');
             for (const sKey of sides) {
               quickRow.append(button('+1 Point · ' + team(sKey), () => {
-                const isSelectedSide = vSide.value === sKey;
-                const pid = isSelectedSide ? vWho.value : '';
-                const rsn = isSelectedSide ? vReason.value : 'Rally Point';
-                submit({
-                  kind: 'rally',
-                  side: sKey,
-                  playerId: pid,
-                  reason: rsn,
-                  label: rsn + ' · ' + team(sKey) + (pid ? ' · ' + player(pid) : '')
-                });
+                const isSel = vSide.value === sKey, pid = isSel ? vWho.value : '', rsn = isSel ? vReason.value : 'Rally Point';
+                submit({ kind: 'rally', side: sKey, playerId: pid, reason: rsn, label: rsn + ' · ' + team(sKey) + (pid ? ' · ' + player(pid) : '') });
               }, 'sc-primary'));
             }
             box.append(quickRow);
-
             const vGrid = node('div', null, 'sc-grid');
-            vGrid.append(
-              scField('Team (for details / cards / subs)', vSide),
-              scField('Point Type', vReason),
-              scField('Court Player', vWho),
-              scField('Incoming Substitute', vSubIn)
-            );
+            vGrid.append(scField('Team (for details / cards / subs)', vSide), scField('Point Type', vReason), scField('Court Player', vWho), scField('Incoming Substitute', vSubIn));
             box.append(vGrid);
-
             const actionRow = node('div', null, 'sc-row');
-            actionRow.append(button('Timeout (2/set)', () => submit({
-              kind: 'timeout',
-              side: vSide.value,
-              label: 'Timeout · ' + team(vSide.value) + ' (' + ((score.timeouts[vSide.value] || 0) + 1) + '/2)'
-            })));
-            actionRow.append(button('Substitution', () => submit({
-              kind: 'sub',
-              side: vSide.value,
-              playerId: vWho.value,
-              otherPlayerId: vSubIn.value,
-              label: 'Sub · ' + team(vSide.value) + ' · ' + player(vWho.value) + ' / ' + player(vSubIn.value)
-            })));
-            actionRow.append(button('Yellow Card (Warn)', () => submit({
-              kind: 'yellow',
-              side: vSide.value,
-              playerId: vWho.value,
-              label: 'Yellow card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '')
-            })));
-            actionRow.append(button('Red Card (+1 Opp)', () => submit({
-              kind: 'red',
-              side: vSide.value,
-              playerId: vWho.value,
-              label: 'Red card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '')
-            }), 'sc-stop'));
+            actionRow.append(button('Timeout (2/set)', () => submit({ kind: 'timeout', side: vSide.value, label: 'Timeout · ' + team(vSide.value) + ' (' + ((score.timeouts[vSide.value] || 0) + 1) + '/2)' })));
+            actionRow.append(button('Substitution', () => submit({ kind: 'sub', side: vSide.value, playerId: vWho.value, otherPlayerId: vSubIn.value, label: 'Sub · ' + team(vSide.value) + ' · ' + player(vWho.value) + ' / ' + player(vSubIn.value) })));
+            actionRow.append(button('Yellow Card (Warn)', () => submit({ kind: 'yellow', side: vSide.value, playerId: vWho.value, label: 'Yellow card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '') })));
+            actionRow.append(button('Red Card (+1 Opp)', () => submit({ kind: 'red', side: vSide.value, playerId: vWho.value, label: 'Red card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '') }), 'sc-stop'));
             box.append(actionRow);
           }
         } else if (!individual) {
           const box = section('Add point');
           if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
-          else {
-            const buttons = node('div', null, 'sc-row'); box.append(buttons);
-            for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: 'point', side, label: 'Point · ' + team(side) }), 'sc-primary'));
-          }
+          else { const buttons = node('div', null, 'sc-row'); box.append(buttons); for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: 'point', side, label: 'Point · ' + team(side) }), 'sc-primary')); }
         } else {
           const box = section(d.sport === 'crossbar' ? 'Record attempt' : 'Record individual result');
-          const ids = d.playerIds || [];
-          const pick = scSelect(ids.map(id => [id, player(id)])); box.append(scField('Participant', pick));
+          const ids = d.playerIds || [], pick = scSelect(ids.map(id => [id, player(id)])); box.append(scField('Participant', pick));
           if (d.sport === 'crossbar') {
             const info = node('p', '', 'sc-info');
             const update = () => { const a = score.attempts[pick.value] || { hits: 0, total: 0 }; info.textContent = a.hits + ' hits · ' + a.total + ' of ' + number(d.attemptLimit, 5) + ' attempts'; };
@@ -1577,16 +781,12 @@
           correction.append(scField('Current ' + team('home'), h), scField('Current ' + team('away'), a));
           if (d.sport === 'volleyball' && score.sets.length) {
             score.sets.forEach((stItem, idx) => {
-              const sh = numeric(stItem.home), sa = numeric(stItem.away);
-              sh.dataset.setHome = idx; sa.dataset.setAway = idx;
+              const sh = numeric(stItem.home), sa = numeric(stItem.away); sh.dataset.setHome = idx; sa.dataset.setAway = idx;
               correction.append(scField(`Set ${idx + 1} · ${team('home')}`, sh), scField(`Set ${idx + 1} · ${team('away')}`, sa));
             });
           }
           correction.append(button('Save score correction', () => {
-            const editedSets = d.sport === 'volleyball' ? score.sets.map((stItem, idx) => ({
-              home: Number(correction.querySelector(`[data-set-home="${idx}"]`)?.value ?? stItem.home),
-              away: Number(correction.querySelector(`[data-set-away="${idx}"]`)?.value ?? stItem.away)
-            })) : undefined;
+            const editedSets = d.sport === 'volleyball' ? score.sets.map((stItem, idx) => ({ home: Number(correction.querySelector(`[data-set-home="${idx}"]`)?.value ?? stItem.home), away: Number(correction.querySelector(`[data-set-away="${idx}"]`)?.value ?? stItem.away) })) : undefined;
             submit({ kind: 'correct', home: h.valueAsNumber, away: a.valueAsNumber, sets: editedSets, label: 'Score corrected to ' + h.value + '–' + a.value });
           }));
           panel.append(correction);
@@ -1597,47 +797,30 @@
       if (score.status === 'live') foot.append(button('Finish event', () => { if (window.confirm('Finish this event and publish the final score?')) submit({ kind: 'finish', label: 'Full time' }); }));
       panel.append(feedback);
       if (score.timeline.length) {
-        const box = section('Recent actions (admin log)');
-        const list = node('ol', null, 'sc-history');
+        const box = section('Recent actions (admin log)'), list = node('ol', null, 'sc-history');
         for (const e of score.timeline.slice(-5).reverse()) list.append(node('li', (e.minute != null ? e.minute + '′  ' : '') + (e.label || e.kind)));
         box.append(list);
       }
     }
 
-    /* ================= 3. FORMATION & VOLLEYBALL COURT HELPERS ================= */
+    /* 3. FORMATION & COURT HELPERS */
     function generatePositions(formationStr, existing = [], sport = 'football') {
       if (sport === 'volleyball') {
-        const zones = [
-          { x: 22, y: 24, zone: 'Z4' },
-          { x: 50, y: 24, zone: 'Z3' },
-          { x: 78, y: 24, zone: 'Z2' },
-          { x: 22, y: 64, zone: 'Z5' },
-          { x: 50, y: 64, zone: 'Z6' },
-          { x: 78, y: 64, zone: 'Z1' },
-          { x: 84, y: 88, zone: 'L', isLibero: true }
-        ];
+        const zones = [{ x: 22, y: 24, zone: 'Z4' }, { x: 50, y: 24, zone: 'Z3' }, { x: 78, y: 24, zone: 'Z2' }, { x: 22, y: 64, zone: 'Z5' }, { x: 50, y: 64, zone: 'Z6' }, { x: 78, y: 64, zone: 'Z1' }, { x: 84, y: 88, zone: 'L', isLibero: true }];
         return zones.map((z, idx) => ({ ...z, playerId: existing[idx]?.playerId || '' }));
       }
       const nums = String(formationStr || '').split('-').map(Number).filter(n => n > 0 && n <= 11);
-      const rows = nums.length ? [1, ...nums] : [1, 4, 3, 3];
-      const out = [];
+      const rows = nums.length ? [1, ...nums] : [1, 4, 3, 3], out = [];
       let idx = 0;
-      const totalRows = rows.length;
       rows.forEach((count, rIdx) => {
-        const y = totalRows === 1 ? 85 : Math.round(88 - (rIdx / (totalRows - 1)) * 74);
-        for (let c = 0; c < count; c++) {
-          const x = Math.round(((c + 1) / (count + 1)) * 100);
-          out.push({ x, y, playerId: existing[idx]?.playerId || '' });
-          idx++;
-        }
+        const y = rows.length === 1 ? 85 : Math.round(88 - (rIdx / (rows.length - 1)) * 74);
+        for (let c = 0; c < count; c++) { out.push({ x: Math.round(((c + 1) / (count + 1)) * 100), y, playerId: existing[idx]?.playerId || '' }); idx++; }
       });
       return out;
     }
 
-    /* ================= 4. PUBLIC MATCH CENTRE UI ================= */
-    const main = document.querySelector('#content');
-    const nav = document.querySelector('#navigation');
-    const views = ['home', 'fixtures', 'standings', 'leaderboard', 'live'];
+    /* 4. PUBLIC MATCH CENTRE UI */
+    const main = document.querySelector('#content'), nav = document.querySelector('#navigation'), views = ['home', 'fixtures', 'standings', 'leaderboard', 'live'];
     const symbols = {
       home: '<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
       fixtures: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v5m10-5v5M3 11h18"/>',
@@ -1657,24 +840,20 @@
     function icon(name) { return `<svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${symbols[name] || symbols.field}</svg>`; }
     function e(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
     function color(s) { return /^#[0-9a-f]{3,8}$/i.test(s) ? s : '#9dbd75'; }
-    function imgURL(s) { return typeof s === 'string' && (/^(https:\/\/|data:image\/(?:png|jpe?g|webp|gif|avif);base64,)/i.test(s) || /^\.\/assets\/[\w.-]+$/.test(s)) ? s : ''; }
+    function imgURL(s) { return typeof s === 'string' && (/^(https?:\/\/|data:image\/)/i.test(s) || /^\.\/assets\/[\w.-]+$/.test(s)) ? s : ''; }
     const fmtTime = new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
     const fmtDay = new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' });
     const fmtKey = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Kolkata' });
     const day = (s, fmt = fmtDay) => s && Number.isFinite(Date.parse(s)) ? fmt.format(new Date(s)) : 'Time TBC';
     const standardName = { football: 'Football', volleyball: 'Volleyball', crossbar: 'Crossbar challenge', custom: 'Custom event' };
     const label = s => String(s || '').replace(/^./, c => c.toUpperCase());
-    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contact: '' } };
+    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [] } };
     const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', leader: 'teams', pitchSide: 'home', selectedPlayer: '' };
     let loaded = false, failed = false, refreshing = false, lastHash = '', priorSignature = '';
 
-    const team = id => state.teams.find(t => t.id === id);
-    const player = id => state.players.find(p => p.id === id);
-    const score = f => f.score || {};
-    const st = f => score(f).status || 'scheduled';
-    const title = f => f.details?.name || standardName[f.details?.sport] || 'Event';
-    const mode = f => f.details.format === 'individual';
-    const ids = f => Array.isArray(f.details.playerIds) ? f.details.playerIds : [];
+    const team = id => state.teams.find(t => t.id === id), player = id => state.players.find(p => p.id === id);
+    const score = f => f.score || {}, st = f => score(f).status || 'scheduled', title = f => f.details?.name || standardName[f.details?.sport] || 'Event';
+    const mode = f => f.details.format === 'individual', ids = f => Array.isArray(f.details.playerIds) ? f.details.playerIds : [];
     const groupTeam = (f, t) => f.details.homeId === t || f.details.awayId === t || ids(f).some(id => player(id)?.teamId === t);
     const fixtures = () => [...state.fixtures].sort((a, b) => String(a.details.startTime || '9999').localeCompare(String(b.details.startTime || '9999')));
     const fixtureLink = f => '#match/' + encodeURIComponent(f.id);
@@ -1686,7 +865,8 @@
       const s = st(f);
       if (s === 'live') {
         const clk = formatClock(computeClock(score(f).timeline, 'live'));
-        return `<span class="tag live">Live · <span data-live-clock="${e(f.id)}">${clk.text}</span></span>`;
+        const isStopped = clk.stateLabel !== 'running', exText = clk.extraMins > 0 ? ` +${clk.extraMins}′` : '';
+        return `<span class="tag ${isStopped ? 'stopped' : 'live'}">${isStopped ? 'Stopped' : 'Live'} · <span data-live-clock="${e(f.id)}">${clk.text}</span>${exText}</span>`;
       }
       return `<span class="tag ${s === 'finished' ? 'finished' : ''}">${s === 'finished' ? 'Full time' : e(label(s))}</span>`;
     }
@@ -1700,8 +880,7 @@
     function message() { return failed ? `<div role="status" class="notice">${loaded ? 'Live updates paused. Showing last available scores.' : 'Match centre could not load.'}<button class="seg" data-retry>Retry</button></div>` : ''; }
 
     function renderAnnouncements(limit = 0) {
-      const all = state.siteMeta?.announcements || [];
-      const list = limit > 0 ? all.slice(0, limit) : all;
+      const all = state.siteMeta?.announcements || [], list = limit > 0 ? all.slice(0, limit) : all;
       if (!list.length) return '';
       return `<section class="section">${sectionHead('Announcements', limit > 0 && all.length > limit ? 'All notices' : '', '#announcements')}<div class="announce-list">${list.map(a => `<div class="announce-card"><span class="announce-badge">Notice</span><div><strong>${e(a.title)}</strong>${a.body ? `<p>${e(a.body)}</p>` : ''}</div></div>`).join('')}</div></section>`;
     }
@@ -1735,9 +914,12 @@
     }
 
     function contactPage() {
-      const contact = state.siteMeta?.contact || '';
-      return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead('Contact Details', 'Get in touch with the Gala Control Desk.') +
-        `<div class="live-article"><h2 class="subhead" style="margin-top:0">Gala Helpdesk &amp; Enquiries</h2><p class="hint" style="font-size:14.5px;margin-top:8px;white-space:pre-line">${e(contact || 'Visit the Gala Control Desk at the main venue for match enquiries.')}</p></div>`;
+      const contacts = state.siteMeta?.contacts || [];
+      return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead('Contact Details', 'Tap Call to reach the tournament coordinators.') +
+        (contacts.length ? `<div class="fixture-list">${contacts.map(c => {
+          const cleanTel = String(c.phone || '').replace(/[^+\d]/g, '');
+          return `<div class="contact-card"><div class="contact-info"><b>${e(c.name)}</b>${c.role ? `<span class="contact-role">${e(c.role)}</span>` : ''}${c.phone ? `<span class="contact-num">${e(c.phone)}</span>` : ''}</div>${cleanTel ? `<a class="call-btn" href="tel:${e(cleanTel)}" aria-label="Call ${e(c.name)}">${icon('phone')}<span>Call</span></a>` : ''}</div>`;
+        }).join('')}</div>` : empty('phone', 'No contacts listed', 'Coordinator contact numbers will appear here.'));
     }
 
     function options(name, opts) { return `<select class="tool-input" data-filter="${name}" aria-label="Filter by ${name}">${opts.map(([v, l]) => `<option value="${e(v)}" ${filters[name] === v ? 'selected' : ''}>${e(l)}</option>`).join('')}</select>`; }
@@ -1762,8 +944,7 @@
         function side(id) { if (!rows.has(id)) rows.set(id, { id, played: 0, won: 0, drawn: 0, lost: 0, for: 0, against: 0, pts: 0, isLive: false }); return rows.get(id); }
         for (const f of fs) {
           const d = f.details; if (!team(d.homeId) || !team(d.awayId)) continue;
-          const a = side(d.homeId), b = side(d.awayId);
-          const matchSt = st(f);
+          const a = side(d.homeId), b = side(d.awayId), matchSt = st(f);
           if (matchSt !== 'finished' && matchSt !== 'live') continue;
           if (matchSt === 'live') { a.isLive = true; b.isLive = true; }
           const s = score(f), x = Number(volley ? s.setsWon?.home : s.home) || 0, y = Number(volley ? s.setsWon?.away : s.away) || 0;
@@ -1799,13 +980,9 @@
     }
 
     function interactiveArena(d, s) {
-      const side = filters.pitchSide === 'away' ? 'away' : 'home';
-      const isHome = side === 'home';
-      const isVolley = d.sport === 'volleyball';
-      const t = team(isHome ? d.homeId : d.awayId);
-      const form = String((isHome ? d.formationHome : d.formationAway) || '').trim();
-      const rawPos = (isHome ? d.positionsHome : d.positionsAway) || [];
-      const legacyLine = (isHome ? d.lineupHome : d.lineupAway) || [];
+      const side = filters.pitchSide === 'away' ? 'away' : 'home', isHome = side === 'home', isVolley = d.sport === 'volleyball';
+      const t = team(isHome ? d.homeId : d.awayId), form = String((isHome ? d.formationHome : d.formationAway) || '').trim();
+      const rawPos = (isHome ? d.positionsHome : d.positionsAway) || [], legacyLine = (isHome ? d.lineupHome : d.lineupAway) || [];
       const positions = rawPos.length ? rawPos : (legacyLine.length || form || isVolley ? generatePositions(form, legacyLine.map(id => ({ playerId: id })), d.sport) : []);
       const subs = (isHome ? d.subsHome : d.subsAway) || [];
       if (!positions.some(p => p.playerId) && !subs.length && !form) return '';
@@ -1818,15 +995,13 @@
         let pid = pos.playerId;
         const subOut = subEvents.find(ev => ev.playerId === pid);
         if (subOut && subOut.otherPlayerId) pid = subOut.otherPlayerId;
-        const pObj = player(pid);
-        const pts = pointEvents.filter(ev => ev.playerId === pid).length;
+        const pObj = player(pid), pts = pointEvents.filter(ev => ev.playerId === pid).length;
         const yellows = cardEvents.filter(ev => ev.playerId === pid && ev.kind === 'yellow').length;
         const reds = cardEvents.filter(ev => ev.playerId === pid && ev.kind === 'red').length;
         return { ...pos, idx: idx + 1, pid, name: pObj?.name || (pos.isLibero ? 'Libero' : 'Player ' + (idx + 1)), pts, yellows, reds, wasSubbedIn: Boolean(subOut) };
       });
 
-      const sel = resolvedNodes.find(n => n.pid && n.pid === filters.selectedPlayer);
-      const timeoutsUsed = s.timeouts?.[side] || 0;
+      const sel = resolvedNodes.find(n => n.pid && n.pid === filters.selectedPlayer), timeoutsUsed = s.timeouts?.[side] || 0;
 
       return `<h2 class="subhead">${isVolley ? 'Court Lineup & Rotation' : 'Interactive Lineup & Pitch'}</h2>
         <div class="pitch-tabs">
@@ -1850,11 +1025,9 @@
     function matchPage(f) {
       if (!f) return empty('field', 'Event unavailable', 'This event may have been removed.');
       let d = f.details, s = score(f), v = d.sport === 'volleyball', h = team(d.homeId), a = team(d.awayId), isIndividual = mode(f), isScheduled = st(f) === 'scheduled';
-      let arenaHtml = (d.sport === 'football' || d.sport === 'volleyball') ? interactiveArena(d, s) : '';
-      let sets = s.sets || [];
-      /* Public timeline ONLY shows Goals, Cards, and Volleyball Rallies/Timeouts (hides admin corrections/edits) */
+      let arenaHtml = (d.sport === 'football' || d.sport === 'volleyball') ? interactiveArena(d, s) : '', sets = s.sets || [];
       let publicTl = [...(s.timeline || [])].filter(x => v ? ['rally', 'yellow', 'red', 'timeout'].includes(x.kind) : ['goal', 'yellow', 'red'].includes(x.kind)).reverse();
-      const clk = st(f) === 'live' ? formatClock(computeClock(s.timeline, 'live')) : null;
+      const clk = st(f) === 'live' ? formatClock(computeClock(s.timeline, 'live')) : null, isStopped = clk && clk.stateLabel !== 'running';
 
       return `<a class="link-btn" href="#fixtures">← All fixtures</a>` +
         pageHead(title(f), [sportName(f), d.stage, day(d.startTime), d.startTime ? day(d.startTime, fmtTime) + ' IST' : '', d.venue].filter(Boolean).join(' · ')) +
@@ -1862,7 +1035,7 @@
           <div class="info-line">${status(f)}<span class="status-msg">${e(isScheduled ? '' : s.period || '')}</span></div>
           ${!isIndividual ? `<div class="match-score">
             <a class="match-side" href="#team/${encodeURIComponent(d.homeId || '')}">${crest(h)}<span>${e(h?.name || 'TBC')}</span></a>
-            <strong>${isScheduled ? 'VS' : `${e(v ? s.setsWon?.home ?? 0 : s.home ?? 0)} – ${e(v ? s.setsWon?.away ?? 0 : s.away ?? 0)}`}${v && !isScheduled ? '<small>Sets won</small>' : ''}${clk ? `<small class="match-clock-banner" data-live-clock="${e(f.id)}">${clk.text}</small>` : ''}</strong>
+            <strong>${isScheduled ? 'VS' : `${e(v ? s.setsWon?.home ?? 0 : s.home ?? 0)} – ${e(v ? s.setsWon?.away ?? 0 : s.away ?? 0)}`}${v && !isScheduled ? '<small>Sets won</small>' : ''}${clk ? `<div class="match-clock-wrap"><span class="match-clock-banner ${isStopped ? 'stopped' : ''}" data-live-clock="${e(f.id)}">${clk.text}</span>${clk.extraMins > 0 ? `<span class="extra-time-pill">+${clk.extraMins} min Extra Time</span>` : ''}</div>` : ''}</strong>
             <a class="match-side" href="#team/${encodeURIComponent(d.awayId || '')}">${crest(a)}<span>${e(a?.name || 'TBC')}</span></a>
           </div>` : ''}
           ${isIndividual ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Attempts' : 'Participants'}</h2>${[...ids(f)].sort((x, y) => (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0)).map(id => `<div class="attempt-row">${crest(team(player(id)?.teamId))}<span>${e(player(id)?.name || 'Participant')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Entrants will appear here.</p>'}` : ''}
@@ -1879,25 +1052,11 @@
       return pageHead('Live centre', fs.length ? `${fs.length} ${fs.length === 1 ? 'event' : 'events'} in progress` : 'Follow live scores and match action.') + (fs.length === 1 ? matchPage(fs[0]).replace(/^.*?<article/s, '<article').replace('<div class="info-line">', `<h2 class="subhead">${e(title(fs[0]))}</h2><p class="hint">${e(fs[0].details.venue)}</p><div class="info-line">`) : fs.length ? `<div class="fixture-list">${fs.map(fixtureCard).join('')}</div>` : empty('live', 'No events live right now', 'Open Fixtures for the latest schedule.'));
     }
 
-    function route() {
-      let parts = location.hash.slice(1).split('/');
-      return { tab: parts[0] || 'home', id: parts[1] ? decodeURIComponent(parts[1]) : '' };
-    }
+    function route() { let parts = location.hash.slice(1).split('/'); return { tab: parts[0] || 'home', id: parts[1] ? decodeURIComponent(parts[1]) : '' }; }
 
     function renderPublic() {
       let { tab, id } = route();
-      let panel = ({
-        home,
-        fixtures: fixtureList,
-        standings,
-        leaderboard,
-        live: livePage,
-        announcements: announcementsPage,
-        committee: committeePage,
-        contact: contactPage,
-        match: () => matchPage(state.fixtures.find(f => f.id === id)),
-        team: () => teamPage(id)
-      })[tab] || home;
+      let panel = ({ home, fixtures: fixtureList, standings, leaderboard, live: livePage, announcements: announcementsPage, committee: committeePage, contact: contactPage, match: () => matchPage(state.fixtures.find(f => f.id === id)), team: () => teamPage(id) })[tab] || home;
       let active = tab === 'team' ? 'home' : tab === 'match' ? (st(state.fixtures.find(f => f.id === id) || {}) === 'live' ? 'live' : 'fixtures') : tab;
       nav.innerHTML = views.map(v => `<a href="#${v}" ${v === active ? 'aria-current="page"' : ''}>${icon(v)}<span>${label(v)}</span></a>`).join('');
       const open = new Set([...main.querySelectorAll('details[open]')].map(el => el.dataset.persist));
@@ -1907,15 +1066,11 @@
       document.title = `${label(views.includes(tab) ? tab : tab === 'match' ? 'Event details' : tab === 'team' ? 'Team' : tab)} · Level Up ’26`;
     }
 
-    /* Tick all visible live match clocks smoothly every second */
     setInterval(() => {
       if (document.hidden || route().tab === 'admin') return;
       document.querySelectorAll('[data-live-clock]').forEach(el => {
-        const fid = el.getAttribute('data-live-clock');
-        const f = state.fixtures.find(x => x.id === fid);
-        if (f && st(f) === 'live') {
-          el.textContent = formatClock(computeClock(score(f).timeline, 'live')).text;
-        }
+        const f = state.fixtures.find(x => x.id === el.getAttribute('data-live-clock'));
+        if (f && st(f) === 'live') el.textContent = formatClock(computeClock(score(f).timeline, 'live')).text;
       });
     }, 1000);
 
@@ -1925,12 +1080,9 @@
       try {
         const next = await snapshot();
         if (!Array.isArray(next?.teams) || !Array.isArray(next?.fixtures)) throw Error('Invalid snapshot');
-        let sig = JSON.stringify([next.teams, next.players, next.fixtures, next.branding, next.siteMeta]);
-        let changed = sig !== priorSignature || failed;
-        Object.assign(state, next);
-        loaded = true; failed = false; priorSignature = sig;
-        let logo = next.branding?.logo || './assets/event-logo.png';
-        let el = document.getElementById('brand-icon');
+        let sig = JSON.stringify([next.teams, next.players, next.fixtures, next.branding, next.siteMeta]), changed = sig !== priorSignature || failed;
+        Object.assign(state, next); loaded = true; failed = false; priorSignature = sig;
+        let logo = next.branding?.logo || './assets/event-logo.png', el = document.getElementById('brand-icon');
         if (!el.querySelector('img') && el.dataset.failed !== logo) {
           let img = new Image(); img.alt = '';
           img.onload = () => { el.classList.add('photo'); el.replaceChildren(img); };
@@ -1938,21 +1090,17 @@
           img.src = logo;
         }
         if (changed) renderPublic();
-      } catch {
-        if (!failed) { failed = true; renderPublic(); }
-      } finally { refreshing = false; }
+      } catch { if (!failed) { failed = true; renderPublic(); } }
+      finally { refreshing = false; }
     }
 
-    /* ================= 5. ADMIN CONTROL ROOM UI ================= */
+    /* 5. ADMIN CONTROL ROOM */
     const app = document.querySelector('#app'), account = document.querySelector('#account'), notice = document.querySelector('#notice');
     const permissions = { schedule: 'Schedule and lineups', score: 'Live scoring', awards: 'Championship awards', delete: 'Delete fixtures' };
     const sports = { football: 'Football', volleyball: 'Volleyball', crossbar: 'Crossbar challenge', custom: 'Custom event' };
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
-    let designerState = {
-      Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true },
-      Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false }
-    };
+    let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false } };
 
     const current = () => adminData.fixtures.find(f => f.id === activeId);
     const allowed = (p, f) => adminData.role === 'admin' || (adminData.permissions.includes(p) && (!adminData.assigned.length || (f && adminData.assigned.includes(f.id))));
@@ -2009,53 +1157,29 @@
     function initDesigner(d) {
       const sport = d.sport || 'football';
       for (const side of ['Home', 'Away']) {
-        const fStr = d['formation' + side] || '4-3-3';
-        const savedPos = d['positions' + side];
-        const legacy = (d['lineup' + side] || []).map(id => ({ playerId: id }));
+        const fStr = d['formation' + side] || '4-3-3', savedPos = d['positions' + side], legacy = (d['lineup' + side] || []).map(id => ({ playerId: id }));
         const validSaved = savedPos?.length && (sport === 'volleyball' ? savedPos.some(p => p.zone) : !savedPos.some(p => p.zone));
-        designerState[side] = {
-          formation: fStr,
-          positions: validSaved ? JSON.parse(JSON.stringify(savedPos)) : generatePositions(fStr, legacy, sport),
-          selectedIdx: 0,
-          open: side === 'Home'
-        };
+        designerState[side] = { formation: fStr, positions: validSaved ? JSON.parse(JSON.stringify(savedPos)) : generatePositions(fStr, legacy, sport), selectedIdx: 0, open: side === 'Home' };
       }
     }
 
     function renderArenaDesigner(side, teamId, sport) {
-      const isVolley = sport === 'volleyball';
-      const stSide = designerState[side];
-      const roster = adminData.players.filter(p => p.teamId === teamId);
-      const selNode = stSide.positions[stSide.selectedIdx] || stSide.positions[0];
-
+      const isVolley = sport === 'volleyball', stSide = designerState[side], roster = adminData.players.filter(p => p.teamId === teamId), selNode = stSide.positions[stSide.selectedIdx] || stSide.positions[0];
       return `<div class="adm-pitch-wrap" data-designer-side="${side}">
         ${!isVolley ? `<div class="fields" style="margin:8px 0">
-          <label class="field">Formation numbers (e.g. 4-3-3 or 3-5-2)
-            <input type="text" data-form-input="${side}" value="${esc(stSide.formation)}" placeholder="e.g. 4-3-3">
-          </label>
-          <div style="display:flex;align-items:end">
-            <button type="button" data-reset-dots="${side}">Arrange dots from formation</button>
-          </div>
-        </div>` : `<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0">
-          <span class="hint" style="margin:0">6 Court Zones + Libero (L)</span>
-          <button type="button" data-reset-dots="${side}">Reset court zones</button>
-        </div>`}
+          <label class="field">Formation numbers (e.g. 4-3-3 or 3-5-2)<input type="text" data-form-input="${side}" value="${esc(stSide.formation)}" placeholder="e.g. 4-3-3"></label>
+          <div style="display:flex;align-items:end"><button type="button" data-reset-dots="${side}">Arrange dots from formation</button></div>
+        </div>` : `<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0"><span class="hint" style="margin:0">6 Court Zones + Libero (L)</span><button type="button" data-reset-dots="${side}">Reset court zones</button></div>`}
         <p class="hint">Drag any dot smoothly on the ${isVolley ? 'court' : 'pitch'}. Tap a dot to pick the player below.</p>
         <div class="adm-pitch-board ${isVolley ? 'volley-board' : ''}" data-board="${side}">
           ${stSide.positions.map((pos, idx) => {
             const pName = adminData.players.find(p => p.id === pos.playerId)?.name || (pos.isLibero ? 'Libero' : '#' + (idx + 1));
-            return `<div class="adm-dot ${pos.isLibero ? 'libero-dot' : ''} ${idx === stSide.selectedIdx ? 'active' : ''}" data-dot-idx="${idx}" style="left:${pos.x}%;top:${pos.y}%">
-              <span>${pos.isLibero ? 'L' : (pos.zone || idx + 1)}</span>
-              <small>${esc(pName)}</small>
-            </div>`;
+            return `<div class="adm-dot ${pos.isLibero ? 'libero-dot' : ''} ${idx === stSide.selectedIdx ? 'active' : ''}" data-dot-idx="${idx}" style="left:${pos.x}%;top:${pos.y}%"><span>${pos.isLibero ? 'L' : (pos.zone || idx + 1)}</span><small>${esc(pName)}</small></div>`;
           }).join('')}
         </div>
         ${selNode ? `<div class="adm-dot-picker" data-picker-box="${side}">
           <strong data-picker-label="${side}">${selNode.isLibero ? 'Libero (L)' : (selNode.zone ? 'Zone ' + selNode.zone : 'Position #' + (stSide.selectedIdx + 1))} Player:</strong>
-          <select data-assign-player="${side}" style="min-width:200px">
-            <option value="">— Unassigned —</option>
-            ${roster.map(p => `<option value="${esc(p.id)}" ${p.id === selNode.playerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
-          </select>
+          <select data-assign-player="${side}" style="min-width:200px"><option value="">— Unassigned —</option>${roster.map(p => `<option value="${esc(p.id)}" ${p.id === selNode.playerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select>
         </div>` : ''}
       </div>`;
     }
@@ -2092,40 +1216,27 @@
       const form = app.querySelector('#fixture');
 
       function renderLineups() {
-        const lineups = form.querySelector('#lineups');
-        const curSport = form.sport.value;
-        /* Preserve currently checked substitutes before re-rendering */
-        const curSubs = {
-          Home: new FormData(form).getAll('subsHome'),
-          Away: new FormData(form).getAll('subsAway')
-        };
+        const lineups = form.querySelector('#lineups'), curSport = form.sport.value;
+        const curSubs = { Home: new FormData(form).getAll('subsHome'), Away: new FormData(form).getAll('subsAway') };
         if (curSubs.Home.length) d.subsHome = curSubs.Home;
         if (curSubs.Away.length) d.subsAway = curSubs.Away;
-
         lineups.innerHTML = '';
         if ((curSport !== 'football' && curSport !== 'volleyball') || form.format.value !== 'team') return;
         for (const side of ['Home', 'Away']) {
           const id = form.elements[side.toLowerCase() + 'Id'].value;
           if (!id) continue;
-          const players = adminData.players.filter(p => p.teamId === id);
-          const openAttr = designerState[side].open ? 'open' : '';
+          const players = adminData.players.filter(p => p.teamId === id), openAttr = designerState[side].open ? 'open' : '';
           lineups.insertAdjacentHTML('beforeend',
             `<details class="spaced" data-side-details="${side}" ${openAttr}>
               <summary>${esc(teamName(id))} · ${curSport === 'volleyball' ? 'Court Lineup & Subs' : 'Formation & Subs'}</summary>
               ${renderArenaDesigner(side, id, curSport)}
-              <fieldset style="margin-top:12px"><legend>Substitutes Bench</legend>
-                <div class="pick">${players.map(p => admCheckbox('subs' + side, p.id, p.name, (d['subs' + side] || []).includes(p.id))).join('')}</div>
-              </fieldset>
+              <fieldset style="margin-top:12px"><legend>Substitutes Bench</legend><div class="pick">${players.map(p => admCheckbox('subs' + side, p.id, p.name, (d['subs' + side] || []).includes(p.id))).join('')}</div></fieldset>
             </details>`
           );
         }
       }
 
-      /* Track open/close state of Home & Away accordions so Away never snaps shut */
-      form.addEventListener('toggle', ev => {
-        const det = ev.target.closest('[data-side-details]');
-        if (det) designerState[det.dataset.sideDetails].open = det.open;
-      }, true);
+      form.addEventListener('toggle', ev => { const det = ev.target.closest('[data-side-details]'); if (det) designerState[det.dataset.sideDetails].open = det.open; }, true);
 
       function update() {
         const sport = form.sport.value, isTeam = form.format.value === 'team';
@@ -2135,53 +1246,38 @@
         renderLineups();
       }
 
-      /* Smooth Dragging Without Destroying Active DOM Node */
       let dragging = null;
       form.addEventListener('pointerdown', ev => {
-        const dot = ev.target.closest('.adm-dot');
-        if (!dot) return;
+        const dot = ev.target.closest('.adm-dot'); if (!dot) return;
         ev.preventDefault();
-        const board = dot.closest('.adm-pitch-board');
-        const side = board.dataset.board;
-        const idx = Number(dot.dataset.dotIdx);
+        const board = dot.closest('.adm-pitch-board'), side = board.dataset.board, idx = Number(dot.dataset.dotIdx);
         designerState[side].selectedIdx = idx;
-
         board.querySelectorAll('.adm-dot').forEach((el, i) => el.classList.toggle('active', i === idx));
-        const selNode = designerState[side].positions[idx];
-        const lbl = form.querySelector(`[data-picker-label="${side}"]`);
-        const sel = form.querySelector(`[data-assign-player="${side}"]`);
+        const selNode = designerState[side].positions[idx], lbl = form.querySelector(`[data-picker-label="${side}"]`), sel = form.querySelector(`[data-assign-player="${side}"]`);
         if (lbl && selNode) lbl.textContent = (selNode.isLibero ? 'Libero (L)' : (selNode.zone ? 'Zone ' + selNode.zone : 'Position #' + (idx + 1))) + ' Player:';
         if (sel && selNode) sel.value = selNode.playerId || '';
-
-        dragging = { side, idx, board, dot };
-        dot.setPointerCapture(ev.pointerId);
+        dragging = { side, idx, board, dot }; dot.setPointerCapture(ev.pointerId);
       });
 
       form.addEventListener('pointermove', ev => {
         if (!dragging) return;
-        const rect = dragging.board.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
+        const rect = dragging.board.getBoundingClientRect(); if (!rect.width || !rect.height) return;
         const x = Math.max(8, Math.min(92, Math.round(((ev.clientX - rect.left) / rect.width) * 100)));
         const y = Math.max(8, Math.min(92, Math.round(((ev.clientY - rect.top) / rect.height) * 100)));
-        designerState[dragging.side].positions[dragging.idx].x = x;
-        designerState[dragging.side].positions[dragging.idx].y = y;
-        dragging.dot.style.left = x + '%';
-        dragging.dot.style.top = y + '%';
+        designerState[dragging.side].positions[dragging.idx].x = x; designerState[dragging.side].positions[dragging.idx].y = y;
+        dragging.dot.style.left = x + '%'; dragging.dot.style.top = y + '%';
       });
 
       const stopDrag = () => { dragging = null; };
-      form.addEventListener('pointerup', stopDrag);
-      form.addEventListener('pointercancel', stopDrag);
+      form.addEventListener('pointerup', stopDrag); form.addEventListener('pointercancel', stopDrag);
 
       form.addEventListener('click', ev => {
         const resetBtn = ev.target.closest('[data-reset-dots]');
         if (resetBtn) {
-          const side = resetBtn.dataset.resetDots;
-          const inp = form.querySelector(`[data-form-input="${side}"]`);
+          const side = resetBtn.dataset.resetDots, inp = form.querySelector(`[data-form-input="${side}"]`);
           if (inp) designerState[side].formation = inp.value.trim();
           designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions, form.sport.value);
-          designerState[side].selectedIdx = 0;
-          renderLineups();
+          designerState[side].selectedIdx = 0; renderLineups();
         }
       });
 
@@ -2190,14 +1286,10 @@
           const side = ev.target.dataset.formInput;
           designerState[side].formation = ev.target.value.trim();
           designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions, form.sport.value);
-          designerState[side].selectedIdx = 0;
-          renderLineups();
-          return;
+          designerState[side].selectedIdx = 0; renderLineups(); return;
         }
         if (ev.target.dataset.assignPlayer) {
-          const side = ev.target.dataset.assignPlayer;
-          const stSide = designerState[side];
-          const idx = stSide.selectedIdx;
+          const side = ev.target.dataset.assignPlayer, stSide = designerState[side], idx = stSide.selectedIdx;
           if (stSide.positions[idx]) {
             stSide.positions[idx].playerId = ev.target.value;
             const pName = adminData.players.find(p => p.id === ev.target.value)?.name || (stSide.positions[idx].isLibero ? 'Libero' : '#' + (idx + 1));
@@ -2207,14 +1299,8 @@
           return;
         }
         if (['homeId', 'awayId', 'sport', 'format'].includes(ev.target.name)) {
-          if (ev.target.name === 'homeId') {
-            designerState.Home.positions.forEach(p => p.playerId = '');
-            designerState.Home.open = true;
-          }
-          if (ev.target.name === 'awayId') {
-            designerState.Away.positions.forEach(p => p.playerId = '');
-            designerState.Away.open = true;
-          }
+          if (ev.target.name === 'homeId') { designerState.Home.positions.forEach(p => p.playerId = ''); designerState.Home.open = true; }
+          if (ev.target.name === 'awayId') { designerState.Away.positions.forEach(p => p.playerId = ''); designerState.Away.open = true; }
           if (ev.target.name === 'sport') {
             if (form.sport.value === 'crossbar') form.format.value = 'individual';
             if (['football', 'volleyball'].includes(form.sport.value)) {
@@ -2232,15 +1318,7 @@
 
     function readFixture(form) {
       const values = new FormData(form), get = k => String(values.get(k) || '').trim(), all = k => values.getAll(k), sport = get('sport'), format = get('format');
-      let d = {
-        ...current()?.details,
-        name: get('name'), stage: get('stage'), venue: get('venue'), sport, format,
-        startTime: new Date(get('startTime') + ':00+05:30').toISOString(),
-        homeId: get('homeId'), awayId: get('awayId'), playerIds: all('playerIds'),
-        bestOf: Number(get('bestOf') || 3), pointLimit: Number(get('pointLimit') || 25),
-        decidingLimit: Number(get('decidingLimit') || 15), winByTwo: values.has('winByTwo'),
-        attemptLimit: Number(get('attemptLimit') || 5)
-      };
+      let d = { ...current()?.details, name: get('name'), stage: get('stage'), venue: get('venue'), sport, format, startTime: new Date(get('startTime') + ':00+05:30').toISOString(), homeId: get('homeId'), awayId: get('awayId'), playerIds: all('playerIds'), bestOf: Number(get('bestOf') || 3), pointLimit: Number(get('pointLimit') || 25), decidingLimit: Number(get('decidingLimit') || 15), winByTwo: values.has('winByTwo'), attemptLimit: Number(get('attemptLimit') || 5) };
       if (!d.name || !d.venue) throw Error('Enter a fixture name and venue.');
       if (format === 'team' && (!d.homeId || !d.awayId || d.homeId === d.awayId)) throw Error('Choose two different teams.');
       if (format === 'individual' && !d.playerIds.length) throw Error('Select at least one participant.');
@@ -2285,28 +1363,28 @@
 
     function siteMetaAdmin() {
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
-      const meta = adminData.siteMeta || { announcements: [], committee: [], contact: '' };
+      const meta = adminData.siteMeta || { announcements: [], committee: [], contacts: [] };
       app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
         `<form class="panel" id="siteMetaForm">
           <h2>Announcements, Committee &amp; Contact</h2>
           <p class="hint">Updates here appear immediately in the public Home screen and Slide Menu pages.</p>
           <fieldset class="spaced"><legend>Announcements</legend>
-            <div id="annRows">${(meta.announcements || []).map(a => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px">
-              <label class="field">Title<input name="annTitle" value="${esc(a.title)}"></label>
-              <label class="field">Details<input name="annBody" value="${esc(a.body || '')}"></label>
-            </div>`).join('')}</div>
+            <div id="annRows">${(meta.announcements || []).map(a => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Title<input name="annTitle" value="${esc(a.title)}"></label><label class="field">Details<input name="annBody" value="${esc(a.body || '')}"></label></div>`).join('')}</div>
             ${admBtn('+ Add announcement', 'addAnnRow')}
           </fieldset>
           <fieldset class="spaced"><legend>Sports Committee</legend>
-            <div id="commRows">${(meta.committee || []).map(c => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px">
-              <label class="field">Name<input name="commName" value="${esc(c.name)}"></label>
-              <label class="field">Role / Designation<input name="commRole" value="${esc(c.role || '')}"></label>
-            </div>`).join('')}</div>
+            <div id="commRows">${(meta.committee || []).map(c => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Name<input name="commName" value="${esc(c.name)}"></label><label class="field">Role / Designation<input name="commRole" value="${esc(c.role || '')}"></label></div>`).join('')}</div>
             ${admBtn('+ Add committee member', 'addCommRow')}
           </fieldset>
-          <div class="fields">
-            <div class="full"><label class="field">Contact Information<textarea name="contact" rows="3">${esc(meta.contact || '')}</textarea></label></div>
-          </div>
+          <fieldset class="spaced"><legend>Contact Directory (Direct Call Numbers)</legend>
+            <div id="contactRows">${(meta.contacts || []).map(c => `<div class="fields-3 contact-edit-row" style="border-bottom:1px solid #d6ded5;padding-bottom:10px">
+              <label class="field">Person Name<input name="contactName" value="${esc(c.name)}" placeholder="e.g. Muhammed Shameel"></label>
+              <label class="field">Role / Desk<input name="contactRole" value="${esc(c.role || '')}" placeholder="e.g. Match Convenor"></label>
+              <label class="field">Phone Number<input name="contactPhone" type="tel" value="${esc(c.phone || '')}" placeholder="+91 98765 43210"></label>
+              <button type="button" class="danger" data-action="removeContactRow">Remove</button>
+            </div>`).join('')}</div>
+            ${admBtn('+ Add contact person', 'addContactRow')}
+          </fieldset>
           <div class="actions spaced"><button class="primary">Publish Site Info</button></div>
         </form>`;
     }
@@ -2335,14 +1413,10 @@
       if (action === 'toggleAuth') { authMode = authMode === 'login' ? 'register' : 'login'; statusMsg(); authAdmin(); return; }
       if (action === 'addAward') { addAward({}); return; }
       if (action === 'removeAward') { b.closest('.award-row').remove(); return; }
-      if (action === 'addAnnRow') {
-        app.querySelector('#annRows').insertAdjacentHTML('beforeend', `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Title<input name="annTitle" placeholder="Notice title"></label><label class="field">Details<input name="annBody" placeholder="Message"></label></div>`);
-        return;
-      }
-      if (action === 'addCommRow') {
-        app.querySelector('#commRows').insertAdjacentHTML('beforeend', `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Name<input name="commName" placeholder="Member name"></label><label class="field">Role / Designation<input name="commRole" placeholder="Role"></label></div>`);
-        return;
-      }
+      if (action === 'addAnnRow') { app.querySelector('#annRows').insertAdjacentHTML('beforeend', `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Title<input name="annTitle" placeholder="Notice title"></label><label class="field">Details<input name="annBody" placeholder="Message"></label></div>`); return; }
+      if (action === 'addCommRow') { app.querySelector('#commRows').insertAdjacentHTML('beforeend', `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Name<input name="commName" placeholder="Member name"></label><label class="field">Role / Designation<input name="commRole" placeholder="Role"></label></div>`); return; }
+      if (action === 'addContactRow') { app.querySelector('#contactRows').insertAdjacentHTML('beforeend', `<div class="fields-3 contact-edit-row" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Person Name<input name="contactName" placeholder="e.g. Coordinator Name"></label><label class="field">Role / Desk<input name="contactRole" placeholder="e.g. Match Convenor"></label><label class="field">Phone Number<input name="contactPhone" type="tel" placeholder="+91 98765 43210"></label><button type="button" class="danger" data-action="removeContactRow">Remove</button></div>`); return; }
+      if (action === 'removeContactRow') { b.closest('.contact-edit-row')?.remove(); return; }
       if (action === 'editManager') { editManager(adminData.managers[Number(b.closest('[data-index]').dataset.index)]); return; }
       if (action === 'refresh') { await runAdmin(async () => { await reloadAdmin(); statusMsg('Latest data loaded.'); }); return; }
       if (action === 'logout') { await runAdmin(async () => { await logout(); view = 'fixtures'; activeId = ''; authMode = 'login'; await reloadAdmin(); }); return; }
@@ -2394,18 +1468,11 @@
           const announcements = titles.map((t, i) => ({ title: String(t).trim(), body: String(bodies[i] || '').trim() })).filter(a => a.title);
           const names = fd.getAll('commName'), roles = fd.getAll('commRole');
           const committee = names.map((n, i) => ({ name: String(n).trim(), role: String(roles[i] || '').trim() })).filter(c => c.name);
-          const contact = String(fd.get('contact') || '').trim();
+          const cNames = fd.getAll('contactName'), cRoles = fd.getAll('contactRole'), cPhones = fd.getAll('contactPhone');
+          const contacts = cNames.map((n, i) => ({ name: String(n).trim(), role: String(cRoles[i] || '').trim(), phone: String(cPhones[i] || '').trim() })).filter(c => c.name || c.phone);
           const ver = adminData.metaRecord?.version || 0;
-          await save(META_ID, ver, 'details', {
-            isSiteMeta: true,
-            name: 'System Site Info',
-            venue: 'Control Desk',
-            sport: 'custom',
-            format: 'team',
-            startTime: '2099-01-01T00:00:00.000Z',
-            siteMeta: { announcements, committee, contact }
-          });
-          view = 'fixtures'; await reloadAdmin(); statusMsg('Site announcements & contact published.');
+          await save(META_ID, ver, 'details', { isSiteMeta: true, name: 'System Site Info', venue: 'Control Desk', sport: 'custom', format: 'team', startTime: '2099-01-01T00:00:00.000Z', siteMeta: { announcements, committee, contacts } });
+          view = 'fixtures'; await reloadAdmin(); statusMsg('Site announcements & contact directory published.');
           return;
         }
         if (form.id === 'manager') {
@@ -2418,59 +1485,38 @@
       });
     });
 
-    /* ================= 6. DRAWER, ROUTING & BOOTSTRAP ================= */
-    const pubShell = document.getElementById('public-shell');
-    const admShell = document.getElementById('admin-shell');
-    const drawer = document.getElementById('side-drawer');
-    const backdrop = document.getElementById('drawer-backdrop');
+    /* 6. DRAWER, ROUTING & BOOTSTRAP */
+    const pubShell = document.getElementById('public-shell'), admShell = document.getElementById('admin-shell');
+    const drawer = document.getElementById('side-drawer'), backdrop = document.getElementById('drawer-backdrop');
 
-    function setDrawer(open) {
-      drawer.classList.toggle('open', open);
-      backdrop.classList.toggle('open', open);
-    }
-
+    function setDrawer(open) { drawer.classList.toggle('open', open); backdrop.classList.toggle('open', open); }
     document.getElementById('open-drawer').addEventListener('click', () => setDrawer(true));
     document.getElementById('close-drawer').addEventListener('click', () => setDrawer(false));
     backdrop.addEventListener('click', () => setDrawer(false));
-    drawer.addEventListener('click', ev => {
-      if (ev.target.closest('a')) setDrawer(false);
-    });
+    drawer.addEventListener('click', ev => { if (ev.target.closest('a')) setDrawer(false); });
 
     function syncShell() {
       setDrawer(false);
       const isAdmin = route().tab === 'admin';
-      pubShell.hidden = isAdmin;
-      admShell.hidden = !isAdmin;
+      pubShell.hidden = isAdmin; admShell.hidden = !isAdmin;
       if (isAdmin) {
         document.title = 'Gala control room · Level Up ’26';
-        reloadAdmin().catch(err => {
-          statusMsg(err.message || 'Unable to load the control room.', true);
-          app.removeAttribute('aria-busy');
-          app.innerHTML = admBtn('Try again', 'refresh');
-        });
+        reloadAdmin().catch(err => { statusMsg(err.message || 'Unable to load the control room.', true); app.removeAttribute('aria-busy'); app.innerHTML = admBtn('Try again', 'refresh'); });
       } else {
         if (adminClockInterval) { clearInterval(adminClockInterval); adminClockInterval = null; }
-        renderPublic();
-        refreshPublic();
+        renderPublic(); refreshPublic();
       }
     }
 
     document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
     main.addEventListener('click', ev => {
       const selectPlayerBtn = ev.target.closest('[data-select-player]');
-      if (selectPlayerBtn) {
-        const pid = selectPlayerBtn.dataset.selectPlayer;
-        filters.selectedPlayer = filters.selectedPlayer === pid ? '' : pid;
-        renderPublic();
-        return;
-      }
+      if (selectPlayerBtn) { const pid = selectPlayerBtn.dataset.selectPlayer; filters.selectedPlayer = filters.selectedPlayer === pid ? '' : pid; renderPublic(); return; }
       const el = ev.target.closest('button'); if (!el) return;
       if (el.hasAttribute('data-retry')) refreshPublic();
       if (el.dataset.set) { filters[el.dataset.set] = el.dataset.value; renderPublic(); }
     });
-    main.addEventListener('change', ev => {
-      if (ev.target.dataset.filter) { filters[ev.target.dataset.filter] = ev.target.value; renderPublic(); }
-    });
+    main.addEventListener('change', ev => { if (ev.target.dataset.filter) { filters[ev.target.dataset.filter] = ev.target.value; renderPublic(); } });
     window.addEventListener('hashchange', syncShell);
     document.addEventListener('visibilitychange', () => { if (!document.hidden && route().tab !== 'admin') refreshPublic(); });
 
