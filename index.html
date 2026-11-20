@@ -167,6 +167,7 @@
     .team-line { display: flex; align-items: center; gap: 9px; margin-top: 9px; min-width: 0; }
     .team-line strong { margin-left: auto; font: 700 22px var(--title); }
     .team-line .crest, .stand-team .crest { width: 26px; height: 26px; border-radius: 7px; font-size: 12px; }
+    .serve-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); display: inline-block; box-shadow: 0 0 8px var(--lime); flex: none; }
     .foot-line { margin-top: 10px; padding-top: 8px; border-top: 1px solid #28352c; flex-wrap: wrap; justify-content: flex-start; color: var(--muted); font-size: 11.5px; }
     .fixture-title { margin-top: 8px; font-size: 22px; }
     .day-title { font-size: 18px; margin: 16px 0 8px; color: var(--lime); }
@@ -202,9 +203,31 @@
     .extra-time-pill { display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(249, 212, 82, .16); border: 1px solid rgba(249, 212, 82, .45); color: #f9d452; font: 800 10.5px/1.1 var(--body); letter-spacing: .04em; }
     .match-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; padding: 18px 0; }
     .match-side { display: grid; justify-items: center; gap: 7px; font: 700 18px/1.1 var(--title); }
+    .match-side small.roster-tag { font: 600 11px/1.25 var(--body); color: var(--muted); max-width: 130px; }
     .match-score > strong { font: 800 44px/1 var(--title); color: var(--lime); white-space: nowrap; }
     .match-score > strong > small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
     .subhead { font-size: 21px; margin: 20px 0 8px; }
+
+    /* Bout Cards (Arm Wrestling & Head-to-Head Rounds) */
+    .bout-list { display: grid; gap: 8px; margin-top: 8px; }
+    .bout-card { padding: 11px 13px; border-radius: 11px; background: #1a261f; border: 1px solid var(--line); display: grid; gap: 6px; }
+    .bout-card.active { border-color: var(--lime); background: #203125; }
+    .bout-head { display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .bout-versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; font-size: 14px; font-weight: 650; }
+    .bout-side { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .bout-side.away { justify-content: flex-end; text-align: right; }
+    .bout-side.win { color: var(--lime); }
+    .bout-vs { font: 800 13px/1 var(--title); color: var(--muted); }
+    .win-badge { font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: var(--lime); color: #132012; text-transform: uppercase; flex: none; }
+
+    /* Badminton Court Banner */
+    .badminton-panel { padding: 12px; border-radius: 12px; background: linear-gradient(180deg, #1b382c 0%, #152b22 100%); border: 1.5px solid #487660; margin-top: 10px; }
+    .badminton-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; }
+    .badminton-side { padding: 8px; border-radius: 9px; background: rgba(12, 20, 15, .55); border: 1px solid rgba(255,255,255,.08); }
+    .badminton-side.serving { border-color: var(--lime); background: rgba(194, 245, 104, .12); }
+    .badminton-pts { font: 800 32px/1 var(--title); color: var(--text); }
+    .badminton-side.serving .badminton-pts { color: var(--lime); }
+    .serve-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; padding: 2px 7px; border-radius: 99px; background: var(--lime); color: #132012; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
 
     /* Interactive Pitch & Court */
     .pitch-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
@@ -332,6 +355,8 @@
     .sc-history { padding-left: 1.5em; margin: .35rem 0; }
     .sc-history li { padding: .3rem 0; }
     .sc-info { color: #4d6152; }
+    .sc-bout-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border: 1px solid #dce4da; border-radius: 8px; margin-bottom: 8px; flex-wrap: wrap; background: #f8faf7; }
+    .sc-bout-item.done { background: #eef6e8; border-color: #b7d4a8; }
 
     @media (max-width: 650px) {
       #admin-shell .header-inner, #admin-shell main { padding-left: 14px; padding-right: 14px; }
@@ -487,6 +512,7 @@
     const integer = (v, min = 0) => Number.isSafeInteger(v) && v >= min;
     const check = (c, m) => { if (!c) throw new Error(m); };
     const number = (v, fb) => integer(Number(v), 1) ? Number(v) : fb;
+    const isSetSport = sport => sport === 'volleyball' || sport === 'badminton';
 
     function computeClock(history = [], status = 'scheduled') {
       let accMs = 0, runningSince = null, stateLabel = 'stopped', extraMins = 0;
@@ -510,16 +536,24 @@
       return { mins, secs, text: String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0'), running: Boolean(clock.runningSince), stateLabel: clock.stateLabel, extraMins: clock.extraMins || 0 };
     }
 
-    function volleyballRules(details) {
+    function setRules(details) {
+      const isBadminton = details.sport === 'badminton';
       const bestOf = number(details.bestOf, 3);
-      return { toWin: Math.floor(bestOf / 2) + 1, target: number(details.pointLimit, 25), deciding: number(details.decidingLimit, 15), margin: details.winByTwo === false ? 1 : 2 };
+      return {
+        toWin: Math.floor(bestOf / 2) + 1,
+        target: number(details.pointLimit, isBadminton ? 21 : 25),
+        deciding: number(details.decidingLimit, isBadminton ? 21 : 15),
+        cap: isBadminton ? number(details.pointCap, 30) : 999,
+        margin: details.winByTwo === false ? 1 : 2
+      };
     }
 
     function settleSet(score, rules) {
       const deciding = sides.every(side => score.setsWon[side] === rules.toWin - 1);
       const target = deciding ? rules.deciding : rules.target;
       const lead = score.home > score.away ? 'home' : 'away';
-      if (score[lead] < target || score[lead] - score[opponent(lead)] < rules.margin) return;
+      const hitCap = rules.cap && score[lead] >= rules.cap;
+      if (!hitCap && (score[lead] < target || score[lead] - score[opponent(lead)] < rules.margin)) return;
       score.sets.push({ home: score.home, away: score.away });
       score.setsWon[lead]++;
       score.timeouts = { home: 0, away: 0 };
@@ -530,22 +564,69 @@
     function replay(details, history = []) {
       const initHome = (details.positionsHome?.length ? details.positionsHome.map(p => p.playerId) : details.lineupHome) || [];
       const initAway = (details.positionsAway?.length ? details.positionsAway.map(p => p.playerId) : details.lineupAway) || [];
-      const score = { status: 'scheduled', home: 0, away: 0, period: '', sets: [], setsWon: { home: 0, away: 0 }, timeouts: { home: 0, away: 0 }, attempts: {}, results: {}, winner: null, activeLineups: { home: [...initHome], away: [...initAway] }, timeline: history };
+      const score = {
+        status: 'scheduled',
+        home: 0,
+        away: 0,
+        period: '',
+        server: details.initialServer || 'home',
+        sets: [],
+        setsWon: { home: 0, away: 0 },
+        timeouts: { home: 0, away: 0 },
+        attempts: {},
+        results: {},
+        bouts: [],
+        winner: null,
+        activeLineups: { home: [...initHome], away: [...initAway] },
+        timeline: history
+      };
       for (const e of history) {
         switch (e.kind) {
-          case 'start': score.status = 'live'; score.period = e.period || ''; break;
-          case 'finish': score.status = 'finished'; if (!score.winner && details.format !== 'individual' && score.home !== score.away && details.sport !== 'volleyball') score.winner = score.home > score.away ? 'home' : 'away'; break;
+          case 'start':
+            score.status = 'live';
+            score.period = e.period || '';
+            if (e.server) score.server = e.server;
+            break;
+          case 'finish':
+            score.status = 'finished';
+            if (!score.winner && details.format !== 'individual' && score.home !== score.away && !isSetSport(details.sport)) {
+              score.winner = score.home > score.away ? 'home' : 'away';
+            }
+            break;
           case 'period': score.period = e.period; break;
+          case 'server': score.server = e.side; break;
           case 'goal': case 'point': score[e.side]++; break;
           case 'yellow': case 'red':
             if (e.kind === 'red') {
               score.activeLineups[e.side] = score.activeLineups[e.side].filter(id => id !== e.playerId);
-              if (details.sport === 'volleyball' && !score.winner) { score[opponent(e.side)]++; settleSet(score, e.rules || volleyballRules(details)); }
+              if (isSetSport(details.sport) && !score.winner) {
+                score[opponent(e.side)]++;
+                score.server = opponent(e.side);
+                settleSet(score, e.rules || setRules(details));
+              }
             }
             break;
           case 'sub': score.activeLineups[e.side] = score.activeLineups[e.side].map(id => id === e.playerId ? e.otherPlayerId : id); break;
           case 'timeout': score.timeouts[e.side] = (score.timeouts[e.side] || 0) + 1; break;
-          case 'rally': score[e.side]++; settleSet(score, e.rules); break;
+          case 'rally':
+            score[e.side]++;
+            score.server = e.side;
+            settleSet(score, e.rules);
+            break;
+          case 'bout_add':
+            score.bouts.push({ id: e.boutId, round: e.round || ('Round ' + (score.bouts.length + 1)), homePlayerId: e.homePlayerId, awayPlayerId: e.awayPlayerId, winner: null });
+            break;
+          case 'bout_win': {
+            const b = score.bouts.find(x => x.id === e.boutId);
+            if (b && !b.winner) {
+              b.winner = e.side;
+              score[e.side]++;
+            }
+            break;
+          }
+          case 'bout_remove':
+            score.bouts = score.bouts.filter(x => x.id !== e.boutId || x.winner);
+            break;
           case 'correct':
             score.home = e.home; score.away = e.away;
             if (Array.isArray(e.sets)) {
@@ -554,8 +635,18 @@
             }
             if (e.rules) settleSet(score, e.rules);
             break;
-          case 'hit': case 'miss': { const attempt = score.attempts[e.playerId] ||= { hits: 0, total: 0 }; attempt.total++; if (e.kind === 'hit') attempt.hits++; break; }
-          case 'result': score.results[e.playerId] = e.value; break;
+          case 'hit': case 'miss': {
+            const targetId = e.teamId || e.playerId;
+            const attempt = score.attempts[targetId] ||= { hits: 0, total: 0 };
+            attempt.total++;
+            if (e.kind === 'hit') attempt.hits++;
+            break;
+          }
+          case 'result': {
+            const targetId = e.teamId || e.playerId;
+            score.results[targetId] = e.value;
+            break;
+          }
         }
       }
       return score;
@@ -569,16 +660,19 @@
       const sport = details.sport, individual = details.format === 'individual';
       if (e.kind === 'start') {
         check(s.status === 'scheduled', 'This event has already started.');
-        e.period = individual ? '' : sport === 'football' ? 'First half' : sport === 'volleyball' ? 'Set 1' : '';
+        e.period = individual ? '' : sport === 'football' ? 'First half' : isSetSport(sport) ? 'Set 1' : sport === 'armwrestling' ? 'Round 1' : '';
       } else {
         check(s.status === 'live', 'Go live before recording a score.');
-        if (['goal', 'yellow', 'red', 'sub', 'point', 'rally', 'timeout'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
+        if (['goal', 'yellow', 'red', 'sub', 'point', 'rally', 'timeout', 'server', 'bout_win'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
         switch (e.kind) {
           case 'finish': case 'timer_start': case 'timer_pause': case 'timer_stop': case 'timer_set': case 'extra_time': break;
+          case 'server':
+            check(sport === 'badminton' && !individual, 'Server control is for badminton.');
+            break;
           case 'goal': case 'yellow': case 'red': case 'sub': case 'period':
             if (sport === 'volleyball' && ['yellow', 'red', 'sub'].includes(e.kind)) {
               if (e.kind === 'sub') check(e.playerId && e.otherPlayerId && e.otherPlayerId !== e.playerId, 'Select court player and substitute.');
-              if (e.kind === 'red') e.rules = volleyballRules(details);
+              if (e.kind === 'red') e.rules = setRules(details);
               break;
             }
             check(sport === 'football' && !individual, 'This control is for team football.');
@@ -590,14 +684,29 @@
             }
             break;
           case 'timeout': check(sport === 'volleyball' && !individual, 'Timeouts are for volleyball matches.'); check((s.timeouts[e.side] || 0) < 2, 'Both timeouts already used in this set.'); break;
-          case 'rally': check(sport === 'volleyball' && !individual && !s.winner, 'The final set is complete.'); e.rules = volleyballRules(details); break;
-          case 'point': check(!individual && sport === 'custom', 'Choose a team event.'); break;
-          case 'correct': check(!individual && (!s.winner || sport === 'volleyball'), 'Undo the last action to edit a completed match.'); check(integer(e.home) && integer(e.away), 'Scores must be whole numbers.'); if (sport === 'volleyball') e.rules = volleyballRules(details); break;
-          case 'hit': case 'miss': case 'result':
-            check(individual && (details.playerIds || []).includes(e.playerId), 'Choose a registered participant.');
-            if (e.kind === 'result') check(Number.isFinite(e.value), 'Enter a valid result.');
-            else { check(sport === 'crossbar', 'Attempts are for crossbar challenges.'); check((s.attempts[e.playerId]?.total || 0) < number(details.attemptLimit, 5), 'All attempts used.'); }
+          case 'rally': check(isSetSport(sport) && !individual && !s.winner, 'The final set is complete.'); e.rules = setRules(details); break;
+          case 'bout_add':
+            check(sport === 'armwrestling' && !individual, 'Bouts are for arm wrestling events.');
+            check(e.homePlayerId && e.awayPlayerId, 'Select both participants for the bout.');
             break;
+          case 'bout_win':
+            check(sport === 'armwrestling' && !individual, 'Bouts are for arm wrestling events.');
+            check(s.bouts.some(b => b.id === e.boutId && !b.winner), 'This bout is already decided.');
+            break;
+          case 'bout_remove':
+            check(sport === 'armwrestling' && !individual, 'Bouts are for arm wrestling events.');
+            break;
+          case 'point': check(!individual && (sport === 'custom' || sport === 'armwrestling'), 'Choose a team event.'); break;
+          case 'correct': check(!individual && (!s.winner || isSetSport(sport)), 'Undo the last action to edit a completed match.'); check(integer(e.home) && integer(e.away), 'Scores must be whole numbers.'); if (isSetSport(sport)) e.rules = setRules(details); break;
+          case 'hit': case 'miss': case 'result': {
+            const validTeams = details.teamIds || [];
+            const validPlayers = details.playerIds || [];
+            const targetId = e.teamId || e.playerId;
+            check(individual && (validTeams.includes(targetId) || validPlayers.includes(targetId)), 'Choose a registered team.');
+            if (e.kind === 'result') check(Number.isFinite(e.value), 'Enter a valid result.');
+            else { check(sport === 'crossbar', 'Attempts are for crossbar challenges.'); check((s.attempts[targetId]?.total || 0) < number(details.attemptLimit, 5), 'All attempts used.'); }
+            break;
+          }
           default: throw new Error('Unknown scoring action.');
         }
       }
@@ -615,7 +724,7 @@
       if (adminClockInterval) { clearInterval(adminClockInterval); adminClockInterval = null; }
       const d = fixture.details, score = replay(d, fixture.score?.timeline || []);
       const teams = new Map((data.teams || []).map(t => [t.id, t])), players = new Map((data.players || []).map(p => [p.id, p]));
-      const team = side => teams.get(d[side + 'Id'])?.name || sideKey(side), player = id => players.get(id)?.name || 'Player';
+      const team = side => teams.get(d[side + 'Id'])?.name || sideKey(side), teamById = id => teams.get(id)?.name || 'Team', player = id => players.get(id)?.name || 'Player';
       const individual = d.format === 'individual';
       const panel = node('section', null, 'sc-console'); container.replaceChildren(panel);
       const title = node('div', null, 'sc-head'); title.append(node('h3', 'Scoring desk'), node('span', score.status, 'sc-state ' + score.status)); panel.append(title);
@@ -633,8 +742,12 @@
       if (!individual) {
         const board = node('div', null, 'sc-board');
         for (const side of sides) {
-          const col = node('div'); col.append(node('span', team(side)), node('strong', String(score[side])));
+          const col = node('div');
+          const serveTag = d.sport === 'badminton' && score.server === side && score.status === 'live' ? ' 🏸' : '';
+          col.append(node('span', team(side) + serveTag), node('strong', String(score[side])));
           if (d.sport === 'volleyball') col.append(node('small', score.setsWon[side] + ' sets · ' + (score.timeouts[side] || 0) + '/2 TO'));
+          if (d.sport === 'badminton') col.append(node('small', score.setsWon[side] + ' sets won'));
+          if (d.sport === 'armwrestling') col.append(node('small', 'Bout pre-points'));
           board.append(col);
         }
         panel.append(board, node('p', statusLabel, 'sc-period'));
@@ -758,35 +871,100 @@
             actionRow.append(button('Red Card (+1 Opp)', () => submit({ kind: 'red', side: vSide.value, playerId: vWho.value, label: 'Red card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '') }), 'sc-stop'));
             box.append(actionRow);
           }
+        } else if (!individual && d.sport === 'badminton') {
+          const box = section('Badminton Rally & Service Desk');
+          if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
+          else {
+            const bReason = scSelect([['Smash Winner', 'Smash Winner'], ['Drop / Net Shot', 'Drop / Net Shot'], ['Service Ace', 'Service Ace'], ['Unforced Error', 'Unforced Error'], ['Rally Point', 'Rally Point']]);
+            const quickRow = node('div', null, 'sc-row');
+            for (const sKey of sides) {
+              const pNames = (d['badmintonPlayers' + sideKey(sKey)] || []).map(player).join(' & ');
+              quickRow.append(button('+1 Point · ' + team(sKey) + (pNames ? ' (' + pNames + ')' : ''), () => {
+                submit({ kind: 'rally', side: sKey, reason: bReason.value, label: bReason.value + ' · ' + team(sKey) });
+              }, 'sc-primary'));
+            }
+            box.append(quickRow);
+            const bGrid = node('div', null, 'sc-grid');
+            bGrid.append(scField('Rally Shot / Reason', bReason));
+            const srvWrap = node('div', null, 'sc-field');
+            srvWrap.append(node('span', 'Current Server (' + team(score.server) + ')'));
+            const srvBtns = node('div', null, 'sc-row');
+            for (const sKey of sides) {
+              srvBtns.append(button('Serve: ' + team(sKey), () => submit({ kind: 'server', side: sKey, label: 'Service switched to ' + team(sKey) }), score.server === sKey ? 'sc-primary' : ''));
+            }
+            srvWrap.append(srvBtns);
+            bGrid.append(srvWrap);
+            box.append(bGrid);
+          }
+        } else if (!individual && d.sport === 'armwrestling') {
+          const box = section('Arm Wrestling · Bouts & Rounds (+1 Pre-Point per Bout)');
+          const hRoster = (data.players || []).filter(p => p.teamId === d.homeId);
+          const aRoster = (data.players || []).filter(p => p.teamId === d.awayId);
+          const roundInp = node('input'); roundInp.type = 'text'; roundInp.value = 'Round ' + (score.bouts.length + 1); roundInp.placeholder = 'e.g. Round 1 / 70kg';
+          const hPick = scSelect([['', 'Select ' + team('home') + ' player'], ...hRoster.map(p => [p.id, p.name])]);
+          const aPick = scSelect([['', 'Select ' + team('away') + ' player'], ...aRoster.map(p => [p.id, p.name])]);
+          const addGrid = node('div', null, 'sc-grid');
+          addGrid.append(scField('Round / Category Label', roundInp), node('div'), scField(team('home') + ' Participant', hPick), scField(team('away') + ' Participant', aPick));
+          box.append(addGrid);
+          box.append(button('+ Add Bout Pairing', () => {
+            const bId = crypto.randomUUID();
+            submit({ kind: 'bout_add', boutId: bId, round: roundInp.value.trim() || ('Round ' + (score.bouts.length + 1)), homePlayerId: hPick.value, awayPlayerId: aPick.value, label: 'Bout added · ' + player(hPick.value) + ' vs ' + player(aPick.value) });
+          }, 'sc-primary'));
+
+          if (score.bouts.length) {
+            const listWrap = node('div'); listWrap.style.marginTop = '12px';
+            for (const b of score.bouts) {
+              const row = node('div', null, 'sc-bout-item ' + (b.winner ? 'done' : ''));
+              const info = node('div');
+              info.innerHTML = `<small style="color:#55675c;font-weight:700;text-transform:uppercase">${esc(b.round)}</small><div><strong>${esc(player(b.homePlayerId))}</strong> (${esc(team('home'))}) vs <strong>${esc(player(b.awayPlayerId))}</strong> (${esc(team('away'))})</div>`;
+              const ctrl = node('div', null, 'sc-row');
+              if (b.winner) {
+                ctrl.append(node('span', 'Winner: ' + player(b.winner === 'home' ? b.homePlayerId : b.awayPlayerId) + ' (+1 ' + team(b.winner) + ')', 'sc-state live'));
+              } else {
+                ctrl.append(button('Win: ' + player(b.homePlayerId), () => submit({ kind: 'bout_win', boutId: b.id, side: 'home', playerId: b.homePlayerId, label: b.round + ' won by ' + player(b.homePlayerId) + ' (+1 ' + team('home') + ')' }), 'sc-primary'));
+                ctrl.append(button('Win: ' + player(b.awayPlayerId), () => submit({ kind: 'bout_win', boutId: b.id, side: 'away', playerId: b.awayPlayerId, label: b.round + ' won by ' + player(b.awayPlayerId) + ' (+1 ' + team('away') + ')' }), 'sc-primary'));
+                ctrl.append(button('Remove', () => submit({ kind: 'bout_remove', boutId: b.id, label: 'Bout removed' }), 'sc-stop'));
+              }
+              row.append(info, ctrl);
+              listWrap.append(row);
+            }
+            box.append(listWrap);
+          }
         } else if (!individual) {
           const box = section('Add point');
           if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
           else { const buttons = node('div', null, 'sc-row'); box.append(buttons); for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: 'point', side, label: 'Point · ' + team(side) }), 'sc-primary')); }
         } else {
-          const box = section(d.sport === 'crossbar' ? 'Record attempt' : 'Record individual result');
-          const ids = d.playerIds || [], pick = scSelect(ids.map(id => [id, player(id)])); box.append(scField('Participant', pick));
+          // Team-based Individual Programs (Crossbar, Stump Out, etc. - Final Team Only)
+          const box = section(d.sport === 'crossbar' ? 'Record Team Attempt' : 'Record Team Result');
+          const tIds = (d.teamIds && d.teamIds.length) ? d.teamIds : (data.teams || []).map(t => t.id);
+          const pick = scSelect(tIds.map(id => [id, teamById(id)]));
+          box.append(scField('Competing Team', pick));
           if (d.sport === 'crossbar') {
             const info = node('p', '', 'sc-info');
-            const update = () => { const a = score.attempts[pick.value] || { hits: 0, total: 0 }; info.textContent = a.hits + ' hits · ' + a.total + ' of ' + number(d.attemptLimit, 5) + ' attempts'; };
+            const update = () => { const a = score.attempts[pick.value] || { hits: 0, total: 0 }; info.textContent = a.hits + ' hits · ' + a.total + ' of ' + number(d.attemptLimit, 5) + ' team attempts'; };
             update(); pick.onchange = update; box.append(info);
-            for (const [kind, label] of [['hit', 'Hit'], ['miss', 'Miss']]) box.append(button(label, () => submit({ kind, playerId: pick.value, label: label + ' · ' + player(pick.value) }), kind === 'hit' ? 'sc-primary' : ''));
+            for (const [kind, label] of [['hit', 'Hit'], ['miss', 'Miss']]) {
+              box.append(button(label, () => submit({ kind, teamId: pick.value, label: label + ' · ' + teamById(pick.value) }), kind === 'hit' ? 'sc-primary' : ''));
+            }
           } else {
-            const val = numeric(score.results[pick.value] ?? ''); val.step = 'any'; pick.onchange = () => { val.value = score.results[pick.value] ?? ''; };
-            box.append(scField('Result value', val), button('Save result', () => submit({ kind: 'result', playerId: pick.value, value: val.valueAsNumber, label: player(pick.value) + ' · ' + val.value }), 'sc-primary'));
+            const val = numeric(score.results[pick.value] ?? ''); val.step = 'any';
+            pick.onchange = () => { val.value = score.results[pick.value] ?? ''; };
+            box.append(scField('Team Score / Result Value', val), button('Save team result', () => submit({ kind: 'result', teamId: pick.value, value: val.valueAsNumber, label: teamById(pick.value) + ' · ' + val.value }), 'sc-primary'));
           }
         }
         if (!individual) {
           const correction = node('details', null, 'sc-box'); correction.append(node('summary', 'Edit / Correct Score & Sets'));
           const h = numeric(score.home), a = numeric(score.away);
           correction.append(scField('Current ' + team('home'), h), scField('Current ' + team('away'), a));
-          if (d.sport === 'volleyball' && score.sets.length) {
+          if (isSetSport(d.sport) && score.sets.length) {
             score.sets.forEach((stItem, idx) => {
               const sh = numeric(stItem.home), sa = numeric(stItem.away); sh.dataset.setHome = idx; sa.dataset.setAway = idx;
               correction.append(scField(`Set ${idx + 1} · ${team('home')}`, sh), scField(`Set ${idx + 1} · ${team('away')}`, sa));
             });
           }
           correction.append(button('Save score correction', () => {
-            const editedSets = d.sport === 'volleyball' ? score.sets.map((stItem, idx) => ({ home: Number(correction.querySelector(`[data-set-home="${idx}"]`)?.value ?? stItem.home), away: Number(correction.querySelector(`[data-set-away="${idx}"]`)?.value ?? stItem.away) })) : undefined;
+            const editedSets = isSetSport(d.sport) ? score.sets.map((stItem, idx) => ({ home: Number(correction.querySelector(`[data-set-home="${idx}"]`)?.value ?? stItem.home), away: Number(correction.querySelector(`[data-set-away="${idx}"]`)?.value ?? stItem.away) })) : undefined;
             submit({ kind: 'correct', home: h.valueAsNumber, away: a.valueAsNumber, sets: editedSets, label: 'Score corrected to ' + h.value + '–' + a.value });
           }));
           panel.append(correction);
@@ -845,7 +1023,14 @@
     const fmtDay = new Intl.DateTimeFormat('en-IN', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' });
     const fmtKey = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Kolkata' });
     const day = (s, fmt = fmtDay) => s && Number.isFinite(Date.parse(s)) ? fmt.format(new Date(s)) : 'Time TBC';
-    const standardName = { football: 'Football', volleyball: 'Volleyball', crossbar: 'Crossbar challenge', custom: 'Custom event' };
+    const standardName = {
+      football: 'Football',
+      volleyball: 'Volleyball',
+      badminton: 'Badminton',
+      armwrestling: 'Arm Wrestling',
+      crossbar: 'Crossbar Challenge',
+      custom: 'Individual / Team Event'
+    };
     const label = s => String(s || '').replace(/^./, c => c.toUpperCase());
     const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [] } };
     const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', leader: 'teams', pitchSide: 'home', selectedPlayer: '' };
@@ -853,8 +1038,9 @@
 
     const team = id => state.teams.find(t => t.id === id), player = id => state.players.find(p => p.id === id);
     const score = f => f.score || {}, st = f => score(f).status || 'scheduled', title = f => f.details?.name || standardName[f.details?.sport] || 'Event';
-    const mode = f => f.details.format === 'individual', ids = f => Array.isArray(f.details.playerIds) ? f.details.playerIds : [];
-    const groupTeam = (f, t) => f.details.homeId === t || f.details.awayId === t || ids(f).some(id => player(id)?.teamId === t);
+    const mode = f => f.details.format === 'individual';
+    const eventTeamIds = f => (f.details.teamIds && f.details.teamIds.length) ? f.details.teamIds : [...new Set((f.details.playerIds || []).map(id => player(id)?.teamId).filter(Boolean))];
+    const groupTeam = (f, t) => f.details.homeId === t || f.details.awayId === t || eventTeamIds(f).includes(t);
     const fixtures = () => [...state.fixtures].sort((a, b) => String(a.details.startTime || '9999').localeCompare(String(b.details.startTime || '9999')));
     const fixtureLink = f => '#match/' + encodeURIComponent(f.id);
 
@@ -871,10 +1057,25 @@
       return `<span class="tag ${s === 'finished' ? 'finished' : ''}">${s === 'finished' ? 'Full time' : e(label(s))}</span>`;
     }
     function sportName(f) { return standardName[f.details.sport] || label(f.details.sport); }
-    function rowTeam(t, s) { return `<div class="team-line">${crest(t)}<b>${e(t?.name || 'Team TBC')}</b><strong>${e(s)}</strong></div>`; }
+    function rowTeam(t, s, extraHtml = '') { return `<div class="team-line">${crest(t)}<b>${e(t?.name || 'Team TBC')}</b>${extraHtml}<strong>${e(s)}</strong></div>`; }
+    function sideRosterSummary(d, side) {
+      if (d.sport !== 'badminton') return '';
+      const list = (d['badmintonPlayers' + sideKey(side)] || []).map(id => player(id)?.name).filter(Boolean);
+      return list.length ? `<span class="meta" style="font-size:10px;text-transform:none;letter-spacing:0">(${e(list.join(' & '))})</span>` : '';
+    }
     function fixtureCard(f) {
-      let d = f.details, s = score(f), v = d.sport === 'volleyball', hasScore = st(f) !== 'scheduled', individual = mode(f);
-      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? `<p class="hint">${ids(f).length} ${ids(f).length === 1 ? 'participant' : 'participants'}</p>` : rowTeam(team(d.homeId), hasScore ? (v ? s.setsWon?.home : s.home) ?? 0 : '') + rowTeam(team(d.awayId), hasScore ? (v ? s.setsWon?.away : s.away) ?? 0 : '')}${v && st(f) === 'live' && !s.winner ? `<p class="hint">Set ${(s.sets?.length || 0) + 1} · ${e(s.home ?? 0)} – ${e(s.away ?? 0)}</p>` : ''}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
+      let d = f.details, s = score(f), isSet = isSetSport(d.sport), hasScore = st(f) !== 'scheduled', individual = mode(f);
+      const tCount = eventTeamIds(f).length;
+      const homeServe = d.sport === 'badminton' && st(f) === 'live' && s.server === 'home' ? '<span class="serve-dot" title="Serving"></span>' : '';
+      const awayServe = d.sport === 'badminton' && st(f) === 'live' && s.server === 'away' ? '<span class="serve-dot" title="Serving"></span>' : '';
+      let subNote = '';
+      if (isSet && st(f) === 'live' && !s.winner) {
+        subNote = `<p class="hint">Set ${(s.sets?.length || 0) + 1} · ${e(s.home ?? 0)} – ${e(s.away ?? 0)}${d.sport === 'badminton' ? ' · ' + e(team(s.server === 'away' ? d.awayId : d.homeId)?.name || '') + ' serving' : ''}</p>`;
+      } else if (d.sport === 'armwrestling' && hasScore) {
+        const doneBouts = (s.bouts || []).filter(b => b.winner).length;
+        subNote = `<p class="hint">${doneBouts} of ${(s.bouts || []).length} bouts completed · Bout pre-points</p>`;
+      }
+      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? `<p class="hint">${tCount} ${tCount === 1 ? 'competing team' : 'competing teams'}</p>` : rowTeam(team(d.homeId), hasScore ? (isSet ? s.setsWon?.home : s.home) ?? 0 : '', sideRosterSummary(d, 'home') + homeServe) + rowTeam(team(d.awayId), hasScore ? (isSet ? s.setsWon?.away : s.away) ?? 0 : '', sideRosterSummary(d, 'away') + awayServe)}${subNote}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
     }
     function pageHead(name, p) { return `<header class="page-head"><div><h1>${e(name)}</h1>${p ? `<p>${e(p)}</p>` : ''}</div></header>`; }
     function message() { return failed ? `<div role="status" class="notice">${loaded ? 'Live updates paused. Showing last available scores.' : 'Match centre could not load.'}<button class="seg" data-retry>Retry</button></div>` : ''; }
@@ -940,21 +1141,21 @@
         const key = JSON.stringify([f.details.sport, stage]); if (!groups.has(key)) groups.set(key, []); groups.get(key).push(f);
       }
       const tables = [...groups.values()].map(fs => {
-        const { sport, stage } = fs[0].details, football = sport === 'football', volley = sport === 'volleyball', rows = new Map;
+        const { sport, stage } = fs[0].details, football = sport === 'football', isSet = isSetSport(sport), rows = new Map;
         function side(id) { if (!rows.has(id)) rows.set(id, { id, played: 0, won: 0, drawn: 0, lost: 0, for: 0, against: 0, pts: 0, isLive: false }); return rows.get(id); }
         for (const f of fs) {
           const d = f.details; if (!team(d.homeId) || !team(d.awayId)) continue;
           const a = side(d.homeId), b = side(d.awayId), matchSt = st(f);
           if (matchSt !== 'finished' && matchSt !== 'live') continue;
           if (matchSt === 'live') { a.isLive = true; b.isLive = true; }
-          const s = score(f), x = Number(volley ? s.setsWon?.home : s.home) || 0, y = Number(volley ? s.setsWon?.away : s.away) || 0;
+          const s = score(f), x = Number(isSet ? s.setsWon?.home : s.home) || 0, y = Number(isSet ? s.setsWon?.away : s.away) || 0;
           a.played++; b.played++; a.for += x; b.against += x; b.for += y; a.against += y;
           if (x > y) { a.won++; b.lost++; a.pts += 3; } else if (y > x) { b.won++; a.lost++; b.pts += 3; } else { a.drawn++; b.drawn++; a.pts++; b.pts++; }
         }
         const rank = [...rows.values()].sort((a, b) => (football ? b.pts - a.pts : b.won - a.won) || (b.for - b.against) - (a.for - a.against) || b.for - a.for || String(team(a.id)?.name).localeCompare(team(b.id)?.name));
         const activeGames = fs.filter(f => st(f) === 'live' || st(f) === 'finished');
         return `<section class="group">${sectionHead(e(standardName[sport] || label(sport)) + (stage ? ' · ' + e(stage) : ''))}
-          <div class="sport-table"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>${volley ? 'SD' : football ? 'GD' : 'Diff'}</th>${football ? '<th>Pts</th>' : ''}</tr></thead><tbody>${rank.map((r, i) => `<tr><td>${i + 1}</td><td><a class="stand-team" href="#team/${encodeURIComponent(r.id)}">${crest(team(r.id))}<span>${e(team(r.id)?.name)}</span>${r.isLive ? '<span class="live-pill-mini">LIVE</span>' : ''}</a></td><td>${r.played}</td><td>${r.won}</td><td>${r.drawn}</td><td>${r.lost}</td><td>${r.for - r.against}</td>${football ? `<td><b>${r.pts}</b></td>` : ''}</tr>`).join('')}</tbody></table></div>
+          <div class="sport-table"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>${isSet ? 'SD' : football ? 'GD' : 'Diff'}</th>${football ? '<th>Pts</th>' : ''}</tr></thead><tbody>${rank.map((r, i) => `<tr><td>${i + 1}</td><td><a class="stand-team" href="#team/${encodeURIComponent(r.id)}">${crest(team(r.id))}<span>${e(team(r.id)?.name)}</span>${r.isLive ? '<span class="live-pill-mini">LIVE</span>' : ''}</a></td><td>${r.played}</td><td>${r.won}</td><td>${r.drawn}</td><td>${r.lost}</td><td>${r.for - r.against}</td>${football ? `<td><b>${r.pts}</b></td>` : ''}</tr>`).join('')}</tbody></table></div>
           ${football ? '<p class="hint">Includes live &amp; full-time matches · Win 3 · Draw 1 · Loss 0</p>' : ''}
           ${activeGames.length ? `<div class="fixture-list" style="margin-top:10px">${activeGames.map(fixtureCard).join('')}</div>` : ''}
         </section>`;
@@ -1024,25 +1225,67 @@
 
     function matchPage(f) {
       if (!f) return empty('field', 'Event unavailable', 'This event may have been removed.');
-      let d = f.details, s = score(f), v = d.sport === 'volleyball', h = team(d.homeId), a = team(d.awayId), isIndividual = mode(f), isScheduled = st(f) === 'scheduled';
+      let d = f.details, s = score(f), isSet = isSetSport(d.sport), h = team(d.homeId), a = team(d.awayId), isIndividual = mode(f), isScheduled = st(f) === 'scheduled';
       let arenaHtml = (d.sport === 'football' || d.sport === 'volleyball') ? interactiveArena(d, s) : '', sets = s.sets || [];
-      let publicTl = [...(s.timeline || [])].filter(x => v ? ['rally', 'yellow', 'red', 'timeout'].includes(x.kind) : ['goal', 'yellow', 'red'].includes(x.kind)).reverse();
+      let publicTl = [...(s.timeline || [])].filter(x => {
+        if (isSet) return ['rally', 'yellow', 'red', 'timeout'].includes(x.kind);
+        if (d.sport === 'armwrestling') return x.kind === 'bout_win';
+        return ['goal', 'yellow', 'red'].includes(x.kind);
+      }).reverse();
       const clk = st(f) === 'live' ? formatClock(computeClock(s.timeline, 'live')) : null, isStopped = clk && clk.stateLabel !== 'running';
+
+      const homePlayers = d.sport === 'badminton' ? (d.badmintonPlayersHome || []).map(id => player(id)?.name).filter(Boolean).join(' & ') : '';
+      const awayPlayers = d.sport === 'badminton' ? (d.badmintonPlayersAway || []).map(id => player(id)?.name).filter(Boolean).join(' & ') : '';
+
+      const teamRankIds = [...eventTeamIds(f)].sort((x, y) => {
+        if (d.sport === 'crossbar') return (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0);
+        return (Number(s.results?.[y]) || -Infinity) - (Number(s.results?.[x]) || -Infinity);
+      });
+
+      const boutsHtml = d.sport === 'armwrestling' ? `<h2 class="subhead">Bouts &amp; Rounds</h2>
+        <p class="hint">Each round winner earns +1 bout pre-point for their team. Most bout wins takes the match.</p>
+        ${(s.bouts || []).length ? `<div class="bout-list">${s.bouts.map(b => `
+          <div class="bout-card ${!b.winner && st(f) === 'live' ? 'active' : ''}">
+            <div class="bout-head"><span>${e(b.round)}</span><span>${b.winner ? '+1 Pre-Point · ' + e(team(b.winner === 'home' ? d.homeId : d.awayId)?.name || '') : (st(f) === 'live' ? 'In Progress' : 'Scheduled')}</span></div>
+            <div class="bout-versus">
+              <div class="bout-side ${b.winner === 'home' ? 'win' : ''}"><span>${e(player(b.homePlayerId)?.name || 'Participant')}</span>${b.winner === 'home' ? '<span class="win-badge">WIN</span>' : ''}</div>
+              <span class="bout-vs">VS</span>
+              <div class="bout-side away ${b.winner === 'away' ? 'win' : ''}">${b.winner === 'away' ? '<span class="win-badge">WIN</span>' : ''}<span>${e(player(b.awayPlayerId)?.name || 'Participant')}</span></div>
+            </div>
+          </div>`).join('')}</div>` : '<p class="hint">Round pairings will appear here once scheduled.</p>'}` : '';
+
+      const badmintonLiveHtml = d.sport === 'badminton' && !isScheduled ? `<div class="badminton-panel">
+        <div class="badminton-grid">
+          <div class="badminton-side ${st(f) === 'live' && s.server === 'home' ? 'serving' : ''}">
+            <div class="meta">${e(h?.name || 'Home')}</div>
+            <div class="badminton-pts">${e(s.home ?? 0)}</div>
+            ${st(f) === 'live' && s.server === 'home' ? '<span class="serve-pill">🏸 Serving</span>' : ''}
+          </div>
+          <div><div class="meta">${s.winner ? 'Final' : 'Set ' + ((sets.length || 0) + 1)}</div></div>
+          <div class="badminton-side ${st(f) === 'live' && s.server === 'away' ? 'serving' : ''}">
+            <div class="meta">${e(a?.name || 'Away')}</div>
+            <div class="badminton-pts">${e(s.away ?? 0)}</div>
+            ${st(f) === 'live' && s.server === 'away' ? '<span class="serve-pill">🏸 Serving</span>' : ''}
+          </div>
+        </div>
+      </div>` : '';
 
       return `<a class="link-btn" href="#fixtures">← All fixtures</a>` +
         pageHead(title(f), [sportName(f), d.stage, day(d.startTime), d.startTime ? day(d.startTime, fmtTime) + ' IST' : '', d.venue].filter(Boolean).join(' · ')) +
         `<article class="live-article">
           <div class="info-line">${status(f)}<span class="status-msg">${e(isScheduled ? '' : s.period || '')}</span></div>
           ${!isIndividual ? `<div class="match-score">
-            <a class="match-side" href="#team/${encodeURIComponent(d.homeId || '')}">${crest(h)}<span>${e(h?.name || 'TBC')}</span></a>
-            <strong>${isScheduled ? 'VS' : `${e(v ? s.setsWon?.home ?? 0 : s.home ?? 0)} – ${e(v ? s.setsWon?.away ?? 0 : s.away ?? 0)}`}${v && !isScheduled ? '<small>Sets won</small>' : ''}${clk ? `<div class="match-clock-wrap"><span class="match-clock-banner ${isStopped ? 'stopped' : ''}" data-live-clock="${e(f.id)}">${clk.text}</span>${clk.extraMins > 0 ? `<span class="extra-time-pill">+${clk.extraMins} min Extra Time</span>` : ''}</div>` : ''}</strong>
-            <a class="match-side" href="#team/${encodeURIComponent(d.awayId || '')}">${crest(a)}<span>${e(a?.name || 'TBC')}</span></a>
+            <a class="match-side" href="#team/${encodeURIComponent(d.homeId || '')}">${crest(h)}<span>${e(h?.name || 'TBC')}</span>${homePlayers ? `<small class="roster-tag">${e(homePlayers)}</small>` : ''}</a>
+            <strong>${isScheduled ? 'VS' : `${e(isSet ? s.setsWon?.home ?? 0 : s.home ?? 0)} – ${e(isSet ? s.setsWon?.away ?? 0 : s.away ?? 0)}`}${isSet && !isScheduled ? '<small>Sets won</small>' : ''}${d.sport === 'armwrestling' && !isScheduled ? '<small>Bout points</small>' : ''}${clk ? `<div class="match-clock-wrap"><span class="match-clock-banner ${isStopped ? 'stopped' : ''}" data-live-clock="${e(f.id)}">${clk.text}</span>${clk.extraMins > 0 ? `<span class="extra-time-pill">+${clk.extraMins} min Extra Time</span>` : ''}</div>` : ''}</strong>
+            <a class="match-side" href="#team/${encodeURIComponent(d.awayId || '')}">${crest(a)}<span>${e(a?.name || 'TBC')}</span>${awayPlayers ? `<small class="roster-tag">${e(awayPlayers)}</small>` : ''}</a>
           </div>` : ''}
-          ${isIndividual ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Attempts' : 'Participants'}</h2>${[...ids(f)].sort((x, y) => (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0)).map(id => `<div class="attempt-row">${crest(team(player(id)?.teamId))}<span>${e(player(id)?.name || 'Participant')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Entrants will appear here.</p>'}` : ''}
-          ${v ? `<h2 class="subhead">Sets</h2><p class="hint">Best of ${e(d.bestOf || 3)} · ${e(d.pointLimit || 25)} points per set${d.decidingLimit ? ' · Decider to ' + e(d.decidingLimit) : ''}</p>${sets.map((x, i) => `<div class="set-row">Set ${i + 1}<strong>${e(x.home)} – ${e(x.away)}</strong></div>`).join('')}${st(f) === 'live' && !s.winner ? `<div class="set-row">Current set<strong>${e(s.home ?? 0)} – ${e(s.away ?? 0)}</strong></div>` : ''}` : ''}
+          ${badmintonLiveHtml}
+          ${boutsHtml}
+          ${isIndividual ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Team Attempts' : 'Competing Teams'}</h2>${teamRankIds.map(id => `<div class="attempt-row">${crest(team(id))}<span>${e(team(id)?.name || 'Team')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Competing teams will appear here.</p>'}` : ''}
+          ${isSet ? `<h2 class="subhead">Sets</h2><p class="hint">Best of ${e(d.bestOf || 3)} · ${e(d.pointLimit || (d.sport === 'badminton' ? 21 : 25))} points per set${d.decidingLimit ? ' · Decider to ' + e(d.decidingLimit) : ''}</p>${sets.map((x, i) => `<div class="set-row">Set ${i + 1}<strong>${e(x.home)} – ${e(x.away)}</strong></div>`).join('')}${st(f) === 'live' && !s.winner && d.sport === 'volleyball' ? `<div class="set-row">Current set<strong>${e(s.home ?? 0)} – ${e(s.away ?? 0)}</strong></div>` : ''}` : ''}
           ${arenaHtml}
-          <h2 class="subhead">${v ? 'Match Highlights & Cards' : 'Goals & Cards'}</h2>
-          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : x.kind === 'timeout' ? '⏱ ' : v ? '🏐 ' : '⚽ '}${e(x.reason || label(x.kind))}${x.side && team(x.side === 'home' ? d.homeId : d.awayId) ? ' · ' + e(team(x.side === 'home' ? d.homeId : d.awayId).name) : ''}${x.playerId && player(x.playerId) ? ' · <b>' + e(player(x.playerId).name) + '</b>' : ''}</span></li>`).join('')}</ol>` : '<p class="hint">No match highlights recorded yet.</p>'}
+          <h2 class="subhead">${isSet ? 'Rally Highlights' : d.sport === 'armwrestling' ? 'Bout Results Log' : 'Goals & Cards'}</h2>
+          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : x.kind === 'timeout' ? '⏱ ' : d.sport === 'badminton' ? '🏸 ' : d.sport === 'volleyball' ? '🏐 ' : d.sport === 'armwrestling' ? '💪 ' : '⚽ '}${e(x.label || x.reason || label(x.kind))}</span></li>`).join('')}</ol>` : '<p class="hint">No match highlights recorded yet.</p>'}
           ${st(f) === 'finished' && f.awards?.entries?.length ? `<h2 class="subhead">Championship awards</h2>${f.awards.entries.map(x => `<div class="attempt-row"><span>${e(team(x.teamId)?.name || 'Team')}${x.playerId ? ' · ' + e(player(x.playerId)?.name) : ''}</span><strong>${e(x.points)} pts</strong></div>`).join('')}` : ''}
         </article>`;
     }
@@ -1097,7 +1340,14 @@
     /* 5. ADMIN CONTROL ROOM */
     const app = document.querySelector('#app'), account = document.querySelector('#account'), notice = document.querySelector('#notice');
     const permissions = { schedule: 'Schedule and lineups', score: 'Live scoring', awards: 'Championship awards', delete: 'Delete fixtures' };
-    const sports = { football: 'Football', volleyball: 'Volleyball', crossbar: 'Crossbar challenge', custom: 'Custom event' };
+    const sports = {
+      football: 'Football',
+      volleyball: 'Volleyball',
+      badminton: 'Badminton',
+      armwrestling: 'Arm Wrestling (Rounds / Bouts)',
+      crossbar: 'Crossbar Challenge (Team Attempts)',
+      custom: 'Individual / Team Event (Team Result Only)'
+    };
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
     let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false } };
@@ -1186,6 +1436,7 @@
 
     function fixtureForm() {
       const d = { ...current()?.details }, teamOpts = adminData.teams.map(t => [t.id, t.name]), sport = d.sport || 'football';
+      const defaultTeamIds = (d.teamIds && d.teamIds.length) ? d.teamIds : adminData.teams.map(t => t.id);
       initDesigner(d);
 
       app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
@@ -1194,7 +1445,7 @@
           admField('Event / fixture name', admInput('name', d.name, 'text', 'required maxlength="100" placeholder="Football · Group A"')) +
           admField('Competition stage', admInput('stage', d.stage, 'text', 'placeholder="Group A, semi-final, final…" maxlength="80"')) +
           admField('Sport / scoring format', admSelect('sport', admOpts(Object.entries(sports), sport))) +
-          admField('Participants', admSelect('format', admOpts([['team', 'Teams'], ['individual', 'Individuals']], d.format || 'team'))) +
+          admField('Match Structure', admSelect('format', admOpts([['team', 'Head-to-Head (2 Teams)'], ['individual', 'Individual Program (Final Team Only)']], d.format || 'team'))) +
           admField('Start time (India)', admInput('startTime', localTime(d.startTime), 'datetime-local', 'required')) +
           admField('Venue', admInput('venue', d.venue, 'text', 'required maxlength="100"')) +
         '</div>' +
@@ -1202,26 +1453,48 @@
           admField('Home team', admSelect('homeId', admOpts(teamOpts, d.homeId, 'Select team'))) +
           admField('Away team', admSelect('awayId', admOpts(teamOpts, d.awayId, 'Select team'))) +
         '</div>' +
-        '<div id="players"><fieldset><legend>Participants</legend><div class="pick">' + adminData.players.map(p => admCheckbox('playerIds', p.id, p.name + ' · ' + teamName(p.teamId), (d.playerIds || []).includes(p.id))).join('') + '</div></fieldset></div>' +
+        '<div id="competingTeams"><fieldset><legend>Competing Teams (Final Team Only — No Individual Names Needed)</legend><div class="pick">' + adminData.teams.map(t => admCheckbox('teamIds', t.id, t.name, defaultTeamIds.includes(t.id))).join('') + '</div></fieldset></div>' +
         '<div id="lineups"></div>' +
-        '<div class="fields" id="volley">' +
+        '<div class="fields" id="setRulesBox">' +
           admField('Best of (sets)', admInput('bestOf', d.bestOf ?? 3, 'number', 'min="1" max="99" step="2"')) +
-          admField('Regular set target', admInput('pointLimit', d.pointLimit ?? 25, 'number', 'min="1" max="999"')) +
-          admField('Deciding set target', admInput('decidingLimit', d.decidingLimit ?? 15, 'number', 'min="1" max="999"')) +
+          admField('Regular set target', admInput('pointLimit', d.pointLimit ?? (sport === 'badminton' ? 21 : 25), 'number', 'min="1" max="999"')) +
+          admField('Deciding set target', admInput('decidingLimit', d.decidingLimit ?? (sport === 'badminton' ? 21 : 15), 'number', 'min="1" max="999"')) +
+          admField('Initial Server (Badminton)', admSelect('initialServer', admOpts([['home', 'Home Team'], ['away', 'Away Team']], d.initialServer || 'home'))) +
           admCheckbox('winByTwo', 'yes', 'Win by two points', d.winByTwo ?? true) +
         '</div>' +
-        '<div class="fields" id="crossbar">' + admField('Attempts per participant', admInput('attemptLimit', d.attemptLimit ?? 5, 'number', 'min="1" max="100"')) + '</div>' +
+        '<div class="fields" id="crossbar">' + admField('Attempts per team', admInput('attemptLimit', d.attemptLimit ?? 5, 'number', 'min="1" max="100"')) + '</div>' +
         '<div class="actions spaced"><button class="primary">Save fixture</button>' + admBtn('Cancel', 'fixtures') + '</div></form>';
 
       const form = app.querySelector('#fixture');
 
       function renderLineups() {
         const lineups = form.querySelector('#lineups'), curSport = form.sport.value;
-        const curSubs = { Home: new FormData(form).getAll('subsHome'), Away: new FormData(form).getAll('subsAway') };
+        const fd = new FormData(form);
+        const curSubs = { Home: fd.getAll('subsHome'), Away: fd.getAll('subsAway') };
         if (curSubs.Home.length) d.subsHome = curSubs.Home;
         if (curSubs.Away.length) d.subsAway = curSubs.Away;
+        const curBad = { Home: fd.getAll('badmintonPlayersHome'), Away: fd.getAll('badmintonPlayersAway') };
+        if (curBad.Home.length) d.badmintonPlayersHome = curBad.Home;
+        if (curBad.Away.length) d.badmintonPlayersAway = curBad.Away;
+
         lineups.innerHTML = '';
-        if ((curSport !== 'football' && curSport !== 'volleyball') || form.format.value !== 'team') return;
+        if (form.format.value !== 'team') return;
+
+        if (curSport === 'badminton') {
+          for (const side of ['Home', 'Away']) {
+            const id = form.elements[side.toLowerCase() + 'Id'].value;
+            if (!id) continue;
+            const players = adminData.players.filter(p => p.teamId === id);
+            lineups.insertAdjacentHTML('beforeend',
+              `<fieldset class="spaced"><legend>${esc(teamName(id))} · Badminton Player(s) (Singles / Doubles)</legend>
+                <div class="pick">${players.map(p => admCheckbox('badmintonPlayers' + side, p.id, p.name, (d['badmintonPlayers' + side] || []).includes(p.id))).join('')}</div>
+              </fieldset>`
+            );
+          }
+          return;
+        }
+
+        if (curSport !== 'football' && curSport !== 'volleyball') return;
         for (const side of ['Home', 'Away']) {
           const id = form.elements[side.toLowerCase() + 'Id'].value;
           if (!id) continue;
@@ -1240,7 +1513,7 @@
 
       function update() {
         const sport = form.sport.value, isTeam = form.format.value === 'team';
-        for (const [id, on] of [['teams', isTeam], ['players', !isTeam], ['volley', sport === 'volleyball'], ['crossbar', sport === 'crossbar']]) {
+        for (const [id, on] of [['teams', isTeam], ['competingTeams', !isTeam], ['setRulesBox', isSetSport(sport) && isTeam], ['crossbar', sport === 'crossbar']]) {
           let group = form.querySelector('#' + id); group.hidden = !on; group.querySelectorAll('input,select').forEach(e => e.disabled = !on);
         }
         renderLineups();
@@ -1303,8 +1576,15 @@
           if (ev.target.name === 'awayId') { designerState.Away.positions.forEach(p => p.playerId = ''); designerState.Away.open = true; }
           if (ev.target.name === 'sport') {
             if (form.sport.value === 'crossbar') form.format.value = 'individual';
-            if (['football', 'volleyball'].includes(form.sport.value)) {
+            if (['football', 'volleyball', 'badminton', 'armwrestling'].includes(form.sport.value)) {
               form.format.value = 'team';
+              if (form.sport.value === 'badminton') {
+                form.pointLimit.value = 21;
+                form.decidingLimit.value = 21;
+              } else if (form.sport.value === 'volleyball') {
+                form.pointLimit.value = 25;
+                form.decidingLimit.value = 15;
+              }
               designerState.Home.positions = generatePositions(designerState.Home.formation, [], form.sport.value);
               designerState.Away.positions = generatePositions(designerState.Away.formation, [], form.sport.value);
             }
@@ -1318,12 +1598,32 @@
 
     function readFixture(form) {
       const values = new FormData(form), get = k => String(values.get(k) || '').trim(), all = k => values.getAll(k), sport = get('sport'), format = get('format');
-      let d = { ...current()?.details, name: get('name'), stage: get('stage'), venue: get('venue'), sport, format, startTime: new Date(get('startTime') + ':00+05:30').toISOString(), homeId: get('homeId'), awayId: get('awayId'), playerIds: all('playerIds'), bestOf: Number(get('bestOf') || 3), pointLimit: Number(get('pointLimit') || 25), decidingLimit: Number(get('decidingLimit') || 15), winByTwo: values.has('winByTwo'), attemptLimit: Number(get('attemptLimit') || 5) };
+      let d = {
+        ...current()?.details,
+        name: get('name'),
+        stage: get('stage'),
+        venue: get('venue'),
+        sport,
+        format,
+        startTime: new Date(get('startTime') + ':00+05:30').toISOString(),
+        homeId: get('homeId'),
+        awayId: get('awayId'),
+        teamIds: all('teamIds'),
+        playerIds: [],
+        bestOf: Number(get('bestOf') || 3),
+        pointLimit: Number(get('pointLimit') || (sport === 'badminton' ? 21 : 25)),
+        decidingLimit: Number(get('decidingLimit') || (sport === 'badminton' ? 21 : 15)),
+        initialServer: get('initialServer') || 'home',
+        winByTwo: values.has('winByTwo'),
+        attemptLimit: Number(get('attemptLimit') || 5),
+        badmintonPlayersHome: all('badmintonPlayersHome'),
+        badmintonPlayersAway: all('badmintonPlayersAway')
+      };
       if (!d.name || !d.venue) throw Error('Enter a fixture name and venue.');
       if (format === 'team' && (!d.homeId || !d.awayId || d.homeId === d.awayId)) throw Error('Choose two different teams.');
-      if (format === 'individual' && !d.playerIds.length) throw Error('Select at least one participant.');
-      if ((sport === 'football' || sport === 'volleyball') && format !== 'team') throw Error('Football and volleyball scoring require two teams.');
-      if (sport === 'crossbar' && format !== 'individual') throw Error('Select Individuals for crossbar attempt tracking.');
+      if (format === 'individual' && !d.teamIds.length) throw Error('Select at least one competing team.');
+      if (['football', 'volleyball', 'badminton', 'armwrestling'].includes(sport) && format !== 'team') throw Error('This sport requires two head-to-head teams.');
+      if (sport === 'crossbar' && format !== 'individual') throw Error('Select Individual Program (Final Team Only) for crossbar team attempts.');
       for (const side of ['Home', 'Away']) {
         d['formation' + side] = designerState[side].formation;
         d['positions' + side] = designerState[side].positions;
@@ -1344,7 +1644,7 @@
         });
         return;
       }
-      el.innerHTML = '<form id="award"><p class="hint">Participant name is optional—leave it as "Team award (Optional)" to credit the team directly.</p><div id="awardRows"></div><div class="actions spaced">' + admBtn('+ Add placing', 'addAward') + '<button class="primary">Save awards</button></div></form>';
+      el.innerHTML = '<form id="award"><p class="hint">Credit championship points directly to the winning team (participant name is optional).</p><div id="awardRows"></div><div class="actions spaced">' + admBtn('+ Add placing', 'addAward') + '<button class="primary">Save awards</button></div></form>';
       for (const entry of (f.awards.entries || [])) addAward(entry);
       if (!f.awards.entries?.length) addAward({});
     }
