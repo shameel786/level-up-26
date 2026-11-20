@@ -47,7 +47,7 @@
     button:disabled { opacity: .5; }
     .hidden, [hidden] { display: none !important; }
 
-    /* ================= APP FRAME (COMPACT MOBILE-FIRST ON DESKTOP) ================= */
+    /* ================= APP FRAME ================= */
     .app-frame {
       width: 100%;
       max-width: 540px;
@@ -137,7 +137,7 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: min(320px, 84vw);
+      width: min(310px, 84vw);
       background: #131c17;
       border-left: 1px solid #2b382f;
       z-index: 45;
@@ -159,41 +159,27 @@
     }
     .drawer-head strong { font: italic 800 22px/1 var(--title); text-transform: uppercase; letter-spacing: -.02em; }
     .drawer-head strong span { color: var(--lime); }
-    .drawer-nav { display: grid; gap: 8px; }
+    .drawer-nav { display: grid; gap: 9px; }
     .drawer-item {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      padding: 12px 14px;
+      padding: 13px 15px;
       border-radius: 12px;
       background: var(--panel);
       border: 1px solid var(--line);
       color: var(--text);
-      font-weight: 600;
+      font-weight: 650;
       font-size: 14px;
       text-align: left;
       width: 100%;
     }
+    .drawer-item-left { display: flex; align-items: center; gap: 11px; }
     .drawer-item:hover { border-color: var(--lime); background: var(--panel-2); }
-    .drawer-item.accent { background: var(--lime); color: #132012; border-color: var(--lime); font-weight: 700; }
+    .drawer-item.accent { background: var(--lime); color: #132012; border-color: var(--lime); font-weight: 750; }
     .drawer-item.accent:hover { background: #d5ff89; }
-    .drawer-card {
-      margin-top: 16px;
-      padding: 14px;
-      border-radius: 12px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-    }
-    .drawer-card h4 {
-      margin: 0 0 8px;
-      font: 700 12px/1 var(--body);
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--lime);
-    }
-    .drawer-card p, .drawer-card li { font-size: 13px; color: var(--muted); margin: 4px 0; }
-    .drawer-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-    .drawer-card li strong { color: var(--text); display: block; font-size: 13.5px; }
+    .drawer-sep { height: 1px; background: var(--line); margin: 6px 0; }
 
     /* ================= MAIN CONTENT & TYPOGRAPHY ================= */
     main.container { padding: 16px 16px 96px; flex: 1; }
@@ -287,11 +273,11 @@
     .empty strong { font-size: 14.5px; display: block; }
     .empty p, .muted, .hint { color: var(--muted); font-size: 13px; margin-top: 2px; }
 
-    /* Announcements Strip on Home */
+    /* Announcements Strip on Home & Pages */
     .announce-list { display: grid; gap: 8px; }
     .announce-card {
-      padding: 12px 14px;
-      border-radius: 12px;
+      padding: 13px 15px;
+      border-radius: 13px;
       background: linear-gradient(90deg, rgba(194, 245, 104, .11), rgba(22, 32, 26, .95));
       border: 1px solid rgba(194, 245, 104, .32);
       display: flex;
@@ -310,8 +296,8 @@
       flex: none;
       margin-top: 2px;
     }
-    .announce-card strong { display: block; font-size: 14px; color: var(--text); }
-    .announce-card p { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .announce-card strong { display: block; font-size: 14.5px; color: var(--text); }
+    .announce-card p { font-size: 13px; color: var(--muted); margin-top: 3px; }
 
     /* Teams Grid */
     .teams-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -480,7 +466,7 @@
       padding: 2px 8px;
     }
 
-    /* Live Match Detail & Interactive Pitch */
+    /* Live Match Detail & Interactive Pitch / Court */
     .live-article { padding: 16px; margin-top: 12px; }
     .match-clock-banner {
       display: inline-flex;
@@ -507,7 +493,7 @@
     .match-score > strong small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
     .subhead { font-size: 21px; margin: 20px 0 8px; }
 
-    /* Interactive Pitch */
+    /* Interactive Pitch & Volleyball Court */
     .pitch-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
     .pitch-tab {
       flex: 1;
@@ -534,7 +520,33 @@
       overflow: hidden;
       user-select: none;
     }
-    .pitch-stage:before, .pitch-stage:after {
+    .pitch-stage.volley-court {
+      aspect-ratio: 1 / 1.05;
+      max-height: 360px;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.35) 33%, rgba(255,255,255,.35) 33.8%, transparent 33.8%),
+        linear-gradient(180deg, #b86a35 0%, #9e5627 100%);
+      border-color: #f3f5ec;
+    }
+    .pitch-stage.volley-court:before {
+      content: "NET";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 22px;
+      background: rgba(14, 21, 17, .82);
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      display: grid;
+      place-items: center;
+      border: none;
+    }
+    .pitch-stage.volley-court:after { display: none; }
+
+    .pitch-stage:not(.volley-court):before, .pitch-stage:not(.volley-court):after {
       content: "";
       position: absolute;
       left: 24%;
@@ -543,8 +555,8 @@
       border: 1.5px solid rgba(255,255,255,.24);
       pointer-events: none;
     }
-    .pitch-stage:before { top: 0; border-top: 0; }
-    .pitch-stage:after { bottom: 0; border-bottom: 0; }
+    .pitch-stage:not(.volley-court):before { top: 0; border-top: 0; }
+    .pitch-stage:not(.volley-court):after { bottom: 0; border-bottom: 0; }
 
     .pitch-node {
       position: absolute;
@@ -555,12 +567,15 @@
       gap: 3px;
       z-index: 2;
       cursor: pointer;
-      max-width: 84px;
+      max-width: 88px;
       text-align: center;
+      background: none;
+      border: none;
+      padding: 0;
     }
     .pitch-dot {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--team, var(--lime));
       border: 2px solid #ffffff;
@@ -571,9 +586,14 @@
       box-shadow: 0 4px 10px rgba(0,0,0,.45);
       transition: transform .15s;
     }
+    .pitch-dot.libero {
+      background: #f9d452;
+      color: #132012;
+      border-color: #132012;
+    }
     .pitch-node:hover .pitch-dot, .pitch-node.selected .pitch-dot { transform: scale(1.16); outline: 3px solid var(--lime); }
     .pitch-label {
-      background: rgba(11, 18, 14, .86);
+      background: rgba(11, 18, 14, .88);
       color: #f3f5ec;
       padding: 2px 6px;
       border-radius: 5px;
@@ -583,7 +603,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 82px;
+      max-width: 84px;
       border: 1px solid rgba(255,255,255,.14);
     }
     .player-spotlight {
@@ -609,6 +629,17 @@
       gap: 6px;
     }
     .sub-chip.subbed { border-color: #4f7a49; color: var(--lime); }
+    .volley-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: #1a261f;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
 
     .timeline { list-style: none; padding: 0; margin: 0; }
     .timeline li, .attempt-row, .set-row {
@@ -717,12 +748,12 @@
     }
     #admin-shell main { padding-bottom: 55px; }
 
-    /* Admin Interactive Formation Designer */
+    /* Admin Interactive Formation & Court Designer */
     .adm-pitch-wrap { margin-top: 12px; }
     .adm-pitch-board {
       position: relative;
       width: 100%;
-      max-width: 360px;
+      max-width: 340px;
       aspect-ratio: 3 / 4;
       margin: 10px auto;
       border-radius: 12px;
@@ -735,6 +766,13 @@
       user-select: none;
       overflow: hidden;
     }
+    .adm-pitch-board.volley-board {
+      aspect-ratio: 1 / 1.05;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.4) 33%, rgba(255,255,255,.4) 33.8%, transparent 33.8%),
+        linear-gradient(180deg, #b86a35 0%, #9e5627 100%);
+      border-color: #142b22;
+    }
     .adm-dot {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -744,11 +782,12 @@
       gap: 2px;
       cursor: grab;
       z-index: 3;
+      touch-action: none;
     }
     .adm-dot:active { cursor: grabbing; }
     .adm-dot span {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: #c4f66a;
       border: 2px solid #142b22;
@@ -757,19 +796,22 @@
       display: grid;
       place-items: center;
       box-shadow: 0 3px 8px rgba(0,0,0,.4);
+      pointer-events: none;
     }
-    .adm-dot.active span { background: #ffffff; border-color: #c4f66a; transform: scale(1.15); }
+    .adm-dot.libero-dot span { background: #f9d452; }
+    .adm-dot.active span { background: #ffffff; border-color: #142b22; transform: scale(1.16); box-shadow: 0 0 0 3px #c4f66a; }
     .adm-dot small {
-      background: rgba(16, 28, 20, .9);
+      background: rgba(16, 28, 20, .92);
       color: white;
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 10.5px;
       font-weight: 600;
-      max-width: 82px;
+      max-width: 84px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      pointer-events: none;
     }
     .adm-dot-picker {
       background: #f4f7f2;
@@ -817,10 +859,25 @@
       flex-wrap: wrap;
     }
     .sc-clock-display {
-      font: 800 30px/1 var(--title);
+      font: 800 32px/1 var(--title);
       color: #c4f66a;
       font-variant-numeric: tabular-nums;
       letter-spacing: .03em;
+    }
+    .sc-custom-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #24352c;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .sc-custom-time input {
+      width: 52px !important;
+      min-height: 32px !important;
+      padding: 4px 6px !important;
+      text-align: center;
+      font-weight: 700;
     }
     .sc-period, .sc-sets { text-align: center; margin: .6rem 0; font-weight: 650; }
     .sc-box { border: 1px solid #dce4da; border-radius: 10px; padding: 1rem; margin: 1rem 0; background: white; }
@@ -889,7 +946,7 @@
 
     <nav class="bottom" aria-label="Main navigation"><div class="nav-inner" id="navigation"></div></nav>
 
-    <!-- Slide-out Side Drawer -->
+    <!-- Slide-out Side Drawer (Clean Menu Links Only) -->
     <div class="drawer-backdrop" id="drawer-backdrop"></div>
     <aside class="drawer" id="side-drawer" aria-label="Menu">
       <div class="drawer-head">
@@ -897,13 +954,24 @@
         <button type="button" class="menu-btn" id="close-drawer" aria-label="Close menu"><span data-icon="close"></span></button>
       </div>
       <div class="drawer-nav">
-        <a class="drawer-item accent" href="#admin" id="drawer-admin-link"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></a>
-        <a class="drawer-item" href="#home" data-drawer-close><span data-icon="home"></span><span>Matchday Home</span></a>
-        <a class="drawer-item" href="#fixtures" data-drawer-close><span data-icon="fixtures"></span><span>All Fixtures</span></a>
-        <a class="drawer-item" href="#standings" data-drawer-close><span data-icon="standings"></span><span>Standings</span></a>
-        <a class="drawer-item" href="#leaderboard" data-drawer-close><span data-icon="leaderboard"></span><span>Leaderboard</span></a>
+        <a class="drawer-item" href="#announcements">
+          <span class="drawer-item-left"><span data-icon="announce"></span><span>Announcements</span></span>
+          <span>›</span>
+        </a>
+        <a class="drawer-item" href="#committee">
+          <span class="drawer-item-left"><span data-icon="people"></span><span>Sports Committee</span></span>
+          <span>›</span>
+        </a>
+        <a class="drawer-item" href="#contact">
+          <span class="drawer-item-left"><span data-icon="phone"></span><span>Contact Details</span></span>
+          <span>›</span>
+        </a>
+        <div class="drawer-sep"></div>
+        <a class="drawer-item accent" href="#admin">
+          <span class="drawer-item-left"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></span>
+          <span>→</span>
+        </a>
       </div>
-      <div id="drawer-info-blocks"></div>
     </aside>
   </div>
 
@@ -1073,6 +1141,9 @@
         } else if (e.kind === 'timer_set') {
           accMs = (Number(e.baseSec) || 0) * 1000;
           if (runningSince !== null) runningSince = Date.parse(e.at);
+        } else if (e.kind === 'period' && e.period === 'Half time' && runningSince !== null) {
+          accMs += Math.max(0, Date.parse(e.at) - runningSince);
+          runningSince = null;
         }
       }
       if (status === 'finished') runningSince = null;
@@ -1109,6 +1180,7 @@
       if (score[lead] < target || score[lead] - score[opponent(lead)] < rules.margin) return;
       score.sets.push({ home: score.home, away: score.away });
       score.setsWon[lead]++;
+      score.timeouts = { home: 0, away: 0 };
       if (score.setsWon[lead] >= rules.toWin) score.winner = lead;
       else {
         score.home = 0;
@@ -1122,7 +1194,8 @@
       const initAway = (details.positionsAway?.length ? details.positionsAway.map(p => p.playerId) : details.lineupAway) || [];
       const score = {
         status: 'scheduled', home: 0, away: 0, period: '', sets: [],
-        setsWon: { home: 0, away: 0 }, attempts: {}, results: {}, winner: null,
+        setsWon: { home: 0, away: 0 }, timeouts: { home: 0, away: 0 },
+        attempts: {}, results: {}, winner: null,
         activeLineups: { home: [...initHome], away: [...initAway] },
         timeline: history
       };
@@ -1141,10 +1214,20 @@
           case 'period': score.period = e.period; break;
           case 'goal': case 'point': score[e.side]++; break;
           case 'yellow': case 'red':
-            if (e.kind === 'red') score.activeLineups[e.side] = score.activeLineups[e.side].filter(id => id !== e.playerId);
+            if (e.kind === 'red') {
+              score.activeLineups[e.side] = score.activeLineups[e.side].filter(id => id !== e.playerId);
+              if (details.sport === 'volleyball' && !score.winner) {
+                const opp = opponent(e.side);
+                score[opp]++;
+                settleSet(score, e.rules || volleyballRules(details));
+              }
+            }
             break;
           case 'sub':
             score.activeLineups[e.side] = score.activeLineups[e.side].map(id => id === e.playerId ? e.otherPlayerId : id);
+            break;
+          case 'timeout':
+            score.timeouts[e.side] = (score.timeouts[e.side] || 0) + 1;
             break;
           case 'rally':
             score[e.side]++;
@@ -1152,6 +1235,13 @@
             break;
           case 'correct':
             score.home = e.home; score.away = e.away;
+            if (Array.isArray(e.sets)) {
+              score.sets = e.sets.map(s => ({ home: Number(s.home) || 0, away: Number(s.away) || 0 }));
+              score.setsWon = {
+                home: score.sets.filter(s => s.home > s.away).length,
+                away: score.sets.filter(s => s.away > s.home).length
+              };
+            }
             if (e.rules) settleSet(score, e.rules);
             break;
           case 'hit': case 'miss': {
@@ -1182,7 +1272,7 @@
         e.period = individual ? '' : sport === 'football' ? 'First half' : sport === 'volleyball' ? 'Set 1' : '';
       } else {
         check(s.status === 'live', 'Go live before recording a score.');
-        if (['goal', 'yellow', 'red', 'sub', 'point', 'rally'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
+        if (['goal', 'yellow', 'red', 'sub', 'point', 'rally', 'timeout'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
         switch (e.kind) {
           case 'finish':
           case 'timer_start':
@@ -1190,6 +1280,11 @@
           case 'timer_set':
             break;
           case 'goal': case 'yellow': case 'red': case 'sub': case 'period':
+            if (sport === 'volleyball' && ['yellow', 'red', 'sub'].includes(e.kind)) {
+              if (e.kind === 'sub') check(e.playerId && e.otherPlayerId && e.otherPlayerId !== e.playerId, 'Select court player and substitute.');
+              if (e.kind === 'red') e.rules = volleyballRules(details);
+              break;
+            }
             check(sport === 'football' && !individual, 'This control is for team football.');
             if (e.kind === 'period') check(['First half', 'Half time', 'Second half', 'Extra time', 'Penalties'].includes(e.period), 'Choose the match period.');
             else {
@@ -1198,13 +1293,17 @@
               if (e.kind === 'sub') check(e.otherPlayerId && e.otherPlayerId !== e.playerId, 'Choose the player coming on.');
             }
             break;
+          case 'timeout':
+            check(sport === 'volleyball' && !individual, 'Timeouts are for volleyball matches.');
+            check((s.timeouts[e.side] || 0) < 2, 'This team has already used both timeouts in this set.');
+            break;
           case 'rally':
             check(sport === 'volleyball' && !individual && !s.winner, 'The final set is complete.');
             e.rules = volleyballRules(details);
             break;
           case 'point': check(!individual && sport === 'custom', 'Choose a team event.'); break;
           case 'correct':
-            check(!individual && !s.winner, 'Undo the last rally to correct a completed match.');
+            check(!individual && (!s.winner || sport === 'volleyball'), 'Undo the last action to edit a completed match.');
             check(integer(e.home) && integer(e.away), 'Scores must be whole numbers of zero or more.');
             if (sport === 'volleyball') e.rules = volleyballRules(details);
             break;
@@ -1281,38 +1380,53 @@
         const board = node('div', null, 'sc-board');
         for (const side of sides) {
           const col = node('div'); col.append(node('span', team(side)), node('strong', String(score[side])));
-          if (d.sport === 'volleyball') col.append(node('small', score.setsWon[side] + ' sets won'));
+          if (d.sport === 'volleyball') col.append(node('small', score.setsWon[side] + ' sets · ' + (score.timeouts[side] || 0) + '/2 TO'));
           board.append(col);
         }
         panel.append(board, node('p', statusLabel, 'sc-period'));
         if (score.sets.length) panel.append(node('p', score.sets.map((set, i) => 'Set ' + (i + 1) + ' · ' + set.home + '–' + set.away).join('   /   '), 'sc-sets'));
       }
 
-      /* Live Stopwatch Controls */
+      /* Full Stopwatch Controls */
       if (score.status === 'live') {
         const clockData = computeClock(score.timeline, score.status);
+        const curSnap = formatClock(clockData);
         const timerBox = node('div', null, 'sc-timer-box');
         const left = node('div');
-        const clockEl = node('div', formatClock(clockData).text, 'sc-clock-display');
-        const subEl = node('small', clockData.running ? 'Timer running' : 'Timer stopped / paused');
+        const clockEl = node('div', curSnap.text, 'sc-clock-display');
+        const subEl = node('small', clockData.running ? 'Clock running' : 'Clock paused / stopped');
         subEl.style.color = '#b0b9ac';
         left.append(clockEl, subEl);
 
-        const btns = node('div', null, 'sc-row');
+        const right = node('div', null, 'sc-row');
         if (clockData.running) {
-          btns.append(button('Stop / Pause timer', () => {
+          right.append(button('Pause / Stop', () => {
             const cur = formatClock(clockData);
             submit({ kind: 'timer_pause', baseSec: cur.mins * 60 + cur.secs, label: 'Timer paused at ' + cur.text });
           }, 'sc-stop'));
         } else {
-          btns.append(button('Resume timer', () => {
+          right.append(button('Start / Resume', () => {
             const cur = formatClock(clockData);
-            submit({ kind: 'timer_start', baseSec: cur.mins * 60 + cur.secs, label: 'Timer resumed at ' + cur.text });
+            submit({ kind: 'timer_start', baseSec: cur.mins * 60 + cur.secs, label: 'Timer started at ' + cur.text });
           }, 'sc-primary'));
         }
-        btns.append(button('Reset 00:00', () => submit({ kind: 'timer_set', baseSec: 0, label: 'Timer reset to 00:00' })));
-        btns.append(button('Set 45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
-        timerBox.append(left, btns);
+        right.append(button('00:00', () => submit({ kind: 'timer_set', baseSec: 0, label: 'Timer reset to 00:00' })));
+        right.append(button('45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
+
+        const customWrap = node('div', null, 'sc-custom-time');
+        const minInp = numeric(curSnap.mins, 0, 999);
+        const secInp = numeric(curSnap.secs, 0, 59);
+        const setCustomBtn = button('Set', () => {
+          const m = Math.max(0, Number(minInp.value) || 0);
+          const s = Math.max(0, Math.min(59, Number(secInp.value) || 0));
+          submit({ kind: 'timer_set', baseSec: m * 60 + s, label: 'Timer set to ' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') });
+        });
+        setCustomBtn.style.minHeight = '32px';
+        setCustomBtn.style.padding = '4px 10px';
+        customWrap.append(minInp, node('span', ':'), secInp, setCustomBtn);
+        right.append(customWrap);
+
+        timerBox.append(left, right);
         panel.append(timerBox);
 
         if (clockData.running) {
@@ -1328,7 +1442,7 @@
         if (!individual && d.sport === 'football') {
           const controls = section('Match incident');
           const period = scSelect(['First half', 'Half time', 'Second half', 'Extra time', 'Penalties'].map(s => [s, s])); period.value = score.period;
-          controls.append(scField('Period', period), button('Update period', () => submit({ kind: 'period', period: period.value, label: period.value })));
+          controls.append(scField('Period (Half time auto-pauses clock)', period), button('Update period', () => submit({ kind: 'period', period: period.value, label: period.value })));
           const side = scSelect(sides.map(k => [k, team(k)]));
           const currentMin = formatClock(computeClock(score.timeline, score.status)).mins;
           const minute = numeric(currentMin || [...score.timeline].reverse().find(e => integer(e.minute))?.minute || 0, 0, 999);
@@ -1347,7 +1461,7 @@
           };
           side.onchange = fill; fill();
           const form = node('div', null, 'sc-grid');
-          form.append(scField('Team', side), scField('Minute (auto-filled)', minute), scField('Player', who), scField('Coming on (for Sub)', incoming)); controls.append(form);
+          form.append(scField('Team', side), scField('Minute', minute), scField('Player', who), scField('Coming on (for Sub)', incoming)); controls.append(form);
           const row = node('div', null, 'sc-row'); controls.append(row);
           for (const [kind, label] of [['goal', 'Goal'], ['yellow', 'Yellow card'], ['red', 'Red card'], ['sub', 'Substitution']]) {
             row.append(button(label, () => submit({
@@ -1355,12 +1469,93 @@
               label: label + ' · ' + team(side.value) + (who.value ? ' · ' + player(who.value) : '') + (kind === 'sub' ? ' / ' + player(incoming.value) : '')
             }), kind === 'goal' ? 'sc-primary' : ''));
           }
+        } else if (!individual && d.sport === 'volleyball') {
+          const box = section('Volleyball Live Rally & Events');
+          if (score.winner) {
+            box.append(node('p', team(score.winner) + ' won the match.'));
+          } else {
+            const vSide = scSelect(sides.map(k => [k, team(k)]));
+            const vWho = scSelect([]), vSubIn = scSelect([]);
+            const vReason = scSelect([
+              ['Spike / Kill', 'Spike / Kill'],
+              ['Service Ace', 'Service Ace'],
+              ['Block', 'Block'],
+              ['Opponent Error', 'Opponent Error'],
+              ['Rally Point', 'Rally Point']
+            ]);
+            const fillVolley = () => {
+              const k = vSide.value;
+              const roster = (data.players || []).filter(p => p.teamId === d[k + 'Id']);
+              const active = score.activeLineups[k].filter(Boolean);
+              const hasLineup = active.length > 0;
+              vWho.replaceChildren(new Option('Player (Optional)', ''));
+              vSubIn.replaceChildren(new Option('Sub In (for Substitution)', ''));
+              for (const p of roster) {
+                if (!hasLineup || active.includes(p.id)) vWho.add(new Option(p.name, p.id));
+                if (!hasLineup || !active.includes(p.id)) vSubIn.add(new Option(p.name, p.id));
+              }
+            };
+            vSide.onchange = fillVolley; fillVolley();
+
+            const quickRow = node('div', null, 'sc-row');
+            for (const sKey of sides) {
+              quickRow.append(button('+1 Point · ' + team(sKey), () => {
+                const isSelectedSide = vSide.value === sKey;
+                const pid = isSelectedSide ? vWho.value : '';
+                const rsn = isSelectedSide ? vReason.value : 'Rally Point';
+                submit({
+                  kind: 'rally',
+                  side: sKey,
+                  playerId: pid,
+                  reason: rsn,
+                  label: rsn + ' · ' + team(sKey) + (pid ? ' · ' + player(pid) : '')
+                });
+              }, 'sc-primary'));
+            }
+            box.append(quickRow);
+
+            const vGrid = node('div', null, 'sc-grid');
+            vGrid.append(
+              scField('Team (for details / cards / subs)', vSide),
+              scField('Point Type', vReason),
+              scField('Court Player', vWho),
+              scField('Incoming Substitute', vSubIn)
+            );
+            box.append(vGrid);
+
+            const actionRow = node('div', null, 'sc-row');
+            actionRow.append(button('Timeout (2/set)', () => submit({
+              kind: 'timeout',
+              side: vSide.value,
+              label: 'Timeout · ' + team(vSide.value) + ' (' + ((score.timeouts[vSide.value] || 0) + 1) + '/2)'
+            })));
+            actionRow.append(button('Substitution', () => submit({
+              kind: 'sub',
+              side: vSide.value,
+              playerId: vWho.value,
+              otherPlayerId: vSubIn.value,
+              label: 'Sub · ' + team(vSide.value) + ' · ' + player(vWho.value) + ' / ' + player(vSubIn.value)
+            })));
+            actionRow.append(button('Yellow Card (Warn)', () => submit({
+              kind: 'yellow',
+              side: vSide.value,
+              playerId: vWho.value,
+              label: 'Yellow card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '')
+            })));
+            actionRow.append(button('Red Card (+1 Opp)', () => submit({
+              kind: 'red',
+              side: vSide.value,
+              playerId: vWho.value,
+              label: 'Red card · ' + team(vSide.value) + (vWho.value ? ' · ' + player(vWho.value) : '')
+            }), 'sc-stop'));
+            box.append(actionRow);
+          }
         } else if (!individual) {
-          const box = section(d.sport === 'volleyball' ? 'Record rally' : 'Add point');
+          const box = section('Add point');
           if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
           else {
             const buttons = node('div', null, 'sc-row'); box.append(buttons);
-            for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: d.sport === 'volleyball' ? 'rally' : 'point', side, label: 'Point · ' + team(side) }), 'sc-primary'));
+            for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: 'point', side, label: 'Point · ' + team(side) }), 'sc-primary'));
           }
         } else {
           const box = section(d.sport === 'crossbar' ? 'Record attempt' : 'Record individual result');
@@ -1376,10 +1571,25 @@
             box.append(scField('Result value', val), button('Save result', () => submit({ kind: 'result', playerId: pick.value, value: val.valueAsNumber, label: player(pick.value) + ' · ' + val.value }), 'sc-primary'));
           }
         }
-        if (!individual && !score.winner) {
-          const correction = node('details', null, 'sc-box'); correction.append(node('summary', 'Correct current score'));
+        if (!individual) {
+          const correction = node('details', null, 'sc-box'); correction.append(node('summary', 'Edit / Correct Score & Sets'));
           const h = numeric(score.home), a = numeric(score.away);
-          correction.append(scField(team('home'), h), scField(team('away'), a), button('Save correction', () => submit({ kind: 'correct', home: h.valueAsNumber, away: a.valueAsNumber, label: 'Score corrected to ' + h.value + '–' + a.value }))); panel.append(correction);
+          correction.append(scField('Current ' + team('home'), h), scField('Current ' + team('away'), a));
+          if (d.sport === 'volleyball' && score.sets.length) {
+            score.sets.forEach((stItem, idx) => {
+              const sh = numeric(stItem.home), sa = numeric(stItem.away);
+              sh.dataset.setHome = idx; sa.dataset.setAway = idx;
+              correction.append(scField(`Set ${idx + 1} · ${team('home')}`, sh), scField(`Set ${idx + 1} · ${team('away')}`, sa));
+            });
+          }
+          correction.append(button('Save score correction', () => {
+            const editedSets = d.sport === 'volleyball' ? score.sets.map((stItem, idx) => ({
+              home: Number(correction.querySelector(`[data-set-home="${idx}"]`)?.value ?? stItem.home),
+              away: Number(correction.querySelector(`[data-set-away="${idx}"]`)?.value ?? stItem.away)
+            })) : undefined;
+            submit({ kind: 'correct', home: h.valueAsNumber, away: a.valueAsNumber, sets: editedSets, label: 'Score corrected to ' + h.value + '–' + a.value });
+          }));
+          panel.append(correction);
         }
       }
       const foot = node('div', null, 'sc-row'); panel.append(foot);
@@ -1394,8 +1604,20 @@
       }
     }
 
-    /* ================= 3. FORMATION HELPERS ================= */
-    function generatePositions(formationStr, existing = []) {
+    /* ================= 3. FORMATION & VOLLEYBALL COURT HELPERS ================= */
+    function generatePositions(formationStr, existing = [], sport = 'football') {
+      if (sport === 'volleyball') {
+        const zones = [
+          { x: 22, y: 24, zone: 'Z4' },
+          { x: 50, y: 24, zone: 'Z3' },
+          { x: 78, y: 24, zone: 'Z2' },
+          { x: 22, y: 64, zone: 'Z5' },
+          { x: 50, y: 64, zone: 'Z6' },
+          { x: 78, y: 64, zone: 'Z1' },
+          { x: 84, y: 88, zone: 'L', isLibero: true }
+        ];
+        return zones.map((z, idx) => ({ ...z, playerId: existing[idx]?.playerId || '' }));
+      }
       const nums = String(formationStr || '').split('-').map(Number).filter(n => n > 0 && n <= 11);
       const rows = nums.length ? [1, ...nums] : [1, 4, 3, 3];
       const out = [];
@@ -1427,6 +1649,8 @@
       clock: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
       pin: '<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0z"/><circle cx="12" cy="10" r="2"/>',
       people: '<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m1-14a3 3 0 0 1 0 5m1 3a5 5 0 0 1 4 5"/>',
+      announce: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+      phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/>',
       menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
       close: '<path d="M6 6l12 12M18 6 6 18"/>'
     };
@@ -1475,10 +1699,11 @@
     function pageHead(name, p) { return `<header class="page-head"><div><h1>${e(name)}</h1>${p ? `<p>${e(p)}</p>` : ''}</div></header>`; }
     function message() { return failed ? `<div role="status" class="notice">${loaded ? 'Live updates paused. Showing last available scores.' : 'Match centre could not load.'}<button class="seg" data-retry>Retry</button></div>` : ''; }
 
-    function renderAnnouncements() {
-      const list = state.siteMeta?.announcements || [];
+    function renderAnnouncements(limit = 0) {
+      const all = state.siteMeta?.announcements || [];
+      const list = limit > 0 ? all.slice(0, limit) : all;
       if (!list.length) return '';
-      return `<section class="section">${sectionHead('Announcements')}<div class="announce-list">${list.map(a => `<div class="announce-card"><span class="announce-badge">Notice</span><div><strong>${e(a.title)}</strong>${a.body ? `<p>${e(a.body)}</p>` : ''}</div></div>`).join('')}</div></section>`;
+      return `<section class="section">${sectionHead('Announcements', limit > 0 && all.length > limit ? 'All notices' : '', '#announcements')}<div class="announce-list">${list.map(a => `<div class="announce-card"><span class="announce-badge">Notice</span><div><strong>${e(a.title)}</strong>${a.body ? `<p>${e(a.body)}</p>` : ''}</div></div>`).join('')}</div></section>`;
     }
 
     function home() {
@@ -1492,9 +1717,27 @@
         </div>
       </section>
       <section class="section">${sectionHead('Live now' + (live.length ? `<span class="badge-count">${live.length}</span>` : ''), 'Live centre', '#live')}<div class="fixture-list">${live.length ? live.slice(0, 3).map(fixtureCard).join('') : empty('live', 'No events live right now', 'Live scores appear here the moment a match kicks off.')}</div></section>
-      ${renderAnnouncements()}
+      ${renderAnnouncements(2)}
       <section class="section">${sectionHead('Up next', 'All fixtures', '#fixtures')}<div class="fixture-list">${next.length ? next.slice(0, 3).map(fixtureCard).join('') : empty('fixtures', 'Awaiting the schedule', 'Upcoming fixtures appear here when published.')}</div></section>
       <section class="section">${sectionHead('Competing teams', 'Leaderboard', '#leaderboard')}<div class="teams-grid">${state.teams.map(t => `<a class="team-tile" style="--team:${color(t.color)}" href="#team/${encodeURIComponent(t.id)}">${crest(t)}<span><b>${e(t.name)}</b><small class="team-caption">${state.players.filter(p => p.teamId === t.id).length} players</small></span></a>`).join('')}</div></section>`;
+    }
+
+    function announcementsPage() {
+      const list = state.siteMeta?.announcements || [];
+      return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead('Announcements', 'Official updates and schedule notices.') +
+        (list.length ? `<div class="announce-list">${list.map(a => `<div class="announce-card"><span class="announce-badge">Notice</span><div><strong>${e(a.title)}</strong>${a.body ? `<p>${e(a.body)}</p>` : ''}</div></div>`).join('')}</div>` : empty('announce', 'No announcements yet', 'Tournament notices will appear here.'));
+    }
+
+    function committeePage() {
+      const list = state.siteMeta?.committee || [];
+      return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead('Sports Committee', 'Organising officials and match coordinators.') +
+        (list.length ? `<div class="fixture-list">${list.map((c, idx) => `<div class="team-tile" style="--team:#c2f568"><span class="crest" style="--team:#c2f568">${idx + 1}</span><span><b>${e(c.name)}</b><small class="team-caption">${e(c.role || 'Committee Member')}</small></span></div>`).join('')}</div>` : empty('people', 'Committee details pending', 'Organising committee details will appear here.'));
+    }
+
+    function contactPage() {
+      const contact = state.siteMeta?.contact || '';
+      return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead('Contact Details', 'Get in touch with the Gala Control Desk.') +
+        `<div class="live-article"><h2 class="subhead" style="margin-top:0">Gala Helpdesk &amp; Enquiries</h2><p class="hint" style="font-size:14.5px;margin-top:8px;white-space:pre-line">${e(contact || 'Visit the Gala Control Desk at the main venue for match enquiries.')}</p></div>`;
     }
 
     function options(name, opts) { return `<select class="tool-input" data-filter="${name}" aria-label="Filter by ${name}">${opts.map(([v, l]) => `<option value="${e(v)}" ${filters[name] === v ? 'selected' : ''}>${e(l)}</option>`).join('')}</select>`; }
@@ -1555,60 +1798,62 @@
         `<section class="section">${sectionHead('Team Fixtures')}<div class="fixture-list">${fs.map(fixtureCard).join('') || empty('fixtures', 'No team fixtures yet', 'Published events for this team will appear here.')}</div></section>`;
     }
 
-    function interactivePitch(d, s) {
+    function interactiveArena(d, s) {
       const side = filters.pitchSide === 'away' ? 'away' : 'home';
       const isHome = side === 'home';
+      const isVolley = d.sport === 'volleyball';
       const t = team(isHome ? d.homeId : d.awayId);
       const form = String((isHome ? d.formationHome : d.formationAway) || '').trim();
       const rawPos = (isHome ? d.positionsHome : d.positionsAway) || [];
       const legacyLine = (isHome ? d.lineupHome : d.lineupAway) || [];
-      const positions = rawPos.length ? rawPos : (legacyLine.length || form ? generatePositions(form, legacyLine.map(id => ({ playerId: id }))) : []);
+      const positions = rawPos.length ? rawPos : (legacyLine.length || form || isVolley ? generatePositions(form, legacyLine.map(id => ({ playerId: id })), d.sport) : []);
       const subs = (isHome ? d.subsHome : d.subsAway) || [];
-      if (!positions.length && !subs.length) return '';
+      if (!positions.some(p => p.playerId) && !subs.length && !form) return '';
 
-      const activeIds = s.activeLineups?.[side] || [];
       const subEvents = (s.timeline || []).filter(ev => ev.kind === 'sub' && ev.side === side);
       const cardEvents = (s.timeline || []).filter(ev => (ev.kind === 'yellow' || ev.kind === 'red') && ev.side === side);
-      const goalEvents = (s.timeline || []).filter(ev => ev.kind === 'goal' && ev.side === side);
+      const pointEvents = (s.timeline || []).filter(ev => (ev.kind === 'goal' || ev.kind === 'rally') && ev.side === side);
 
       const resolvedNodes = positions.map((pos, idx) => {
         let pid = pos.playerId;
         const subOut = subEvents.find(ev => ev.playerId === pid);
         if (subOut && subOut.otherPlayerId) pid = subOut.otherPlayerId;
         const pObj = player(pid);
-        const goals = goalEvents.filter(ev => ev.playerId === pid).length;
+        const pts = pointEvents.filter(ev => ev.playerId === pid).length;
         const yellows = cardEvents.filter(ev => ev.playerId === pid && ev.kind === 'yellow').length;
         const reds = cardEvents.filter(ev => ev.playerId === pid && ev.kind === 'red').length;
-        return { ...pos, idx: idx + 1, pid, name: pObj?.name || 'Player ' + (idx + 1), goals, yellows, reds, wasSubbedIn: Boolean(subOut) };
+        return { ...pos, idx: idx + 1, pid, name: pObj?.name || (pos.isLibero ? 'Libero' : 'Player ' + (idx + 1)), pts, yellows, reds, wasSubbedIn: Boolean(subOut) };
       });
 
       const sel = resolvedNodes.find(n => n.pid && n.pid === filters.selectedPlayer);
+      const timeoutsUsed = s.timeouts?.[side] || 0;
 
-      return `<h2 class="subhead">Interactive Lineup &amp; Pitch</h2>
+      return `<h2 class="subhead">${isVolley ? 'Court Lineup & Rotation' : 'Interactive Lineup & Pitch'}</h2>
         <div class="pitch-tabs">
-          <button type="button" class="pitch-tab ${isHome ? 'active' : ''}" data-set="pitchSide" data-value="home">${e(team(d.homeId)?.name || 'Home')} ${d.formationHome ? '(' + e(d.formationHome) + ')' : ''}</button>
-          <button type="button" class="pitch-tab ${!isHome ? 'active' : ''}" data-set="pitchSide" data-value="away">${e(team(d.awayId)?.name || 'Away')} ${d.formationAway ? '(' + e(d.formationAway) + ')' : ''}</button>
+          <button type="button" class="pitch-tab ${isHome ? 'active' : ''}" data-set="pitchSide" data-value="home">${e(team(d.homeId)?.name || 'Home')} ${!isVolley && d.formationHome ? '(' + e(d.formationHome) + ')' : ''}</button>
+          <button type="button" class="pitch-tab ${!isHome ? 'active' : ''}" data-set="pitchSide" data-value="away">${e(team(d.awayId)?.name || 'Away')} ${!isVolley && d.formationAway ? '(' + e(d.formationAway) + ')' : ''}</button>
         </div>
-        <div class="pitch-stage" style="--team:${color(t?.color)}">
+        ${isVolley ? `<div class="volley-meta-bar"><span>Timeouts used: <b>${timeoutsUsed} / 2</b></span><span>Remaining: <b>${Math.max(0, 2 - timeoutsUsed)}</b></span></div>` : ''}
+        <div class="pitch-stage ${isVolley ? 'volley-court' : ''}" style="--team:${color(t?.color)}">
           ${resolvedNodes.map(n => `<button type="button" class="pitch-node ${n.pid && n.pid === filters.selectedPlayer ? 'selected' : ''}" style="left:${n.x}%;top:${n.y}%" data-select-player="${e(n.pid)}">
-            <span class="pitch-dot">${n.idx}</span>
-            <span class="pitch-label">${e(n.name.split(' ')[0])}${n.goals ? ' ⚽' : ''}${n.reds ? ' 🟥' : n.yellows ? ' 🟨' : ''}</span>
+            <span class="pitch-dot ${n.isLibero ? 'libero' : ''}">${n.isLibero ? 'L' : (n.zone || n.idx)}</span>
+            <span class="pitch-label">${e(n.name.split(' ')[0])}${n.pts ? (isVolley ? ' ★' + n.pts : ' ⚽') : ''}${n.reds ? ' 🟥' : n.yellows ? ' 🟨' : ''}</span>
           </button>`).join('')}
         </div>
-        ${sel ? `<div class="player-spotlight"><div><strong>${e(sel.name)}</strong><div class="hint">${e(t?.name || '')}${sel.wasSubbedIn ? ' · Subbed on' : ' · Starter'}</div></div><div>${sel.goals ? '⚽ ×' + sel.goals + ' ' : ''}${sel.yellows ? '🟨 ' : ''}${sel.reds ? '🟥 ' : ''}</div></div>` : '<p class="hint">Tap any player on the pitch to inspect stats.</p>'}
+        ${sel ? `<div class="player-spotlight"><div><strong>${e(sel.name)}</strong><div class="hint">${e(t?.name || '')}${sel.isLibero ? ' · Libero' : sel.wasSubbedIn ? ' · Subbed on' : ' · Starter'}</div></div><div>${sel.pts ? (isVolley ? '★ ' + sel.pts + ' pts ' : '⚽ ×' + sel.pts + ' ') : ''}${sel.yellows ? '🟨 ' : ''}${sel.reds ? '🟥 ' : ''}</div></div>` : '<p class="hint">Tap any player on the ' + (isVolley ? 'court' : 'pitch') + ' to inspect stats.</p>'}
         ${subs.length ? `<h3 class="subhead" style="font-size:17px">Substitutes Bench</h3><div class="subs-grid">${subs.map(sid => {
           const used = subEvents.some(ev => ev.otherPlayerId === sid);
-          return `<span class="sub-chip ${used ? 'subbed' : ''}">${e(player(sid)?.name || 'Sub')}${used ? ' (On pitch)' : ''}</span>`;
+          return `<span class="sub-chip ${used ? 'subbed' : ''}">${e(player(sid)?.name || 'Sub')}${used ? ' (On court)' : ''}</span>`;
         }).join('')}</div>` : ''}`;
     }
 
     function matchPage(f) {
       if (!f) return empty('field', 'Event unavailable', 'This event may have been removed.');
       let d = f.details, s = score(f), v = d.sport === 'volleyball', h = team(d.homeId), a = team(d.awayId), isIndividual = mode(f), isScheduled = st(f) === 'scheduled';
-      let pitchHtml = d.sport === 'football' ? interactivePitch(d, s) : '';
+      let arenaHtml = (d.sport === 'football' || d.sport === 'volleyball') ? interactiveArena(d, s) : '';
       let sets = s.sets || [];
-      /* Public timeline ONLY shows Goals and Cards (filters out admin edits/corrections/timer actions) */
-      let publicTl = [...(s.timeline || [])].filter(x => ['goal', 'yellow', 'red'].includes(x.kind)).reverse();
+      /* Public timeline ONLY shows Goals, Cards, and Volleyball Rallies/Timeouts (hides admin corrections/edits) */
+      let publicTl = [...(s.timeline || [])].filter(x => v ? ['rally', 'yellow', 'red', 'timeout'].includes(x.kind) : ['goal', 'yellow', 'red'].includes(x.kind)).reverse();
       const clk = st(f) === 'live' ? formatClock(computeClock(s.timeline, 'live')) : null;
 
       return `<a class="link-btn" href="#fixtures">← All fixtures</a>` +
@@ -1622,9 +1867,9 @@
           </div>` : ''}
           ${isIndividual ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Attempts' : 'Participants'}</h2>${[...ids(f)].sort((x, y) => (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0)).map(id => `<div class="attempt-row">${crest(team(player(id)?.teamId))}<span>${e(player(id)?.name || 'Participant')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Entrants will appear here.</p>'}` : ''}
           ${v ? `<h2 class="subhead">Sets</h2><p class="hint">Best of ${e(d.bestOf || 3)} · ${e(d.pointLimit || 25)} points per set${d.decidingLimit ? ' · Decider to ' + e(d.decidingLimit) : ''}</p>${sets.map((x, i) => `<div class="set-row">Set ${i + 1}<strong>${e(x.home)} – ${e(x.away)}</strong></div>`).join('')}${st(f) === 'live' && !s.winner ? `<div class="set-row">Current set<strong>${e(s.home ?? 0)} – ${e(s.away ?? 0)}</strong></div>` : ''}` : ''}
-          ${pitchHtml}
-          <h2 class="subhead">Goals &amp; Cards</h2>
-          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : '⚽ '}${e(label(x.kind))}${x.side && team(x.side === 'home' ? d.homeId : d.awayId) ? ' · ' + e(team(x.side === 'home' ? d.homeId : d.awayId).name) : ''}${x.playerId && player(x.playerId) ? ' · <b>' + e(player(x.playerId).name) + '</b>' : ''}</span></li>`).join('')}</ol>` : '<p class="hint">No goals or cards recorded yet.</p>'}
+          ${arenaHtml}
+          <h2 class="subhead">${v ? 'Match Highlights & Cards' : 'Goals & Cards'}</h2>
+          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : x.kind === 'timeout' ? '⏱ ' : v ? '🏐 ' : '⚽ '}${e(x.reason || label(x.kind))}${x.side && team(x.side === 'home' ? d.homeId : d.awayId) ? ' · ' + e(team(x.side === 'home' ? d.homeId : d.awayId).name) : ''}${x.playerId && player(x.playerId) ? ' · <b>' + e(player(x.playerId).name) + '</b>' : ''}</span></li>`).join('')}</ol>` : '<p class="hint">No match highlights recorded yet.</p>'}
           ${st(f) === 'finished' && f.awards?.entries?.length ? `<h2 class="subhead">Championship awards</h2>${f.awards.entries.map(x => `<div class="attempt-row"><span>${e(team(x.teamId)?.name || 'Team')}${x.playerId ? ' · ' + e(player(x.playerId)?.name) : ''}</span><strong>${e(x.points)} pts</strong></div>`).join('')}` : ''}
         </article>`;
     }
@@ -1634,19 +1879,6 @@
       return pageHead('Live centre', fs.length ? `${fs.length} ${fs.length === 1 ? 'event' : 'events'} in progress` : 'Follow live scores and match action.') + (fs.length === 1 ? matchPage(fs[0]).replace(/^.*?<article/s, '<article').replace('<div class="info-line">', `<h2 class="subhead">${e(title(fs[0]))}</h2><p class="hint">${e(fs[0].details.venue)}</p><div class="info-line">`) : fs.length ? `<div class="fixture-list">${fs.map(fixtureCard).join('')}</div>` : empty('live', 'No events live right now', 'Open Fixtures for the latest schedule.'));
     }
 
-    function renderDrawerInfo() {
-      const box = document.getElementById('drawer-info-blocks');
-      if (!box) return;
-      const meta = state.siteMeta || {};
-      const anns = meta.announcements || [];
-      const comm = meta.committee || [];
-      box.innerHTML = `
-        ${anns.length ? `<div class="drawer-card"><h4>Announcements</h4><ul>${anns.map(a => `<li><strong>${e(a.title)}</strong>${e(a.body || '')}</li>`).join('')}</ul></div>` : ''}
-        ${comm.length ? `<div class="drawer-card"><h4>Sports Committee</h4><ul>${comm.map(c => `<li><strong>${e(c.name)}</strong>${e(c.role || '')}</li>`).join('')}</ul></div>` : ''}
-        ${meta.contact ? `<div class="drawer-card"><h4>Contact</h4><p>${e(meta.contact)}</p></div>` : ''}
-      `;
-    }
-
     function route() {
       let parts = location.hash.slice(1).split('/');
       return { tab: parts[0] || 'home', id: parts[1] ? decodeURIComponent(parts[1]) : '' };
@@ -1654,15 +1886,25 @@
 
     function renderPublic() {
       let { tab, id } = route();
-      let panel = ({ home, fixtures: fixtureList, standings, leaderboard, live: livePage, match: () => matchPage(state.fixtures.find(f => f.id === id)), team: () => teamPage(id) })[tab] || home;
+      let panel = ({
+        home,
+        fixtures: fixtureList,
+        standings,
+        leaderboard,
+        live: livePage,
+        announcements: announcementsPage,
+        committee: committeePage,
+        contact: contactPage,
+        match: () => matchPage(state.fixtures.find(f => f.id === id)),
+        team: () => teamPage(id)
+      })[tab] || home;
       let active = tab === 'team' ? 'home' : tab === 'match' ? (st(state.fixtures.find(f => f.id === id) || {}) === 'live' ? 'live' : 'fixtures') : tab;
       nav.innerHTML = views.map(v => `<a href="#${v}" ${v === active ? 'aria-current="page"' : ''}>${icon(v)}<span>${label(v)}</span></a>`).join('');
       const open = new Set([...main.querySelectorAll('details[open]')].map(el => el.dataset.persist));
       main.innerHTML = message() + (loaded ? panel() : (tab === 'home' ? home().split('<section class="section">')[0] : '') + (failed ? '' : `<div class="loading" role="status">Loading match centre…</div>`));
       for (let el of main.querySelectorAll('details')) if (open.has(el.dataset.persist)) el.open = true;
-      renderDrawerInfo();
       if (lastHash !== location.hash) { window.scrollTo(0, 0); lastHash = location.hash; }
-      document.title = `${label(views.includes(tab) ? tab : tab === 'match' ? 'Event details' : 'Team')} · Level Up ’26`;
+      document.title = `${label(views.includes(tab) ? tab : tab === 'match' ? 'Event details' : tab === 'team' ? 'Team' : tab)} · Level Up ’26`;
     }
 
     /* Tick all visible live match clocks smoothly every second */
@@ -1707,7 +1949,10 @@
     const sports = { football: 'Football', volleyball: 'Volleyball', crossbar: 'Crossbar challenge', custom: 'Custom event' };
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
-    let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0 }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0 } };
+    let designerState = {
+      Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true },
+      Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false }
+    };
 
     const current = () => adminData.fixtures.find(f => f.id === activeId);
     const allowed = (p, f) => adminData.role === 'admin' || (adminData.permissions.includes(p) && (!adminData.assigned.length || (f && adminData.assigned.includes(f.id))));
@@ -1762,44 +2007,51 @@
     function localTime(iso) { return iso ? new Date(new Date(iso).getTime() + 19800000).toISOString().slice(0, 16) : ''; }
 
     function initDesigner(d) {
+      const sport = d.sport || 'football';
       for (const side of ['Home', 'Away']) {
         const fStr = d['formation' + side] || '4-3-3';
         const savedPos = d['positions' + side];
         const legacy = (d['lineup' + side] || []).map(id => ({ playerId: id }));
+        const validSaved = savedPos?.length && (sport === 'volleyball' ? savedPos.some(p => p.zone) : !savedPos.some(p => p.zone));
         designerState[side] = {
           formation: fStr,
-          positions: savedPos?.length ? JSON.parse(JSON.stringify(savedPos)) : generatePositions(fStr, legacy),
-          selectedIdx: 0
+          positions: validSaved ? JSON.parse(JSON.stringify(savedPos)) : generatePositions(fStr, legacy, sport),
+          selectedIdx: 0,
+          open: side === 'Home'
         };
       }
     }
 
-    function renderPitchDesigner(side, teamId) {
+    function renderArenaDesigner(side, teamId, sport) {
+      const isVolley = sport === 'volleyball';
       const stSide = designerState[side];
       const roster = adminData.players.filter(p => p.teamId === teamId);
       const selNode = stSide.positions[stSide.selectedIdx] || stSide.positions[0];
 
       return `<div class="adm-pitch-wrap" data-designer-side="${side}">
-        <div class="fields" style="margin:8px 0">
+        ${!isVolley ? `<div class="fields" style="margin:8px 0">
           <label class="field">Formation numbers (e.g. 4-3-3 or 3-5-2)
             <input type="text" data-form-input="${side}" value="${esc(stSide.formation)}" placeholder="e.g. 4-3-3">
           </label>
           <div style="display:flex;align-items:end">
             <button type="button" data-reset-dots="${side}">Arrange dots from formation</button>
           </div>
-        </div>
-        <p class="hint">Drag any dot anywhere on the pitch to position players. Click a dot to assign their name.</p>
-        <div class="adm-pitch-board" data-board="${side}">
+        </div>` : `<div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0">
+          <span class="hint" style="margin:0">6 Court Zones + Libero (L)</span>
+          <button type="button" data-reset-dots="${side}">Reset court zones</button>
+        </div>`}
+        <p class="hint">Drag any dot smoothly on the ${isVolley ? 'court' : 'pitch'}. Tap a dot to pick the player below.</p>
+        <div class="adm-pitch-board ${isVolley ? 'volley-board' : ''}" data-board="${side}">
           ${stSide.positions.map((pos, idx) => {
-            const pName = adminData.players.find(p => p.id === pos.playerId)?.name || ('#' + (idx + 1));
-            return `<div class="adm-dot ${idx === stSide.selectedIdx ? 'active' : ''}" data-dot-idx="${idx}" style="left:${pos.x}%;top:${pos.y}%">
-              <span>${idx + 1}</span>
+            const pName = adminData.players.find(p => p.id === pos.playerId)?.name || (pos.isLibero ? 'Libero' : '#' + (idx + 1));
+            return `<div class="adm-dot ${pos.isLibero ? 'libero-dot' : ''} ${idx === stSide.selectedIdx ? 'active' : ''}" data-dot-idx="${idx}" style="left:${pos.x}%;top:${pos.y}%">
+              <span>${pos.isLibero ? 'L' : (pos.zone || idx + 1)}</span>
               <small>${esc(pName)}</small>
             </div>`;
           }).join('')}
         </div>
-        ${selNode ? `<div class="adm-dot-picker">
-          <strong>Position #${stSide.selectedIdx + 1} Player:</strong>
+        ${selNode ? `<div class="adm-dot-picker" data-picker-box="${side}">
+          <strong data-picker-label="${side}">${selNode.isLibero ? 'Libero (L)' : (selNode.zone ? 'Zone ' + selNode.zone : 'Position #' + (stSide.selectedIdx + 1))} Player:</strong>
           <select data-assign-player="${side}" style="min-width:200px">
             <option value="">— Unassigned —</option>
             ${roster.map(p => `<option value="${esc(p.id)}" ${p.id === selNode.playerId ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
@@ -1841,17 +2093,26 @@
 
       function renderLineups() {
         const lineups = form.querySelector('#lineups');
+        const curSport = form.sport.value;
+        /* Preserve currently checked substitutes before re-rendering */
+        const curSubs = {
+          Home: new FormData(form).getAll('subsHome'),
+          Away: new FormData(form).getAll('subsAway')
+        };
+        if (curSubs.Home.length) d.subsHome = curSubs.Home;
+        if (curSubs.Away.length) d.subsAway = curSubs.Away;
+
         lineups.innerHTML = '';
-        if (form.sport.value !== 'football' || form.format.value !== 'team') return;
+        if ((curSport !== 'football' && curSport !== 'volleyball') || form.format.value !== 'team') return;
         for (const side of ['Home', 'Away']) {
           const id = form.elements[side.toLowerCase() + 'Id'].value;
           if (!id) continue;
           const players = adminData.players.filter(p => p.teamId === id);
-          const openAttr = side === 'Home' ? 'open' : '';
+          const openAttr = designerState[side].open ? 'open' : '';
           lineups.insertAdjacentHTML('beforeend',
-            `<details class="spaced" ${openAttr}>
-              <summary>${esc(teamName(id))} · Interactive Formation &amp; Subs</summary>
-              ${renderPitchDesigner(side, id)}
+            `<details class="spaced" data-side-details="${side}" ${openAttr}>
+              <summary>${esc(teamName(id))} · ${curSport === 'volleyball' ? 'Court Lineup & Subs' : 'Formation & Subs'}</summary>
+              ${renderArenaDesigner(side, id, curSport)}
               <fieldset style="margin-top:12px"><legend>Substitutes Bench</legend>
                 <div class="pick">${players.map(p => admCheckbox('subs' + side, p.id, p.name, (d['subs' + side] || []).includes(p.id))).join('')}</div>
               </fieldset>
@@ -1859,6 +2120,12 @@
           );
         }
       }
+
+      /* Track open/close state of Home & Away accordions so Away never snaps shut */
+      form.addEventListener('toggle', ev => {
+        const det = ev.target.closest('[data-side-details]');
+        if (det) designerState[det.dataset.sideDetails].open = det.open;
+      }, true);
 
       function update() {
         const sport = form.sport.value, isTeam = form.format.value === 'team';
@@ -1868,40 +2135,51 @@
         renderLineups();
       }
 
-      /* Interactive Drag & Click Handlers for Pitch Dots */
+      /* Smooth Dragging Without Destroying Active DOM Node */
       let dragging = null;
       form.addEventListener('pointerdown', ev => {
         const dot = ev.target.closest('.adm-dot');
         if (!dot) return;
+        ev.preventDefault();
         const board = dot.closest('.adm-pitch-board');
         const side = board.dataset.board;
         const idx = Number(dot.dataset.dotIdx);
         designerState[side].selectedIdx = idx;
-        dragging = { side, idx, board };
+
+        board.querySelectorAll('.adm-dot').forEach((el, i) => el.classList.toggle('active', i === idx));
+        const selNode = designerState[side].positions[idx];
+        const lbl = form.querySelector(`[data-picker-label="${side}"]`);
+        const sel = form.querySelector(`[data-assign-player="${side}"]`);
+        if (lbl && selNode) lbl.textContent = (selNode.isLibero ? 'Libero (L)' : (selNode.zone ? 'Zone ' + selNode.zone : 'Position #' + (idx + 1))) + ' Player:';
+        if (sel && selNode) sel.value = selNode.playerId || '';
+
+        dragging = { side, idx, board, dot };
         dot.setPointerCapture(ev.pointerId);
-        renderLineups();
       });
 
       form.addEventListener('pointermove', ev => {
         if (!dragging) return;
         const rect = dragging.board.getBoundingClientRect();
-        const x = Math.max(6, Math.min(94, Math.round(((ev.clientX - rect.left) / rect.width) * 100)));
-        const y = Math.max(6, Math.min(94, Math.round(((ev.clientY - rect.top) / rect.height) * 100)));
+        if (!rect.width || !rect.height) return;
+        const x = Math.max(8, Math.min(92, Math.round(((ev.clientX - rect.left) / rect.width) * 100)));
+        const y = Math.max(8, Math.min(92, Math.round(((ev.clientY - rect.top) / rect.height) * 100)));
         designerState[dragging.side].positions[dragging.idx].x = x;
         designerState[dragging.side].positions[dragging.idx].y = y;
-        const dotEl = dragging.board.querySelector(`[data-dot-idx="${dragging.idx}"]`);
-        if (dotEl) { dotEl.style.left = x + '%'; dotEl.style.top = y + '%'; }
+        dragging.dot.style.left = x + '%';
+        dragging.dot.style.top = y + '%';
       });
 
-      form.addEventListener('pointerup', () => { dragging = null; });
+      const stopDrag = () => { dragging = null; };
+      form.addEventListener('pointerup', stopDrag);
+      form.addEventListener('pointercancel', stopDrag);
 
       form.addEventListener('click', ev => {
         const resetBtn = ev.target.closest('[data-reset-dots]');
         if (resetBtn) {
           const side = resetBtn.dataset.resetDots;
           const inp = form.querySelector(`[data-form-input="${side}"]`);
-          designerState[side].formation = inp.value.trim();
-          designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions);
+          if (inp) designerState[side].formation = inp.value.trim();
+          designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions, form.sport.value);
           designerState[side].selectedIdx = 0;
           renderLineups();
         }
@@ -1911,7 +2189,7 @@
         if (ev.target.dataset.formInput) {
           const side = ev.target.dataset.formInput;
           designerState[side].formation = ev.target.value.trim();
-          designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions);
+          designerState[side].positions = generatePositions(designerState[side].formation, designerState[side].positions, form.sport.value);
           designerState[side].selectedIdx = 0;
           renderLineups();
           return;
@@ -1919,18 +2197,31 @@
         if (ev.target.dataset.assignPlayer) {
           const side = ev.target.dataset.assignPlayer;
           const stSide = designerState[side];
-          if (stSide.positions[stSide.selectedIdx]) {
-            stSide.positions[stSide.selectedIdx].playerId = ev.target.value;
+          const idx = stSide.selectedIdx;
+          if (stSide.positions[idx]) {
+            stSide.positions[idx].playerId = ev.target.value;
+            const pName = adminData.players.find(p => p.id === ev.target.value)?.name || (stSide.positions[idx].isLibero ? 'Libero' : '#' + (idx + 1));
+            const dotLabel = form.querySelector(`[data-board="${side}"] [data-dot-idx="${idx}"] small`);
+            if (dotLabel) dotLabel.textContent = pName;
           }
-          renderLineups();
           return;
         }
         if (['homeId', 'awayId', 'sport', 'format'].includes(ev.target.name)) {
-          if (ev.target.name === 'homeId') designerState.Home.positions.forEach(p => p.playerId = '');
-          if (ev.target.name === 'awayId') designerState.Away.positions.forEach(p => p.playerId = '');
+          if (ev.target.name === 'homeId') {
+            designerState.Home.positions.forEach(p => p.playerId = '');
+            designerState.Home.open = true;
+          }
+          if (ev.target.name === 'awayId') {
+            designerState.Away.positions.forEach(p => p.playerId = '');
+            designerState.Away.open = true;
+          }
           if (ev.target.name === 'sport') {
             if (form.sport.value === 'crossbar') form.format.value = 'individual';
-            if (['football', 'volleyball'].includes(form.sport.value)) form.format.value = 'team';
+            if (['football', 'volleyball'].includes(form.sport.value)) {
+              form.format.value = 'team';
+              designerState.Home.positions = generatePositions(designerState.Home.formation, [], form.sport.value);
+              designerState.Away.positions = generatePositions(designerState.Away.formation, [], form.sport.value);
+            }
           }
           update();
         }
@@ -1998,7 +2289,7 @@
       app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
         `<form class="panel" id="siteMetaForm">
           <h2>Announcements, Committee &amp; Contact</h2>
-          <p class="hint">Updates here appear immediately in the public Home screen and Slide Menu.</p>
+          <p class="hint">Updates here appear immediately in the public Home screen and Slide Menu pages.</p>
           <fieldset class="spaced"><legend>Announcements</legend>
             <div id="annRows">${(meta.announcements || []).map(a => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px">
               <label class="field">Title<input name="annTitle" value="${esc(a.title)}"></label>
@@ -2014,7 +2305,7 @@
             ${admBtn('+ Add committee member', 'addCommRow')}
           </fieldset>
           <div class="fields">
-            <div class="full"><label class="field">Contact Information<textarea name="contact" rows="2">${esc(meta.contact || '')}</textarea></label></div>
+            <div class="full"><label class="field">Contact Information<textarea name="contact" rows="3">${esc(meta.contact || '')}</textarea></label></div>
           </div>
           <div class="actions spaced"><button class="primary">Publish Site Info</button></div>
         </form>`;
