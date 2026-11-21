@@ -1,0 +1,38 @@
+{
+  "id": "/",
+  "name": "Level Up ’26 · Match Centre",
+  "short_name": "Level Up ’26",
+  "description": "The official Level Up ’26 sports and games gala match centre.",
+  "start_url": "/index.html#home",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1410",
+  "theme_color": "#0d1410",
+  "icons": [
+    {
+      "src": "./assets/logo_192x192_transparent.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/logo_512x512_transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/logo_512x512_transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/logo_1024x1024_transparent.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
