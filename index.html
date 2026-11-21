@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Level Up ’26">
-  <link id="pwa-manifest" rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Level%20Up%20%E2%80%9926%22%2C%22short_name%22%3A%22Level%20Up%20%E2%80%9926%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230e1511%22%2C%22theme_color%22%3A%22%230d1410%22%7D">
+  <link id="pwa-manifest" rel="manifest" href="">
   <link id="apple-touch-icon" rel="apple-touch-icon" href="">
   <title>Level Up ’26 · Match Centre</title>
   <style>
@@ -106,11 +106,7 @@
       overflow-y: auto;
     }
     .drawer.open { transform: translateX(0); }
-    .drawer-inner-sticky {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .drawer-inner-sticky { display: flex; flex-direction: column; gap: 14px; }
     .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
     .drawer-head strong { font: italic 800 22px/1 var(--title); text-transform: uppercase; letter-spacing: -.02em; }
     .drawer-head strong span { color: var(--lime); }
@@ -259,7 +255,7 @@
     .rank-name small { color: var(--muted); font-size: 12px; }
     .rank-points { font: 700 22px var(--title); color: var(--lime); }
     .rank-points small { font: 600 10px var(--body); color: var(--muted); margin-left: 3px; }
-    .team-expand-body { padding: 0 15px 14px 48px; border-top: 1px solid #243129; padding-top: 11px; }
+    .team-expand-body { padding: 11px 15px 14px 48px; border-top: 1px solid #243129; }
     .team-expand-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
     .teammates-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 9px; background: #1f3025; border: 1px solid #486b4a; color: var(--lime); font-weight: 700; font-size: 12.5px; }
     .teammates-btn:hover, .teammates-btn.open { background: var(--lime); color: #132012; border-color: var(--lime); }
@@ -284,7 +280,7 @@
     .match-score > strong > small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
     .subhead { font-size: 21px; margin: 20px 0 8px; }
 
-    /* Rubik's Cube & Eating Contest Public Leaderboard */
+    /* Rubik's Cube, Eating & Push-Up Public Leaderboard */
     .rubiks-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 11px; background: #1a261f; border: 1px solid var(--line); margin-bottom: 7px; }
     .rubiks-row.podium-1 { border-color: var(--lime); background: rgba(194, 245, 104, .1); }
     .rubiks-rank { font: 800 20px/1 var(--title); color: var(--lime); min-width: 26px; text-align: center; }
@@ -463,7 +459,7 @@
     #admin-shell .award-row { display: grid; grid-template-columns: .7fr 1.3fr 1.3fr .8fr auto; align-items: end; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--admin-line); }
     #admin-shell main { padding-bottom: 60px; }
 
-    /* Rubik's Cube & Eating Contest Admin Controls */
+    /* Rubik's Cube, Eating & Push-Up Admin Controls */
     .sc-cube-team-block { border: 1px solid #dce4da; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; background: #f9fbf8; }
     .sc-cube-team-head { font-weight: 700; font-size: 14px; color: #142b22; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .sc-cube-player { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid #e6ece4; flex-wrap: wrap; }
@@ -519,8 +515,6 @@
     .sc-history { padding-left: 1.5em; margin: .35rem 0; }
     .sc-history li { padding: .3rem 0; }
     .sc-info { color: #4d6152; }
-    .sc-bout-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border: 1px solid #dce4da; border-radius: 8px; margin-bottom: 8px; flex-wrap: wrap; background: #f8faf7; }
-    .sc-bout-item.done { background: #eef6e8; border-color: #b7d4a8; }
 
     @media (max-width: 650px) {
       #admin-shell .header-inner, #admin-shell main { padding-left: 14px; padding-right: 14px; }
@@ -677,7 +671,6 @@
       const metaRec = (result.fixtures || []).find(f => f.id === META_ID || f.details?.isSiteMeta);
       const rawMeta = metaRec?.details?.siteMeta || {};
 
-      // Merge event branding overrides
       const customBrand = rawMeta.eventBranding || {};
       result.branding = {
         ...(result.branding || {}),
@@ -687,7 +680,6 @@
         logo: logoUrl(customBrand.logo || result.branding?.logo || result.branding?.image || '')
       };
 
-      // Merge team overrides, added teams, and deleted teams
       const teamOverrides = rawMeta.teamOverrides || {};
       const deletedTeamIds = new Set(rawMeta.deletedTeamIds || []);
       const baseTeams = (result.teams || []).filter(t => !deletedTeamIds.has(t.id)).map(t => {
@@ -705,7 +697,6 @@
       }));
       result.teams = [...baseTeams, ...addedTeams];
 
-      // Merge player overrides, added players, and deleted players
       const playerOverrides = rawMeta.playerOverrides || {};
       const deletedPlayerIds = new Set(rawMeta.deletedPlayerIds || []);
       const basePlayers = (result.players || []).filter(p => !deletedPlayerIds.has(p.id) && !deletedTeamIds.has(p.teamId)).map(p => {
@@ -730,7 +721,7 @@
         committee: Array.isArray(rawMeta.committee) ? rawMeta.committee : [{ role: 'General Convenor', name: 'Sports Committee · Level Up ’26' }, { role: 'Match Control', name: 'Gala Technical Desk' }],
         contacts,
         fixtureOrder: Array.isArray(rawMeta.fixtureOrder) ? rawMeta.fixtureOrder : [],
-        manualResults: Array.isArray(rawMeta.manualResults) ? rawMeta.manualResults : [],
+        publishedResults: Array.isArray(rawMeta.publishedResults) ? rawMeta.publishedResults : [],
         eventBranding: customBrand,
         teamOverrides,
         addedTeams,
@@ -799,33 +790,33 @@
       });
     }
 
-    /* 2. STOPWATCH, RUBIK'S CUBE, EATING CONTEST, ARM WRESTLING & SCORING */
+    /* 2. STOPWATCH, RUBIK'S CUBE, EATING CONTEST, PUSH-UP CHALLENGE, ARM WRESTLING & SCORING */
     const sides = ['home', 'away'], sideKey = s => s === 'home' ? 'Home' : 'Away', opponent = s => s === 'home' ? 'away' : 'home';
     const integer = (v, min = 0) => Number.isSafeInteger(v) && v >= min;
     const check = (c, m) => { if (!c) throw new Error(m); };
     const number = (v, fb) => integer(Number(v), 1) ? Number(v) : fb;
     const isSetSport = sport => sport === 'volleyball' || sport === 'badminton';
+    const isRepSport = sport => sport === 'eating' || sport === 'pushup';
+    const isContestSport = sport => sport === 'rubiks' || isRepSport(sport);
 
     function formatEatAmount(amount, unit = 'items', dnf = false) {
       if (dnf) return 'DNF';
-      const val = Number(amount);
-      if (!Number.isFinite(val) || val < 0) return '—';
-      const cleanNum = Number.isInteger(val) ? String(val) : String(Math.round(val * 100) / 100);
-      const u = String(unit || '').trim();
-      return u ? `${cleanNum} ${u}` : cleanNum;
+      const num = Number(amount);
+      if (!Number.isFinite(num) || num < 0) return '—';
+      const cleanNum = Number.isInteger(num) ? String(num) : num.toFixed(2).replace(/\.?0+$/, '');
+      return `${cleanNum} ${unit || 'items'}`.trim();
     }
 
-    function formatSolveDuration(timeSec, dnf = false) {
-      if (dnf) return 'DNF';
-      const val = Number(timeSec);
-      if (!Number.isFinite(val) || val < 0) return '—';
-      const totalHundredths = Math.round(val * 100);
-      const mins = Math.floor(totalHundredths / 6000);
-      const remHundredths = totalHundredths % 6000;
-      const secs = Math.floor(remHundredths / 100);
-      const cs = remHundredths % 100;
-      const secPart = String(secs).padStart(mins > 0 ? 2 : 1, '0') + '.' + String(cs).padStart(2, '0') + 's';
-      return mins > 0 ? `${mins}:${secPart}` : secPart;
+    function formatDurationMs(ms) {
+      if (ms === 'DNF' || ms === -1) return 'DNF';
+      const num = Number(ms);
+      if (!Number.isFinite(num) || num < 0) return '—';
+      const totalCentis = Math.round(num / 10);
+      const mins = Math.floor(totalCentis / 6000);
+      const secs = Math.floor((totalCentis % 6000) / 100);
+      const centis = totalCentis % 100;
+      const secPart = String(secs).padStart(2, '0') + '.' + String(centis).padStart(2, '0');
+      return mins > 0 ? `${mins}:${secPart}` : `${secPart}s`;
     }
 
     function computeClock(history = [], status = 'scheduled') {
@@ -845,20 +836,10 @@
 
     function formatClock(clock, now = Date.now()) {
       const extra = clock.runningSince ? Math.max(0, now - clock.runningSince) : 0;
-      const elapsedMs = clock.accMs + extra;
-      const totalSec = Math.floor(elapsedMs / 1000);
+      const totalMs = clock.accMs + extra;
+      const totalSec = Math.floor(totalMs / 1000);
       const mins = Math.floor(totalSec / 60), secs = totalSec % 60;
-      const exactSec = Math.round((elapsedMs / 1000) * 100) / 100;
-      return {
-        mins,
-        secs,
-        exactSec,
-        text: String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0'),
-        preciseText: formatSolveDuration(exactSec),
-        running: Boolean(clock.runningSince),
-        stateLabel: clock.stateLabel,
-        extraMins: clock.extraMins || 0
-      };
+      return { totalMs, mins, secs, text: String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0'), running: Boolean(clock.runningSince), stateLabel: clock.stateLabel, extraMins: clock.extraMins || 0 };
     }
 
     function setRules(details) {
@@ -886,6 +867,18 @@
       else { score.home = 0; score.away = 0; score.period = 'Set ' + (score.sets.length + 1); }
     }
 
+    function defaultArmBoxes(details = {}) {
+      const saved = Array.isArray(details.initialArmBoxes) ? details.initialArmBoxes : [];
+      return [0, 1, 2, 3].map(idx => ({
+        id: saved[idx]?.id || `qf-${idx + 1}`,
+        stage: 'QF',
+        label: `Match ${idx + 1}`,
+        p1Id: saved[idx]?.p1Id || '',
+        p2Id: saved[idx]?.p2Id || '',
+        winnerSlot: null
+      }));
+    }
+
     function replay(details, history = []) {
       const initHome = (details.positionsHome?.length ? details.positionsHome.map(p => p.playerId) : details.lineupHome) || [];
       const initAway = (details.positionsAway?.length ? details.positionsAway.map(p => p.playerId) : details.lineupAway) || [];
@@ -903,10 +896,8 @@
         solveTimes: {},
         eatAmounts: {},
         extraContestants: [],
+        armBoxes: details.sport === 'armwrestling' ? defaultArmBoxes(details) : [],
         bouts: [],
-        armBoxes: Array.isArray(details.initialArmBoxes) && details.initialArmBoxes.length
-          ? JSON.parse(JSON.stringify(details.initialArmBoxes))
-          : null,
         winner: null,
         activeLineups: { home: [...initHome], away: [...initAway] },
         timeline: history
@@ -973,31 +964,31 @@
                 score.solveTimes[e.playerId] = {
                   playerId: e.playerId,
                   teamId: e.teamId || '',
-                  timeSec: e.dnf ? null : Number(e.timeSec),
+                  ms: e.dnf ? -1 : Number(e.ms),
                   dnf: Boolean(e.dnf)
                 };
               }
             }
             break;
           }
-          case 'arm_boxes_set': {
-            if (Array.isArray(e.boxes)) {
-              score.armBoxes = JSON.parse(JSON.stringify(e.boxes));
-            }
-            break;
-          }
-          case 'arm_boxes_append': {
-            if (Array.isArray(e.boxes)) {
-              const cur = Array.isArray(score.armBoxes) ? score.armBoxes : [];
-              score.armBoxes = [...cur, ...JSON.parse(JSON.stringify(e.boxes))];
+          case 'arm_box_set': {
+            const box = score.armBoxes.find(b => b.id === e.boxId);
+            if (box && !box.winnerSlot) {
+              if (e.p1Id !== undefined) box.p1Id = e.p1Id;
+              if (e.p2Id !== undefined) box.p2Id = e.p2Id;
             }
             break;
           }
           case 'arm_box_win': {
-            if (Array.isArray(score.armBoxes)) {
-              const bx = score.armBoxes.find(x => x.id === e.boxId);
-              if (bx) {
-                bx.winnerSlot = e.slot || null;
+            const box = score.armBoxes.find(b => b.id === e.boxId);
+            if (box) box.winnerSlot = e.slot || null;
+            break;
+          }
+          case 'arm_advance_stage': {
+            if (Array.isArray(e.boxes)) {
+              score.armBoxes = score.armBoxes.filter(b => b.stage !== e.stage);
+              for (const nb of e.boxes) {
+                score.armBoxes.push({ id: nb.id, stage: e.stage, label: nb.label, p1Id: nb.p1Id || '', p2Id: nb.p2Id || '', winnerSlot: null });
               }
             }
             break;
@@ -1049,7 +1040,7 @@
       const sport = details.sport, individual = details.format === 'individual';
       if (e.kind === 'start') {
         check(s.status === 'scheduled', 'This event has already started.');
-        e.period = individual ? '' : sport === 'football' ? 'First half' : isSetSport(sport) ? 'Set 1' : sport === 'armwrestling' ? 'Round 1' : '';
+        e.period = individual ? '' : sport === 'football' ? 'First half' : isSetSport(sport) ? 'Set 1' : '';
       } else {
         check(s.status === 'live', 'Go live before recording a score.');
         if (['goal', 'yellow', 'red', 'sub', 'point', 'rally', 'timeout', 'server', 'bout_win'].includes(e.kind)) check(sides.includes(e.side), 'Choose a team.');
@@ -1059,27 +1050,27 @@
             check(sport === 'badminton' && !individual, 'Server control is for badminton.');
             break;
           case 'rubiks_contestant_add':
-            check(sport === 'rubiks' || sport === 'eating', 'Contestant additions are for Rubik’s Cube or Eating Contest events.');
+            check(isContestSport(sport), 'Contestant additions are for Rubik’s Cube, Eating Contest, or Push-Up Challenge events.');
             check(e.playerId, 'Select a contestant to add.');
             break;
           case 'eat_amount':
-            check(sport === 'eating', 'Quantity scores are for Eating Contest events.');
+            check(isRepSport(sport), 'Repetition / quantity scores are for Eating Contest or Push-Up Challenge events.');
             check(e.playerId, 'Select a contestant.');
             if (!e.dnf && !e.clear) {
-              check(Number.isFinite(Number(e.amount)) && Number(e.amount) >= 0, 'Enter a valid quantity eaten.');
+              check(Number.isFinite(Number(e.amount)) && Number(e.amount) >= 0, sport === 'pushup' ? 'Enter a valid push-up count.' : 'Enter a valid quantity eaten.');
             }
             break;
           case 'solve_time':
-            check(sport === 'rubiks', 'Solve times are for Rubik’s Cube events.');
+            check(sport === 'rubiks', 'Solve times are for Rubik’s Cube Challenge.');
             check(e.playerId, 'Select a contestant.');
             if (!e.dnf && !e.clear) {
-              check(Number.isFinite(Number(e.timeSec)) && Number(e.timeSec) > 0, 'Enter a valid solve time greater than 0.');
+              check(Number.isFinite(Number(e.ms)) && Number(e.ms) > 0, 'Enter a valid solve time.');
             }
             break;
-          case 'arm_boxes_set':
-          case 'arm_boxes_append':
+          case 'arm_box_set':
           case 'arm_box_win':
-            check(sport === 'armwrestling', 'Match boxes are for Arm Wrestling events.');
+          case 'arm_advance_stage':
+            check(sport === 'armwrestling', 'Bout controls are for Arm Wrestling.');
             break;
           case 'goal': case 'yellow': case 'red': case 'sub': case 'period':
             if (sport === 'volleyball' && ['yellow', 'red', 'sub'].includes(e.kind)) {
@@ -1126,210 +1117,140 @@
       return replay(details, timeline);
     }
 
+    function node(tag, title, className) { const el = document.createElement(tag); if (title != null) el.textContent = title; if (className) el.className = className; return el; }
+    function scSelect(items) { const el = node('select'); for (const [v, t] of items) el.add(new Option(t, v)); return el; }
+    function numeric(value, min = 0, max = null) { const el = node('input'); el.type = 'number'; el.value = value; el.min = min; if (max != null) el.max = max; return el; }
+    function scField(label, control) { const el = node('label', label, 'sc-field'); el.append(control); return el; }
+
     function getRubiksLeaderboard(d, s, allTeams, allPlayers) {
       const regIds = new Set([...(d.playerIds || []), ...(s.extraContestants || []), ...Object.keys(s.solveTimes || {})]);
       const tIds = new Set(d.teamIds || []);
-      let contestants = [...regIds]
-        .map(pid => allPlayers.find(p => p.id === pid))
-        .filter(Boolean);
+      const teamMap = new Map((allTeams || []).map(t => [t.id, t]));
+      const playerMap = new Map((allPlayers || []).map(p => [p.id, p]));
 
-      if (!contestants.length && tIds.size) {
-        contestants = allPlayers.filter(p => tIds.has(p.teamId));
-      }
-
-      const entries = contestants.map(p => {
-        const rec = s.solveTimes?.[p.id] || null;
-        const t = allTeams.find(x => x.id === (rec?.teamId || p.teamId));
-        const hasTime = Boolean(rec && !rec.dnf && Number.isFinite(Number(rec.timeSec)) && Number(rec.timeSec) > 0);
-        const timeSec = hasTime ? Number(rec.timeSec) : Infinity;
+      const entries = [...regIds].map(pid => {
+        const pObj = playerMap.get(pid);
+        if (!pObj) return null;
+        const rec = s.solveTimes?.[pid];
+        const tid = rec?.teamId || pObj.teamId;
+        const tObj = teamMap.get(tid);
+        const solved = rec && !rec.dnf && Number.isFinite(rec.ms) && rec.ms > 0;
+        const dnf = Boolean(rec?.dnf);
         return {
-          player: p,
-          team: t,
-          teamId: t?.id || p.teamId,
-          solved: hasTime,
-          dnf: Boolean(rec?.dnf),
-          timeSec,
-          displayTime: rec ? formatSolveDuration(rec.timeSec, rec.dnf) : '—'
+          player: pObj,
+          team: tObj,
+          teamId: tid,
+          ms: solved ? rec.ms : Infinity,
+          solved,
+          dnf,
+          displayTime: solved ? formatDurationMs(rec.ms) : dnf ? 'DNF' : 'Pending'
         };
-      });
-
-      entries.sort((a, b) => {
-        if (a.solved && b.solved) return a.timeSec - b.timeSec || a.player.name.localeCompare(b.player.name);
+      }).filter(Boolean).sort((a, b) => {
+        if (a.solved && b.solved) return a.ms - b.ms || a.player.name.localeCompare(b.player.name);
         if (a.solved) return -1;
         if (b.solved) return 1;
-        if (a.dnf && !b.dnf) return 1;
-        if (!a.dnf && b.dnf) return -1;
+        if (a.dnf !== b.dnf) return a.dnf ? -1 : 1;
         return a.player.name.localeCompare(b.player.name);
       });
 
-      const teamMap = new Map();
-      for (const tid of tIds) {
-        const t = allTeams.find(x => x.id === tid);
-        if (t) teamMap.set(tid, { team: t, solvers: [], bestSec: Infinity, bestPlayer: null, solvedCount: 0, totalCount: 0 });
-      }
-      for (const ent of entries) {
-        if (!ent.team) continue;
-        if (!teamMap.has(ent.team.id)) {
-          teamMap.set(ent.team.id, { team: ent.team, solvers: [], bestSec: Infinity, bestPlayer: null, solvedCount: 0, totalCount: 0 });
-        }
-        const row = teamMap.get(ent.team.id);
-        row.solvers.push(ent);
-        row.totalCount++;
-        if (ent.solved) {
-          row.solvedCount++;
-          if (ent.timeSec < row.bestSec) {
-            row.bestSec = ent.timeSec;
-            row.bestPlayer = ent.player;
-          }
-        }
-      }
-
-      const teamSummary = [...teamMap.values()].sort((a, b) => {
-        if (Number.isFinite(a.bestSec) && Number.isFinite(b.bestSec)) return a.bestSec - b.bestSec;
-        if (Number.isFinite(a.bestSec)) return -1;
-        if (Number.isFinite(b.bestSec)) return 1;
-        return a.team.name.localeCompare(b.team.name);
+      const teamSummary = [...tIds].map(tid => {
+        const tObj = teamMap.get(tid);
+        if (!tObj) return null;
+        const tEntries = entries.filter(e => e.teamId === tid);
+        const solvedList = tEntries.filter(e => e.solved).sort((a, b) => a.ms - b.ms);
+        const best = solvedList[0] || null;
+        return {
+          team: tObj,
+          bestMs: best ? best.ms : Infinity,
+          bestPlayer: best ? best.player : null,
+          solvedCount: solvedList.length,
+          totalCount: tEntries.length
+        };
+      }).filter(Boolean).sort((a, b) => {
+        if (a.bestMs !== b.bestMs) return a.bestMs - b.bestMs;
+        return b.solvedCount - a.solvedCount || a.team.name.localeCompare(b.team.name);
       });
 
       return { entries, teamSummary };
     }
 
     function getEatingLeaderboard(d, s, allTeams, allPlayers) {
-      const unit = String(d.eatUnit || 'items').trim();
+      const defaultUnit = d.sport === 'pushup' ? 'push-ups' : 'items';
+      const unit = String(d.eatUnit || defaultUnit).trim();
       const regIds = new Set([...(d.playerIds || []), ...(s.extraContestants || []), ...Object.keys(s.eatAmounts || {})]);
       const tIds = new Set(d.teamIds || []);
-      let contestants = [...regIds]
-        .map(pid => allPlayers.find(p => p.id === pid))
-        .filter(Boolean);
+      const teamMap = new Map((allTeams || []).map(t => [t.id, t]));
+      const playerMap = new Map((allPlayers || []).map(p => [p.id, p]));
 
-      if (!contestants.length && tIds.size) {
-        contestants = allPlayers.filter(p => tIds.has(p.teamId));
-      }
-
-      const entries = contestants.map(p => {
-        const rec = s.eatAmounts?.[p.id] || null;
-        const t = allTeams.find(x => x.id === (rec?.teamId || p.teamId));
-        const hasVal = Boolean(rec && !rec.dnf && Number.isFinite(Number(rec.amount)) && Number(rec.amount) >= 0);
-        const amt = hasVal ? Number(rec.amount) : -1;
+      const entries = [...regIds].map(pid => {
+        const pObj = playerMap.get(pid);
+        if (!pObj) return null;
+        const rec = s.eatAmounts?.[pid];
+        const tid = rec?.teamId || pObj.teamId;
+        const tObj = teamMap.get(tid);
+        const recorded = rec && !rec.dnf && Number.isFinite(rec.amount) && rec.amount >= 0;
+        const dnf = Boolean(rec?.dnf);
         return {
-          player: p,
-          team: t,
-          teamId: t?.id || p.teamId,
-          recorded: hasVal,
-          dnf: Boolean(rec?.dnf),
-          amount: amt,
-          displayAmount: rec ? formatEatAmount(rec.amount, unit, rec.dnf) : '—'
+          player: pObj,
+          team: tObj,
+          teamId: tid,
+          amount: recorded ? rec.amount : -1,
+          recorded,
+          dnf,
+          displayAmount: recorded ? formatEatAmount(rec.amount, unit) : dnf ? 'DNF' : 'Pending'
         };
-      });
-
-      entries.sort((a, b) => {
+      }).filter(Boolean).sort((a, b) => {
         if (a.recorded && b.recorded) return b.amount - a.amount || a.player.name.localeCompare(b.player.name);
         if (a.recorded) return -1;
         if (b.recorded) return 1;
-        if (a.dnf && !b.dnf) return 1;
-        if (!a.dnf && b.dnf) return -1;
+        if (a.dnf !== b.dnf) return a.dnf ? -1 : 1;
         return a.player.name.localeCompare(b.player.name);
       });
 
-      const teamMap = new Map();
-      for (const tid of tIds) {
-        const t = allTeams.find(x => x.id === tid);
-        if (t) teamMap.set(tid, { team: t, solvers: [], bestAmount: -1, totalAmount: 0, bestPlayer: null, recordedCount: 0, totalCount: 0 });
-      }
-      for (const ent of entries) {
-        if (!ent.team) continue;
-        if (!teamMap.has(ent.team.id)) {
-          teamMap.set(ent.team.id, { team: ent.team, solvers: [], bestAmount: -1, totalAmount: 0, bestPlayer: null, recordedCount: 0, totalCount: 0 });
-        }
-        const row = teamMap.get(ent.team.id);
-        row.solvers.push(ent);
-        row.totalCount++;
-        if (ent.recorded) {
-          row.recordedCount++;
-          row.totalAmount = Math.round((row.totalAmount + ent.amount) * 100) / 100;
-          if (ent.amount > row.bestAmount) {
-            row.bestAmount = ent.amount;
-            row.bestPlayer = ent.player;
-          }
-        }
-      }
-
-      const teamSummary = [...teamMap.values()].sort((a, b) => {
-        if (a.bestAmount >= 0 && b.bestAmount >= 0) return b.bestAmount - a.bestAmount || b.totalAmount - a.totalAmount;
-        if (a.bestAmount >= 0) return -1;
-        if (b.bestAmount >= 0) return 1;
-        return a.team.name.localeCompare(b.team.name);
+      const teamSummary = [...tIds].map(tid => {
+        const tObj = teamMap.get(tid);
+        if (!tObj) return null;
+        const tEntries = entries.filter(e => e.teamId === tid);
+        const validList = tEntries.filter(e => e.recorded).sort((a, b) => b.amount - a.amount);
+        const best = validList[0] || null;
+        return {
+          team: tObj,
+          bestAmount: best ? best.amount : -1,
+          bestPlayer: best ? best.player : null,
+          recordedCount: validList.length,
+          totalCount: tEntries.length
+        };
+      }).filter(Boolean).sort((a, b) => {
+        if (a.bestAmount !== b.bestAmount) return b.bestAmount - a.bestAmount;
+        return b.recordedCount - a.recordedCount || a.team.name.localeCompare(b.team.name);
       });
 
       return { entries, teamSummary, unit };
     }
 
-    function createDefaultArmBoxes(details, allPlayers) {
-      const selected = (details.playerIds || []).map(id => allPlayers.find(p => p.id === id)).filter(Boolean);
-      const byTeam = new Map();
-      for (const p of selected) {
-        if (!byTeam.has(p.teamId)) byTeam.set(p.teamId, []);
-        byTeam.get(p.teamId).push(p);
-      }
-      const teams = [...byTeam.values()];
-      const pairings = teams.length >= 4
-        ? [
-            [teams[0]?.[0], teams[1]?.[0]],
-            [teams[2]?.[0], teams[3]?.[0]],
-            [teams[0]?.[1], teams[2]?.[1]],
-            [teams[1]?.[1], teams[3]?.[1]]
-          ]
-        : [
-            [selected[0], selected[1]],
-            [selected[2], selected[3]],
-            [selected[4], selected[5]],
-            [selected[6], selected[7]]
-          ];
-      return [0, 1, 2, 3].map(i => ({
-        id: 'qf-' + (i + 1),
-        stage: 'Quarter-Final',
-        label: 'Match ' + (i + 1),
-        p1Id: pairings[i]?.[0]?.id || '',
-        p2Id: pairings[i]?.[1]?.id || '',
-        winnerSlot: null
-      }));
-    }
+    function getArmWrestlingState(d, s, allTeams, allPlayers) {
+      const boxes = (s.armBoxes && s.armBoxes.length) ? s.armBoxes : defaultArmBoxes(d);
+      const playerMap = new Map((allPlayers || []).map(p => [p.id, p]));
+      const teamIds = new Set([...(d.teamIds || []), ...(d.playerIds || []).map(id => playerMap.get(id)?.teamId).filter(Boolean)]);
+      const teamPoints = new Map([...teamIds].map(id => [id, 0]));
 
-    function getArmWrestlingState(details, s, allTeams, allPlayers) {
-      const boxes = Array.isArray(s.armBoxes) && s.armBoxes.length
-        ? s.armBoxes
-        : createDefaultArmBoxes(details, allPlayers);
-      const teamWins = new Map();
-      const involvedTeamIds = new Set(details.teamIds || []);
-      for (const pid of (details.playerIds || [])) {
-        const pl = allPlayers.find(x => x.id === pid);
-        if (pl?.teamId) involvedTeamIds.add(pl.teamId);
-      }
-      for (const bx of boxes) {
-        for (const pid of [bx.p1Id, bx.p2Id]) {
-          const pl = allPlayers.find(x => x.id === pid);
-          if (pl?.teamId) involvedTeamIds.add(pl.teamId);
-        }
-        if (bx.winnerSlot) {
-          const winPid = bx.winnerSlot === 'p1' ? bx.p1Id : bx.p2Id;
-          const winPl = allPlayers.find(x => x.id === winPid);
-          if (winPl?.teamId) {
-            teamWins.set(winPl.teamId, (teamWins.get(winPl.teamId) || 0) + 1);
-          }
+      for (const b of boxes) {
+        if (b.winnerSlot === 'p1' && b.p1Id) {
+          const tid = playerMap.get(b.p1Id)?.teamId;
+          if (tid) teamPoints.set(tid, (teamPoints.get(tid) || 0) + 1);
+        } else if (b.winnerSlot === 'p2' && b.p2Id) {
+          const tid = playerMap.get(b.p2Id)?.teamId;
+          if (tid) teamPoints.set(tid, (teamPoints.get(tid) || 0) + 1);
         }
       }
-      const teamStandings = [...involvedTeamIds]
-        .map(tid => allTeams.find(t => t.id === tid))
-        .filter(Boolean)
-        .map(t => ({ team: t, wins: teamWins.get(t.id) || 0 }))
-        .sort((a, b) => b.wins - a.wins || a.team.name.localeCompare(b.team.name));
+
+      const teamStandings = [...teamPoints.entries()]
+        .map(([tid, pts]) => ({ team: (allTeams || []).find(t => t.id === tid), teamId: tid, pts }))
+        .filter(x => x.team)
+        .sort((a, b) => b.pts - a.pts || a.team.name.localeCompare(b.team.name));
+
       return { boxes, teamStandings };
     }
-
-    function node(tag, title, className) { const el = document.createElement(tag); if (title != null) el.textContent = title; if (className) el.className = className; return el; }
-    function scSelect(items) { const el = node('select'); for (const [v, t] of items) el.add(new Option(t, v)); return el; }
-    function numeric(value, min = 0, max = null) { const el = node('input'); el.type = 'number'; el.value = value; el.min = min; if (max != null) el.max = max; return el; }
-    function scField(label, control) { const el = node('label', label, 'sc-field'); el.append(control); return el; }
 
     let adminClockInterval = null;
     function mountScoring(container, fixture, data, onSave) {
@@ -1351,6 +1272,7 @@
       function button(label, run, style = '') { const b = node('button', label, 'sc-btn ' + style); b.type = 'button'; b.addEventListener('click', run); return b; }
       function section(name) { const box = node('div', null, 'sc-box'); box.append(node('h4', name)); panel.append(box); return box; }
       const statusLabel = score.status === 'live' ? score.period || 'Live' : score.status === 'finished' ? 'Final result' : 'Scheduled';
+
       if (!individual && d.sport !== 'armwrestling') {
         const board = node('div', null, 'sc-board');
         for (const side of sides) {
@@ -1388,7 +1310,9 @@
 
         const subBar = node('div', null, 'sc-timer-subbar'), presetGroup = node('div', null, 'sc-row');
         presetGroup.append(button('00:00', () => submit({ kind: 'timer_set', baseSec: 0, label: 'Timer reset to 00:00' })));
-        presetGroup.append(button('45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
+        if (d.sport === 'football') {
+          presetGroup.append(button('45:00', () => submit({ kind: 'timer_set', baseSec: 45 * 60, label: 'Timer set to 45:00' })));
+        }
 
         const customWrap = node('div', null, 'sc-custom-time');
         const minInp = numeric(curSnap.mins, 0, 999), secInp = numeric(curSnap.secs, 0, 59);
@@ -1400,131 +1324,231 @@
         customWrap.append(minInp, node('span', ':'), secInp, setCustomBtn);
         presetGroup.append(customWrap);
 
-        const extraWrap = node('div', null, 'sc-custom-time');
-        extraWrap.append(node('span', 'Extra +'));
-        const extraInp = numeric(curSnap.extraMins || 0, 0, 60);
-        const setExtraBtn = button('Set Extra', () => {
-          const ex = Math.max(0, Number(extraInp.value) || 0);
-          submit({ kind: 'extra_time', extraMins: ex, label: ex > 0 ? 'Added time: +' + ex + ' min' : 'Added time cleared' });
-        }, 'sc-primary');
-        setExtraBtn.style.minHeight = '30px'; setExtraBtn.style.padding = '3px 9px';
-        extraWrap.append(extraInp, node('span', 'm'), setExtraBtn);
-        if (curSnap.extraMins > 0) {
-          const clearExBtn = button('Clear', () => submit({ kind: 'extra_time', extraMins: 0, label: 'Added time cleared' }));
-          clearExBtn.style.minHeight = '30px'; clearExBtn.style.padding = '3px 8px';
-          extraWrap.append(clearExBtn);
+        if (d.sport === 'football') {
+          const extraWrap = node('div', null, 'sc-custom-time');
+          extraWrap.append(node('span', 'Extra +'));
+          const extraInp = numeric(curSnap.extraMins || 0, 0, 60);
+          const setExtraBtn = button('Set Extra', () => {
+            const ex = Math.max(0, Number(extraInp.value) || 0);
+            submit({ kind: 'extra_time', extraMins: ex, label: ex > 0 ? 'Added time: +' + ex + ' min' : 'Added time cleared' });
+          }, 'sc-primary');
+          setExtraBtn.style.minHeight = '30px'; setExtraBtn.style.padding = '3px 9px';
+          extraWrap.append(extraInp, node('span', 'm'), setExtraBtn);
+          if (curSnap.extraMins > 0) {
+            const clearExBtn = button('Clear', () => submit({ kind: 'extra_time', extraMins: 0, label: 'Added time cleared' }));
+            clearExBtn.style.minHeight = '30px'; clearExBtn.style.padding = '3px 8px';
+            extraWrap.append(clearExBtn);
+          }
+          subBar.append(presetGroup, extraWrap);
+        } else {
+          subBar.append(presetGroup);
         }
 
-        subBar.append(presetGroup, extraWrap);
         timerBox.append(topRow, subBar);
         panel.append(timerBox);
         if (clockData.running) adminClockInterval = setInterval(() => { if (!document.body.contains(clockEl)) { clearInterval(adminClockInterval); return; } clockEl.textContent = formatClock(clockData).text; }, 1000);
       }
 
       if (score.status === 'scheduled') panel.append(button('Go live & start timer', () => submit({ kind: 'start', label: 'Event started' }), 'sc-primary'));
+
       if (score.status === 'live') {
-        if (d.sport === 'rubiks') {
+        if (d.sport === 'armwrestling') {
+          const armState = getArmWrestlingState(d, score, data.teams || [], data.players || []);
+          const regPlayers = (d.playerIds || []).map(id => players.get(id)).filter(Boolean);
+          const allAvailablePlayers = regPlayers.length ? regPlayers : (data.players || []);
+
+          const scoreStripBox = section('Arm Wrestling · Live Team Bout Points');
+          const strip = node('div', null, 'sc-row');
+          for (const ts of armState.teamStandings) {
+            const badge = node('div', `${ts.team.name}: ${ts.pts} pts`, 'sc-state ' + (ts.pts > 0 ? 'live' : ''));
+            strip.append(badge);
+          }
+          scoreStripBox.append(strip);
+
+          const renderStageBoxes = (stageCode, stageTitle) => {
+            const stageBoxes = armState.boxes.filter(b => b.stage === stageCode);
+            if (!stageBoxes.length) return;
+            const boxSection = section(stageTitle);
+            const grid = node('div', null, 'arm-setup-grid');
+
+            for (const b of stageBoxes) {
+              const card = node('div', null, 'sc-arm-box ' + (b.winnerSlot ? 'decided' : ''));
+              const head = node('div', null, 'sc-head');
+              head.append(node('strong', b.label), node('span', b.winnerSlot ? 'Completed (+1 Team Pt)' : 'Active Bout', 'sc-state ' + (b.winnerSlot ? 'live' : '')));
+              card.append(head);
+
+              const p1Obj = players.get(b.p1Id);
+              const p2Obj = players.get(b.p2Id);
+              const p1TeamId = p1Obj?.teamId || '';
+              const p2TeamId = p2Obj?.teamId || '';
+
+              const slot1 = node('div', null, 'sc-arm-slot ' + (b.winnerSlot === 'p1' ? 'win' : ''));
+              if (b.winnerSlot) {
+                slot1.append(node('span', `${p1Obj?.name || 'Player 1'} (${teamById(p1TeamId)})`));
+                if (b.winnerSlot === 'p1') slot1.append(node('span', '🏆 WON', 'sc-state live'));
+              } else {
+                const sel1 = scSelect([['', 'Select Player 1'], ...allAvailablePlayers.filter(p => !p2TeamId || p.teamId !== p2TeamId).map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])]);
+                sel1.value = b.p1Id || '';
+                sel1.style.flex = '1';
+                sel1.onchange = () => submit({ kind: 'arm_box_set', boxId: b.id, p1Id: sel1.value, label: `${b.label} updated` });
+                slot1.append(sel1);
+                if (b.p1Id && b.p2Id) {
+                  slot1.append(button('Won', () => submit({ kind: 'arm_box_win', boxId: b.id, slot: 'p1', label: `${b.label}: ${player(b.p1Id)} (${teamById(p1TeamId)}) won` }), 'sc-primary'));
+                }
+              }
+
+              const slot2 = node('div', null, 'sc-arm-slot ' + (b.winnerSlot === 'p2' ? 'win' : ''));
+              if (b.winnerSlot) {
+                slot2.append(node('span', `${p2Obj?.name || 'Player 2'} (${teamById(p2TeamId)})`));
+                if (b.winnerSlot === 'p2') slot2.append(node('span', '🏆 WON', 'sc-state live'));
+              } else {
+                const sel2 = scSelect([['', 'Select Player 2 (Different Team)'], ...allAvailablePlayers.filter(p => !p1TeamId || p.teamId !== p1TeamId).map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])]);
+                sel2.value = b.p2Id || '';
+                sel2.style.flex = '1';
+                sel2.onchange = () => submit({ kind: 'arm_box_set', boxId: b.id, p2Id: sel2.value, label: `${b.label} updated` });
+                slot2.append(sel2);
+                if (b.p1Id && b.p2Id) {
+                  slot2.append(button('Won', () => submit({ kind: 'arm_box_win', boxId: b.id, slot: 'p2', label: `${b.label}: ${player(b.p2Id)} (${teamById(p2TeamId)}) won` }), 'sc-primary'));
+                }
+              }
+
+              card.append(slot1, slot2);
+              if (b.winnerSlot) {
+                card.append(button('Reset Winner', () => submit({ kind: 'arm_box_win', boxId: b.id, slot: null, label: `${b.label} result reset` })));
+              }
+              grid.append(card);
+            }
+            boxSection.append(grid);
+          };
+
+          renderStageBoxes('QF', 'Quarter-Finals · 4 Match Boxes');
+
+          const qfBoxes = armState.boxes.filter(b => b.stage === 'QF');
+          const sfBoxes = armState.boxes.filter(b => b.stage === 'SF');
+          const finalBoxes = armState.boxes.filter(b => b.stage === 'FINAL');
+          const allQfDone = qfBoxes.length === 4 && qfBoxes.every(b => b.winnerSlot);
+
+          if (allQfDone && !sfBoxes.length) {
+            const advBox = section('Next Stage Progression');
+            advBox.append(button('Generate Semi-Finals (2 Boxes from QF Winners)', () => {
+              const w = qfBoxes.map(b => b.winnerSlot === 'p1' ? b.p1Id : b.p2Id);
+              submit({
+                kind: 'arm_advance_stage',
+                stage: 'SF',
+                boxes: [
+                  { id: 'sf-1', label: 'Semi-Final 1', p1Id: w[0], p2Id: w[1] },
+                  { id: 'sf-2', label: 'Semi-Final 2', p1Id: w[2], p2Id: w[3] }
+                ],
+                label: 'Semi-Finals generated'
+              });
+            }, 'sc-primary'));
+          }
+
+          renderStageBoxes('SF', 'Semi-Finals · 2 Match Boxes');
+
+          const allSfDone = sfBoxes.length === 2 && sfBoxes.every(b => b.winnerSlot);
+          if (allSfDone && !finalBoxes.length) {
+            const finAdvBox = section('Championship Final Progression');
+            finAdvBox.append(button('Generate Championship Final (1 Box)', () => {
+              const w = sfBoxes.map(b => b.winnerSlot === 'p1' ? b.p1Id : b.p2Id);
+              submit({
+                kind: 'arm_advance_stage',
+                stage: 'FINAL',
+                boxes: [
+                  { id: 'final-1', label: 'Championship Final', p1Id: w[0], p2Id: w[1] }
+                ],
+                label: 'Championship Final generated'
+              });
+            }, 'sc-primary'));
+          }
+
+          renderStageBoxes('FINAL', 'Championship Final · 1 Match Box');
+        } else if (d.sport === 'rubiks') {
           const { entries, teamSummary } = getRubiksLeaderboard(d, score, data.teams || [], data.players || []);
           const box = section('Rubik’s Cube Challenge · Contestant Solve Times');
-          box.append(node('p', 'All teams solve simultaneously. Tap Capture Clock when a player finishes, or type their solve time (min : sec) below.', 'sc-info'));
+          box.append(node('p', 'All teams solve simultaneously. Tap "Capture Clock" when a player finishes, or enter their solve time manually.', 'sc-info'));
 
           const registeredIds = new Set(entries.map(e => e.player.id));
-          const unregistered = (data.players || [])
-            .filter(p => !registeredIds.has(p.id))
-            .sort((a, b) => teamById(a.teamId).localeCompare(teamById(b.teamId)) || a.name.localeCompare(b.name));
-
+          const unregistered = (data.players || []).filter(p => !registeredIds.has(p.id));
           if (unregistered.length) {
             const addRow = node('div', null, 'sc-row');
             addRow.style.margin = '10px 0';
             const addSel = scSelect([['', '+ Add another contestant to this heat…'], ...unregistered.map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])]);
             addSel.style.flex = '1';
             addSel.style.minHeight = '38px';
-            addSel.style.padding = '6px 8px';
-            addSel.style.border = '1px solid #a8b7aa';
-            addSel.style.borderRadius = '7px';
             addRow.append(addSel, button('Add Contestant', () => {
               if (!addSel.value) return;
-              submit({ kind: 'rubiks_contestant_add', playerId: addSel.value, label: 'Contestant added · ' + player(addSel.value) });
+              submit({ kind: 'rubiks_contestant_add', playerId: addSel.value, label: 'Added contestant · ' + player(addSel.value) });
             }));
             box.append(addRow);
           }
 
-          const activeTeamIds = [...new Set([
-            ...(d.teamIds || []),
-            ...entries.map(e => e.teamId)
-          ])].filter(Boolean);
-
-          if (!activeTeamIds.length) {
-            box.append(node('p', 'No contestants registered yet. Use the dropdown above or Edit Fixture to pick contestants.', 'sc-info'));
+          const byTeam = new Map();
+          for (const ent of entries) {
+            const tid = ent.teamId || 'unassigned';
+            if (!byTeam.has(tid)) byTeam.set(tid, []);
+            byTeam.get(tid).push(ent);
           }
 
-          for (const tid of activeTeamIds) {
-            const teamContestants = entries.filter(e => e.teamId === tid);
-            const tSummary = teamSummary.find(t => t.team.id === tid);
+          if (!entries.length) {
+            box.append(node('p', 'No contestants selected yet. Add contestants above or edit the event to select players.', 'sc-feedback'));
+          }
+
+          for (const [tid, list] of byTeam.entries()) {
             const tBlock = node('div', null, 'sc-cube-team-block');
+            const tInfo = teamSummary.find(x => x.team.id === tid);
             const tHead = node('div', null, 'sc-cube-team-head');
             tHead.append(
               node('span', teamById(tid)),
-              node('span', tSummary && Number.isFinite(tSummary.bestSec) ? 'Best: ' + formatSolveDuration(tSummary.bestSec) : `${teamContestants.length} contestant${teamContestants.length === 1 ? '' : 's'}`)
+              node('span', tInfo && tInfo.bestMs < Infinity ? `Best: ${formatDurationMs(tInfo.bestMs)}` : 'No solve recorded yet')
             );
             tBlock.append(tHead);
 
-            if (!teamContestants.length) {
-              tBlock.append(node('small', 'No contestants selected for this team.', 'sc-info'));
-            }
-
-            for (const ent of teamContestants) {
+            for (const ent of list) {
               const pRow = node('div', null, 'sc-cube-player ' + (ent.solved ? 'solved' : ent.dnf ? 'dnf' : ''));
               const leftInfo = node('div');
-              leftInfo.append(node('strong', ent.player.name));
-              if (ent.solved || ent.dnf) {
-                const badge = node('span', ' · ' + ent.displayTime, 'sc-cube-badge ' + (ent.dnf ? 'dnf' : ''));
-                badge.style.marginLeft = '8px';
-                leftInfo.append(badge);
-              }
+              leftInfo.innerHTML = `<strong>${esc(ent.player.name)}</strong> ` + (ent.solved || ent.dnf ? `<span class="sc-cube-badge ${ent.dnf ? 'dnf' : ''}">${esc(ent.displayTime)}</span>` : `<span style="color:#55675c;font-size:12.5px">Solving…</span>`);
 
               const ctrls = node('div', null, 'sc-cube-controls');
               ctrls.append(button('⏱ Capture Clock', () => {
-                const cur = formatClock(computeClock(score.timeline, score.status));
-                const captured = cur.exactSec > 0 ? cur.exactSec : 0.01;
+                const curMs = Math.max(10, formatClock(computeClock(score.timeline, score.status)).totalMs);
                 submit({
                   kind: 'solve_time',
                   playerId: ent.player.id,
                   teamId: tid,
-                  timeSec: captured,
+                  ms: curMs,
                   dnf: false,
-                  label: `${ent.player.name} (${teamById(tid)}) · ${formatSolveDuration(captured)}`
+                  label: `${ent.player.name} (${teamById(tid)}) solved in ${formatDurationMs(curMs)}`
                 });
               }, 'sc-primary'));
 
-              const initMins = ent.solved ? Math.floor(ent.timeSec / 60) : 0;
-              const initSecs = ent.solved ? Math.round((ent.timeSec % 60) * 100) / 100 : '';
-              const minInp = numeric(initMins, 0, 99);
-              minInp.className = 'sc-cube-inp';
-              minInp.title = 'Minutes';
-              minInp.placeholder = 'min';
+              const initMins = ent.solved ? Math.floor(ent.ms / 60000) : 0;
+              const initSecs = ent.solved ? ((ent.ms % 60000) / 1000).toFixed(2) : '';
+              const mInp = numeric(initMins, 0, 99);
+              mInp.className = 'sc-cube-inp';
+              mInp.title = 'Minutes';
+              mInp.placeholder = 'm';
+              const sInp = numeric(initSecs, 0, 59.99);
+              sInp.className = 'sc-cube-inp';
+              sInp.style.width = '68px';
+              sInp.step = '0.01';
+              sInp.title = 'Seconds (e.g. 24.50)';
+              sInp.placeholder = 'sec';
 
-              const secInp = numeric(initSecs, 0, 59.99);
-              secInp.className = 'sc-cube-inp';
-              secInp.style.width = '68px';
-              secInp.step = 'any';
-              secInp.title = 'Seconds (e.g. 24.50)';
-              secInp.placeholder = 'sec';
+              ctrls.append(mInp, node('span', ':'), sInp);
 
-              ctrls.append(minInp, node('span', ':'), secInp);
-
-              ctrls.append(button('Save Time', () => {
-                const m = Math.max(0, Number(minInp.value) || 0);
-                const sVal = Math.max(0, Number(secInp.value) || 0);
-                const total = Math.round((m * 60 + sVal) * 100) / 100;
-                check(total > 0, 'Enter minutes or seconds greater than 0.');
+              ctrls.append(button('Save', () => {
+                const minsVal = Math.max(0, Number(mInp.value) || 0);
+                const secsVal = Math.max(0, Number(sInp.value) || 0);
+                const totalMs = Math.round((minsVal * 60 + secsVal) * 1000);
+                check(totalMs > 0, 'Enter a valid solve time greater than 0.');
                 submit({
                   kind: 'solve_time',
                   playerId: ent.player.id,
                   teamId: tid,
-                  timeSec: total,
+                  ms: totalMs,
                   dnf: false,
-                  label: `${ent.player.name} (${teamById(tid)}) · ${formatSolveDuration(total)}`
+                  label: `${ent.player.name} (${teamById(tid)}) · ${formatDurationMs(totalMs)}`
                 });
               }));
 
@@ -1565,65 +1589,54 @@
               rankBox.append(rLine);
             });
           }
-        } else if (d.sport === 'eating') {
+        } else if (isRepSport(d.sport)) {
+          const isPushup = d.sport === 'pushup';
           const { entries, teamSummary, unit } = getEatingLeaderboard(d, score, data.teams || [], data.players || []);
-          const box = section(`Eating Contest · Quantity Eaten (${unit})`);
-          box.append(node('p', `All contestants compete within the given time. Tap +1 / +0.5 or enter the total ${unit} eaten for each contestant.`, 'sc-info'));
+          const box = section(isPushup ? `Push-Up Challenge · Repetition Count (${unit})` : `Eating Contest · Quantity Eaten (${unit})`);
+          box.append(node('p', isPushup
+            ? `All contestants perform push-ups simultaneously. Tap +1 / +5 or enter the total ${unit} completed for each contestant.`
+            : `All contestants compete within the given time. Tap +1 / +0.5 or enter the total ${unit} eaten for each contestant.`, 'sc-info'));
 
           const registeredIds = new Set(entries.map(e => e.player.id));
-          const unregistered = (data.players || [])
-            .filter(p => !registeredIds.has(p.id))
-            .sort((a, b) => teamById(a.teamId).localeCompare(teamById(b.teamId)) || a.name.localeCompare(b.name));
-
+          const unregistered = (data.players || []).filter(p => !registeredIds.has(p.id));
           if (unregistered.length) {
             const addRow = node('div', null, 'sc-row');
             addRow.style.margin = '10px 0';
             const addSel = scSelect([['', '+ Add another contestant to this contest…'], ...unregistered.map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])]);
             addSel.style.flex = '1';
             addSel.style.minHeight = '38px';
-            addSel.style.padding = '6px 8px';
-            addSel.style.border = '1px solid #a8b7aa';
-            addSel.style.borderRadius = '7px';
             addRow.append(addSel, button('Add Contestant', () => {
               if (!addSel.value) return;
-              submit({ kind: 'rubiks_contestant_add', playerId: addSel.value, label: 'Contestant added · ' + player(addSel.value) });
+              submit({ kind: 'rubiks_contestant_add', playerId: addSel.value, label: 'Added contestant · ' + player(addSel.value) });
             }));
             box.append(addRow);
           }
 
-          const activeTeamIds = [...new Set([
-            ...(d.teamIds || []),
-            ...entries.map(e => e.teamId)
-          ])].filter(Boolean);
-
-          if (!activeTeamIds.length) {
-            box.append(node('p', 'No contestants registered yet. Use the dropdown above or Edit Fixture to pick contestants.', 'sc-info'));
+          const byTeam = new Map();
+          for (const ent of entries) {
+            const tid = ent.teamId || 'unassigned';
+            if (!byTeam.has(tid)) byTeam.set(tid, []);
+            byTeam.get(tid).push(ent);
           }
 
-          for (const tid of activeTeamIds) {
-            const teamContestants = entries.filter(e => e.teamId === tid);
-            const tSummary = teamSummary.find(t => t.team.id === tid);
+          if (!entries.length) {
+            box.append(node('p', 'No contestants selected yet. Add contestants above or edit the event to select players.', 'sc-feedback'));
+          }
+
+          for (const [tid, list] of byTeam.entries()) {
             const tBlock = node('div', null, 'sc-cube-team-block');
+            const tInfo = teamSummary.find(x => x.team.id === tid);
             const tHead = node('div', null, 'sc-cube-team-head');
             tHead.append(
               node('span', teamById(tid)),
-              node('span', tSummary && tSummary.bestAmount >= 0 ? 'Team Best: ' + formatEatAmount(tSummary.bestAmount, unit) : `${teamContestants.length} contestant${teamContestants.length === 1 ? '' : 's'}`)
+              node('span', tInfo && tInfo.bestAmount >= 0 ? `Best: ${formatEatAmount(tInfo.bestAmount, unit)}` : 'No score recorded yet')
             );
             tBlock.append(tHead);
 
-            if (!teamContestants.length) {
-              tBlock.append(node('small', 'No contestants selected for this team.', 'sc-info'));
-            }
-
-            for (const ent of teamContestants) {
+            for (const ent of list) {
               const pRow = node('div', null, 'sc-cube-player ' + (ent.recorded ? 'solved' : ent.dnf ? 'dnf' : ''));
               const leftInfo = node('div');
-              leftInfo.append(node('strong', ent.player.name));
-              if (ent.recorded || ent.dnf) {
-                const badge = node('span', ' · ' + ent.displayAmount, 'sc-cube-badge ' + (ent.dnf ? 'dnf' : ''));
-                badge.style.marginLeft = '8px';
-                leftInfo.append(badge);
-              }
+              leftInfo.innerHTML = `<strong>${esc(ent.player.name)}</strong> ` + (ent.recorded || ent.dnf ? `<span class="sc-cube-badge ${ent.dnf ? 'dnf' : ''}">${esc(ent.displayAmount)}</span>` : `<span style="color:#55675c;font-size:12.5px">Competing…</span>`);
 
               const ctrls = node('div', null, 'sc-cube-controls');
               const curAmt = ent.recorded ? ent.amount : 0;
@@ -1640,8 +1653,9 @@
                 });
               }, 'sc-primary'));
 
-              ctrls.append(button('+0.5', () => {
-                const nextAmt = Math.round((curAmt + 0.5) * 100) / 100;
+              const stepBtnVal = isPushup ? 5 : 0.5;
+              ctrls.append(button(isPushup ? '+5' : '+0.5', () => {
+                const nextAmt = Math.round((curAmt + stepBtnVal) * 100) / 100;
                 submit({
                   kind: 'eat_amount',
                   playerId: ent.player.id,
@@ -1655,15 +1669,15 @@
               const amtInp = numeric(ent.recorded ? ent.amount : '', 0, 99999);
               amtInp.className = 'sc-cube-inp';
               amtInp.style.width = '72px';
-              amtInp.step = 'any';
-              amtInp.title = `Quantity eaten (${unit})`;
+              amtInp.step = isPushup ? '1' : 'any';
+              amtInp.title = isPushup ? `Push-ups completed (${unit})` : `Quantity eaten (${unit})`;
               amtInp.placeholder = unit;
 
               ctrls.append(amtInp);
 
               ctrls.append(button('Save', () => {
                 const val = Number(amtInp.value);
-                check(amtInp.value !== '' && Number.isFinite(val) && val >= 0, 'Enter a valid quantity eaten.');
+                check(amtInp.value !== '' && Number.isFinite(val) && val >= 0, isPushup ? 'Enter a valid push-up count.' : 'Enter a valid quantity eaten.');
                 const cleanAmt = Math.round(val * 100) / 100;
                 submit({
                   kind: 'eat_amount',
@@ -1705,7 +1719,7 @@
 
           const completed = entries.filter(e => e.recorded || e.dnf);
           if (completed.length) {
-            const rankBox = section('Live Standings Preview (Most Eaten)');
+            const rankBox = section(isPushup ? 'Live Standings Preview (Most Push-Ups)' : 'Live Standings Preview (Most Eaten)');
             completed.forEach((ent, idx) => {
               const rLine = node('div', null, 'sc-bout-item ' + (idx === 0 && ent.recorded ? 'done' : ''));
               rLine.innerHTML = `<div><strong>#${idx + 1} · ${esc(ent.player.name)}</strong> <span style="color:#55675c">(${esc(ent.team?.name || 'Team')})</span></div><span class="sc-cube-badge ${ent.dnf ? 'dnf' : ''}">${esc(ent.displayAmount)}</span>`;
@@ -1796,137 +1810,11 @@
             bGrid.append(srvWrap);
             box.append(bGrid);
           }
-        } else if (d.sport === 'armwrestling') {
-          const arm = getArmWrestlingState(d, score, data.teams || [], data.players || []);
-          const box = section('Arm Wrestling · 4 Match Boxes & Knockout Progression');
-          box.append(node('p', 'Pick 2 players from different teams in each box and tap Won next to the bout winner (+1 Team Bout Point).', 'sc-info'));
-
-          if (arm.teamStandings.length) {
-            const strip = node('div', null, 'sc-row');
-            strip.style.marginBottom = '12px';
-            for (const ts of arm.teamStandings) {
-              strip.append(node('span', `${ts.team.name}: ${ts.wins} bout win${ts.wins === 1 ? '' : 's'}`, 'sc-state ' + (ts.wins > 0 ? 'live' : '')));
-            }
-            box.append(strip);
-          }
-
-          const eligiblePlayers = ((d.playerIds && d.playerIds.length)
-            ? d.playerIds.map(id => players.get(id)).filter(Boolean)
-            : (data.players || []))
-            .sort((a, b) => teamById(a.teamId).localeCompare(teamById(b.teamId)) || a.name.localeCompare(b.name));
-
-          const grid = node('div', null, 'sc-grid');
-          arm.boxes.forEach((bx, idx) => {
-            const card = node('div', null, 'sc-arm-box ' + (bx.winnerSlot ? 'decided' : ''));
-            const head = node('div', null, 'sc-head');
-            head.append(node('strong', `${bx.stage || 'Quarter-Final'} · ${bx.label}`), node('span', bx.winnerSlot ? 'Completed' : 'Ready', 'sc-state ' + (bx.winnerSlot ? 'live' : '')));
-            card.append(head);
-
-            const p1Obj = players.get(bx.p1Id);
-            const p2Obj = players.get(bx.p2Id);
-            const sameTeamWarn = p1Obj && p2Obj && p1Obj.teamId === p2Obj.teamId;
-            if (sameTeamWarn) {
-              const warnEl = node('small', '⚠ Both players belong to ' + teamById(p1Obj.teamId) + '. Pick opponents from different teams.', 'sc-feedback');
-              card.append(warnEl);
-            }
-
-            for (const slotKey of ['p1', 'p2']) {
-              const curPid = bx[slotKey + 'Id'];
-              const otherPid = bx[slotKey === 'p1' ? 'p2Id' : 'p1Id'];
-              const otherTeamId = players.get(otherPid)?.teamId || '';
-              const isWin = bx.winnerSlot === slotKey;
-
-              const slotRow = node('div', null, 'sc-arm-slot ' + (isWin ? 'win' : ''));
-              if (!bx.winnerSlot) {
-                const opts = [['', 'Select player…']];
-                for (const pl of eligiblePlayers) {
-                  if (pl.id === otherPid) continue;
-                  const diffTeam = !otherTeamId || pl.teamId !== otherTeamId;
-                  opts.push([pl.id, `${pl.name} (${teamById(pl.teamId)})${diffTeam ? '' : ' [Same Team]'}`]);
-                }
-                const sel = scSelect(opts);
-                sel.value = curPid || '';
-                sel.style.flex = '1';
-                sel.style.minWidth = '150px';
-                sel.style.minHeight = '36px';
-                sel.style.padding = '5px 8px';
-                sel.style.borderRadius = '7px';
-                sel.style.border = '1px solid #a8b7aa';
-                sel.onchange = () => {
-                  const updated = arm.boxes.map((item, i) => i === idx ? { ...item, [slotKey + 'Id']: sel.value } : item);
-                  submit({ kind: 'arm_boxes_set', boxes: updated, label: `${bx.label} updated` });
-                };
-                slotRow.append(sel);
-              } else {
-                const pObj = players.get(curPid);
-                const info = node('div');
-                info.innerHTML = `<strong>${esc(pObj?.name || 'Player')}</strong> <small style="color:#55675c">(${esc(teamById(pObj?.teamId))})</small>`;
-                slotRow.append(info);
-              }
-
-              if (curPid) {
-                if (isWin) {
-                  slotRow.append(button('✓ Won (Undo)', () => {
-                    submit({ kind: 'arm_box_win', boxId: bx.id, slot: null, label: `Reset winner for ${bx.label}` });
-                  }, 'sc-primary'));
-                } else if (!bx.winnerSlot) {
-                  slotRow.append(button('Won', () => {
-                    check(bx.p1Id && bx.p2Id, 'Select both participants in this box first.');
-                    const wPl = players.get(curPid);
-                    submit({ kind: 'arm_box_win', boxId: bx.id, slot: slotKey, label: `${bx.label} · ${wPl?.name || 'Player'} (${teamById(wPl?.teamId)}) Won` });
-                  }, 'sc-primary'));
-                }
-              }
-              card.append(slotRow);
-            }
-            grid.append(card);
-          });
-          box.append(grid);
-
-          // Automatic Knockout Advancement (Semi-Finals & Final)
-          const qfBoxes = arm.boxes.filter(b => b.stage === 'Quarter-Final');
-          const sfBoxes = arm.boxes.filter(b => b.stage === 'Semi-Final');
-          const finalBoxes = arm.boxes.filter(b => b.stage === 'Final');
-          const progRow = node('div', null, 'sc-row');
-          progRow.style.marginTop = '12px';
-
-          if (qfBoxes.length === 4 && qfBoxes.every(b => b.winnerSlot) && sfBoxes.length === 0) {
-            const w1 = qfBoxes[0].winnerSlot === 'p1' ? qfBoxes[0].p1Id : qfBoxes[0].p2Id;
-            const w2 = qfBoxes[1].winnerSlot === 'p1' ? qfBoxes[1].p1Id : qfBoxes[1].p2Id;
-            const w3 = qfBoxes[2].winnerSlot === 'p1' ? qfBoxes[2].p1Id : qfBoxes[2].p2Id;
-            const w4 = qfBoxes[3].winnerSlot === 'p1' ? qfBoxes[3].p1Id : qfBoxes[3].p2Id;
-            progRow.append(button('Generate Semi-Finals (2 Boxes) →', () => {
-              submit({
-                kind: 'arm_boxes_append',
-                boxes: [
-                  { id: 'sf-1', stage: 'Semi-Final', label: 'Semi-Final 1', p1Id: w1, p2Id: w2, winnerSlot: null },
-                  { id: 'sf-2', stage: 'Semi-Final', label: 'Semi-Final 2', p1Id: w3, p2Id: w4, winnerSlot: null }
-                ],
-                label: 'Generated Semi-Final match boxes'
-              });
-            }, 'sc-primary'));
-          }
-
-          if (sfBoxes.length === 2 && sfBoxes.every(b => b.winnerSlot) && finalBoxes.length === 0) {
-            const sw1 = sfBoxes[0].winnerSlot === 'p1' ? sfBoxes[0].p1Id : sfBoxes[0].p2Id;
-            const sw2 = sfBoxes[1].winnerSlot === 'p1' ? sfBoxes[1].p1Id : sfBoxes[1].p2Id;
-            progRow.append(button('Generate Championship Final (1 Box) →', () => {
-              submit({
-                kind: 'arm_boxes_append',
-                boxes: [
-                  { id: 'final-1', stage: 'Final', label: 'Championship Final', p1Id: sw1, p2Id: sw2, winnerSlot: null }
-                ],
-                label: 'Generated Championship Final match box'
-              });
-            }, 'sc-primary'));
-          }
-          if (progRow.children.length) box.append(progRow);
         } else if (!individual) {
           const box = section('Add point');
           if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
           else { const buttons = node('div', null, 'sc-row'); box.append(buttons); for (const side of sides) buttons.append(button('+1 ' + team(side), () => submit({ kind: 'point', side, label: 'Point · ' + team(side) }), 'sc-primary')); }
         } else {
-          // Team-based Individual Programs (Crossbar, Stump Out, etc.)
           const box = section(d.sport === 'crossbar' ? 'Record Team Attempt' : 'Record Team Result');
           const tIds = (d.teamIds && d.teamIds.length) ? d.teamIds : (data.teams || []).map(t => t.id);
           const pick = scSelect(tIds.map(id => [id, teamById(id)]));
@@ -1944,6 +1832,7 @@
             box.append(scField('Team Score / Result Value', val), button('Save team result', () => submit({ kind: 'result', teamId: pick.value, value: val.valueAsNumber, label: teamById(pick.value) + ' · ' + val.value }), 'sc-primary'));
           }
         }
+
         if (!individual && d.sport !== 'armwrestling') {
           const correction = node('details', null, 'sc-box'); correction.append(node('summary', 'Edit / Correct Score & Sets'));
           const h = numeric(score.home), a = numeric(score.away);
@@ -1961,6 +1850,7 @@
           panel.append(correction);
         }
       }
+
       const foot = node('div', null, 'sc-row'); panel.append(foot);
       if (score.timeline.length) foot.append(button('Undo last action', () => submit({ kind: 'undo' })));
       if (score.status === 'live') foot.append(button('Finish event', () => { if (window.confirm('Finish this event and publish the final score?')) submit({ kind: 'finish', label: 'Full time' }); }));
@@ -1993,7 +1883,7 @@
     const symbols = {
       home: '<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
       fixtures: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v5m10-5v5M3 11h18"/>',
-      results: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+      results: '<path d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17l-5.9 3 1.2-6.5L2.5 8.9 9.1 8z"/>',
       leaderboard: '<path d="M7 3h10v5a5 5 0 0 1-10 0zm0 2H3v2a4 4 0 0 0 5 4m9-6h4v2a4 4 0 0 1-5 4m-4 2v5m-4 2h8"/>',
       live: '<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9m9-9a6.4 6.4 0 0 1 0 9M4.3 4.3a10.9 10.9 0 0 0 0 15.4m15.4-15.4a10.9 10.9 0 0 1 0 15.4"/>',
       settings: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2"/>',
@@ -2022,13 +1912,13 @@
       armwrestling: 'Arm Wrestling',
       rubiks: "Rubik's Cube Challenge",
       eating: 'Eating Contest',
+      pushup: 'Push-Up Challenge',
       crossbar: 'Crossbar Challenge',
       custom: 'Individual / Team Event'
     };
     const label = s => String(s || '').replace(/^./, c => c.toUpperCase());
-    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [], fixtureOrder: [], manualResults: [] } };
-    const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', pitchSide: 'home', selectedPlayer: '' };
-    const openTeammates = new Set();
+    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [], fixtureOrder: [], publishedResults: [] } };
+    const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', resSport: 'all', resTeam: 'all', pitchSide: 'home', selectedPlayer: '', openTeammates: new Set() };
     let loaded = false, failed = false, refreshing = false, lastHash = '', priorSignature = '';
 
     const team = id => state.teams.find(t => t.id === id), player = id => state.players.find(p => p.id === id);
@@ -2036,7 +1926,7 @@
     const mode = f => f.details.format === 'individual';
     const eventTeamIds = f => (f.details.teamIds && f.details.teamIds.length) ? f.details.teamIds : [...new Set((f.details.playerIds || []).map(id => player(id)?.teamId).filter(Boolean))];
     const groupTeam = (f, t) => f.details.homeId === t || f.details.awayId === t || eventTeamIds(f).includes(t);
-    const fixtures = () => sortFixturesByOrder(state.fixtures, state.siteMeta?.fixtureOrder);
+    const fixtures = () => sortFixturesByOrder(state.fixtures, state.siteMeta?.fixtureOrder || []);
     const fixtureLink = f => '#match/' + encodeURIComponent(f.id);
 
     function crest(t) {
@@ -2072,7 +1962,7 @@
         const { entries } = getRubiksLeaderboard(d, s, state.teams, state.players);
         const fastest = entries.find(x => x.solved);
         subNote = `<p class="hint">${tCount} ${tCount === 1 ? 'team' : 'teams'} · ${entries.length} contestants${fastest ? ` · Fastest: <b>${e(fastest.player.name)}</b> (${e(fastest.displayTime)})` : ''}</p>`;
-      } else if (d.sport === 'eating') {
+      } else if (isRepSport(d.sport)) {
         const { entries } = getEatingLeaderboard(d, s, state.teams, state.players);
         const leader = entries.find(x => x.recorded);
         subNote = `<p class="hint">${tCount} ${tCount === 1 ? 'team' : 'teams'} · ${entries.length} contestants${leader ? ` · Leading: <b>${e(leader.player.name)}</b> (${e(leader.displayAmount)})` : ''}</p>`;
@@ -2083,7 +1973,7 @@
         const doneCount = arm.boxes.filter(b => b.winnerSlot).length;
         subNote = `<p class="hint">${arm.teamStandings.length} teams · ${doneCount} of ${arm.boxes.length} bouts completed</p>`;
       }
-      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? (d.sport === 'rubiks' || d.sport === 'eating' || d.sport === 'armwrestling' ? '' : `<p class="hint">${tCount} ${tCount === 1 ? 'competing team' : 'competing teams'}</p>`) : rowTeam(team(d.homeId), hasScore ? (isSet ? s.setsWon?.home : s.home) ?? 0 : '', sideRosterSummary(d, 'home') + homeServe) + rowTeam(team(d.awayId), hasScore ? (isSet ? s.setsWon?.away : s.away) ?? 0 : '', sideRosterSummary(d, 'away') + awayServe)}${subNote}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
+      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? (isContestSport(d.sport) || d.sport === 'armwrestling' ? '' : `<p class="hint">${tCount} ${tCount === 1 ? 'competing team' : 'competing teams'}</p>`) : rowTeam(team(d.homeId), hasScore ? (isSet ? s.setsWon?.home : s.home) ?? 0 : '', sideRosterSummary(d, 'home') + homeServe) + rowTeam(team(d.awayId), hasScore ? (isSet ? s.setsWon?.away : s.away) ?? 0 : '', sideRosterSummary(d, 'away') + awayServe)}${subNote}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
     }
     function pageHead(name, p) { return `<header class="page-head"><div><h1>${e(name)}</h1>${p ? `<p>${e(p)}</p>` : ''}</div></header>`; }
     function message() { return failed ? `<div role="status" class="notice">${loaded ? 'Live updates paused. Showing last available scores.' : 'Match centre could not load.'}<button class="seg" data-retry>Retry</button></div>` : ''; }
@@ -2137,112 +2027,189 @@
     function fixtureList() {
       let all = fixtures(), types = [...new Set(all.map(f => f.details.sport))], dates = new Map(all.filter(f => f.details.startTime).map(f => [day(f.details.startTime, fmtKey), day(f.details.startTime)]));
       let list = all.filter(f => (filters.status === 'all' || st(f) === filters.status) && (filters.sport === 'all' || f.details.sport === filters.sport) && (filters.team === 'all' || groupTeam(f, filters.team)) && (filters.date === 'all' || day(f.details.startTime, fmtKey) === filters.date));
-      const hasCustomOrder = (state.siteMeta?.fixtureOrder || []).length > 0;
-      const filterBar = `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>`;
+      return pageHead('Fixtures', 'Scheduled events in official tournament sequence (IST).') +
+        `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` +
+        (list.length ? `<div class="fixture-list grid-2">${list.map(fixtureCard).join('')}</div>` : empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
+    }
 
-      if (hasCustomOrder) {
-        return pageHead('Fixtures', 'Event schedule, kickoff times (IST) and venues.') + filterBar +
-          (list.length ? `<div class="fixture-list grid-2">${list.map(fixtureCard).join('')}</div>` : empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
-      }
-
-      let groups = new Map; for (let f of list) { let k = day(f.details.startTime); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(f); }
-      return pageHead('Fixtures', 'Kickoff times (IST) and venues.') + filterBar + ([...groups].map(([k, arr]) => `<section class="group"><h2 class="day-title">${e(k)}</h2><div class="fixture-list grid-2">${arr.map(fixtureCard).join('')}</div></section>`).join('') || empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
+    function publishedResultCard(res) {
+      const f = res.fixtureId ? state.fixtures.find(x => x.id === res.fixtureId) : null;
+      const evTitle = res.title || (f ? title(f) : 'Event Result');
+      const cat = res.category || (f ? sportName(f) : 'Final Result');
+      const ordinal = n => n === 1 ? '1ST' : n === 2 ? '2ND' : n === 3 ? '3RD' : `#${n}`;
+      const places = (res.places || []).filter(p => p.teamId);
+      return `<article class="podium-card">
+        <div class="info-line">
+          <span class="fixture-sport">${e(cat)}</span>
+          <span class="tag finished">Final Result</span>
+        </div>
+        <h3 class="fixture-title">${e(evTitle)}</h3>
+        <div class="podium-list">
+          ${places.map(p => {
+            const tObj = team(p.teamId);
+            const pObj = p.playerId ? player(p.playerId) : null;
+            const pts = Number(p.points) || 0;
+            return `<div class="podium-row place-${p.place}">
+              <span class="medal-pill">${ordinal(p.place)}</span>
+              ${crest(tObj)}
+              <div class="podium-info">
+                <b>${e(tObj?.name || 'Team')}</b>
+                ${pObj || p.note ? `<small>${[pObj?.name, p.note].filter(Boolean).map(e).join(' · ')}</small>` : ''}
+              </div>
+              <div class="podium-right">
+                ${pts ? `<strong>+${pts} pts</strong>` : ''}
+                ${p.note && !pts ? `<small>${e(p.note)}</small>` : ''}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        ${f ? `<div class="foot-line"><a class="link-btn" href="${fixtureLink(f)}">View match details →</a></div>` : ''}
+      </article>`;
     }
 
     function resultsPage() {
-      const manual = state.siteMeta?.manualResults || [];
-      const sportsList = [...new Set(manual.map(r => r.sport).filter(Boolean))];
-      const filtered = manual.filter(r => {
-        const sportOk = filters.sport === 'all' || r.sport === filters.sport;
-        const teamOk = filters.team === 'all' || (r.places || []).some(p => p.teamId === filters.team);
-        return sportOk && teamOk;
-      });
+      const manual = (state.siteMeta?.publishedResults || []).map(r => ({
+        ...r,
+        places: (r.places || []).filter(p => p.teamId)
+      })).filter(r => r.places.length > 0);
 
-      const placeLabel = p => p === 1 ? '1ST' : p === 2 ? '2ND' : p === 3 ? '3RD' : `#${p}`;
+      const manualFixtureIds = new Set(manual.map(r => r.fixtureId).filter(Boolean));
+      const autoFinished = fixtures().filter(f => st(f) === 'finished' && !manualFixtureIds.has(f.id)).map(f => {
+        const d = f.details, s = score(f), isSet = isSetSport(d.sport);
+        let places = [];
+        if (f.awards?.entries?.length) {
+          places = [...f.awards.entries].sort((a, b) => (Number(a.place) || 99) - (Number(b.place) || 99)).slice(0, 3).map((a, idx) => ({
+            place: Number(a.place) || (idx + 1),
+            teamId: a.teamId,
+            playerId: a.playerId || '',
+            note: '',
+            points: Number(a.points) || 0
+          }));
+        } else if (!mode(f) && d.homeId && d.awayId) {
+          const hVal = Number(isSet ? s.setsWon?.home : s.home) || 0;
+          const aVal = Number(isSet ? s.setsWon?.away : s.away) || 0;
+          if (hVal > aVal) {
+            places = [
+              { place: 1, teamId: d.homeId, playerId: '', note: `${hVal} – ${aVal}`, points: 0 },
+              { place: 2, teamId: d.awayId, playerId: '', note: `${aVal} – ${hVal}`, points: 0 }
+            ];
+          } else if (aVal > hVal) {
+            places = [
+              { place: 1, teamId: d.awayId, playerId: '', note: `${aVal} – ${hVal}`, points: 0 },
+              { place: 2, teamId: d.homeId, playerId: '', note: `${hVal} – ${aVal}`, points: 0 }
+            ];
+          }
+        } else if (d.sport === 'rubiks') {
+          const { entries } = getRubiksLeaderboard(d, s, state.teams, state.players);
+          places = entries.filter(x => x.solved).slice(0, 3).map((ent, idx) => ({
+            place: idx + 1,
+            teamId: ent.teamId,
+            playerId: ent.player.id,
+            note: ent.displayTime,
+            points: 0
+          }));
+        } else if (isRepSport(d.sport)) {
+          const { entries } = getEatingLeaderboard(d, s, state.teams, state.players);
+          places = entries.filter(x => x.recorded).slice(0, 3).map((ent, idx) => ({
+            place: idx + 1,
+            teamId: ent.teamId,
+            playerId: ent.player.id,
+            note: ent.displayAmount,
+            points: 0
+          }));
+        } else if (d.sport === 'armwrestling') {
+          const arm = getArmWrestlingState(d, s, state.teams, state.players);
+          places = arm.teamStandings.slice(0, 3).map((ts, idx) => ({
+            place: idx + 1,
+            teamId: ts.teamId,
+            playerId: '',
+            note: `${ts.pts} bout ${ts.pts === 1 ? 'win' : 'wins'}`,
+            points: 0
+          }));
+        }
+        return {
+          id: 'auto-' + f.id,
+          fixtureId: f.id,
+          title: title(f),
+          category: sportName(f) + (d.stage ? ' · ' + d.stage : ''),
+          places
+        };
+      }).filter(r => r.places.length > 0);
 
-      const cardsHtml = filtered.map(r => {
-        const validPlaces = (r.places || []).filter(p => p.teamId).sort((a, b) => Number(a.place) - Number(b.place));
-        const linkedFixture = r.fixtureId ? state.fixtures.find(f => f.id === r.fixtureId) : null;
-        return `<article class="podium-card">
-          <div class="info-line">
-            <span class="fixture-sport">${e(standardName[r.sport] || label(r.sport || 'Event'))}${r.stage ? ' · ' + e(r.stage) : ''}</span>
-            <span class="tag finished">Final Result</span>
-          </div>
-          <h3 class="fixture-title" style="margin-top:2px">${linkedFixture ? `<a href="${fixtureLink(linkedFixture)}">${e(r.title)}</a>` : e(r.title)}</h3>
-          <div class="podium-list">
-            ${validPlaces.map(p => {
-              const tObj = team(p.teamId);
-              const pObj = p.playerId ? player(p.playerId) : null;
-              const pts = Number(p.points) || 0;
-              return `<div class="podium-row place-${e(p.place)}">
-                <span class="medal-pill">${placeLabel(Number(p.place))}</span>
-                ${crest(tObj)}
-                <div class="podium-info">
-                  <b>${e(tObj?.name || 'Team')}</b>
-                  ${pObj ? `<small>${e(pObj.name)}</small>` : ''}
-                </div>
-                <div class="podium-right">
-                  ${p.note ? `<strong>${e(p.note)}</strong>` : (pts ? `<strong>+${pts} PTS</strong>` : '')}
-                  ${p.note && pts ? `<small>+${pts} PTS</small>` : ''}
-                </div>
-              </div>`;
-            }).join('')}
-          </div>
-        </article>`;
-      }).join('');
+      const allResults = [...manual, ...autoFinished];
+      const categories = [...new Set(allResults.map(r => r.category).filter(Boolean))];
+      const filtered = allResults.filter(r =>
+        (filters.resSport === 'all' || r.category === filters.resSport) &&
+        (filters.resTeam === 'all' || (r.places || []).some(p => p.teamId === filters.resTeam))
+      );
 
-      return pageHead('Results', 'Confirmed 1st, 2nd & 3rd place final results.') +
-        `<div class="tools">${options('sport', [['all', 'All sports'], ...sportsList.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}</div>` +
-        (cardsHtml ? `<div class="fixture-list grid-2">${cardsHtml}</div>` : empty('results', manual.length ? 'No matching results' : 'No final results published yet', manual.length ? 'Try changing the sport or team filter.' : 'Official 1st, 2nd and 3rd place results will appear here once published.'));
+      return pageHead('Results', 'Confirmed final podium results (1st, 2nd & 3rd place).') +
+        `<div class="tools">${options('resSport', [['all', 'All events'], ...categories.map(c => [c, c])])}${options('resTeam', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}</div>` +
+        (filtered.length
+          ? `<div class="fixture-list grid-2">${filtered.map(publishedResultCard).join('')}</div>`
+          : empty('results', 'No final results published yet', '1st, 2nd and 3rd place winners will appear here as soon as results are confirmed.'));
     }
 
     function ledger() {
-      const manual = state.siteMeta?.manualResults || [];
-      const linkedFixtureIds = new Set(manual.map(r => r.fixtureId).filter(Boolean));
-      const fromFixtures = fixtures()
-        .filter(f => st(f) === 'finished' && !linkedFixtureIds.has(f.id))
+      const manualResults = state.siteMeta?.publishedResults || [];
+      const manualFixtureIds = new Set(manualResults.map(r => r.fixtureId).filter(Boolean));
+      const manualEntries = manualResults.flatMap(r =>
+        (r.places || []).filter(p => p.teamId && (Number(p.points) || 0) !== 0).map(p => ({
+          teamId: p.teamId,
+          playerId: p.playerId || '',
+          place: p.place,
+          points: Number(p.points) || 0,
+          eventTitle: r.title || 'Event Result',
+          eventLink: r.fixtureId ? '#match/' + encodeURIComponent(r.fixtureId) : '#results'
+        }))
+      );
+      const fixtureAwardEntries = fixtures()
+        .filter(f => st(f) === 'finished' && !manualFixtureIds.has(f.id))
         .flatMap(f => (f.awards?.entries || []).map(a => ({
           teamId: a.teamId,
           playerId: a.playerId || '',
           place: a.place,
           points: Number(a.points) || 0,
           eventTitle: title(f),
-          href: fixtureLink(f)
+          eventLink: fixtureLink(f)
         })));
-      const fromManual = manual.flatMap(r => (r.places || []).filter(p => p.teamId && Number(p.points)).map(p => ({
-        teamId: p.teamId,
-        playerId: p.playerId || '',
-        place: p.place,
-        points: Number(p.points) || 0,
-        eventTitle: r.title,
-        href: r.fixtureId ? '#match/' + encodeURIComponent(r.fixtureId) : '#results'
-      })));
-      return [...fromManual, ...fromFixtures];
+      return [...manualEntries, ...fixtureAwardEntries];
     }
 
     function leaderboard() {
-      let awards = ledger(), points = id => awards.filter(a => a.teamId === id);
-      let arr = state.teams.map(p => ({ p, rows: points(p.id) })).map(r => ({ ...r, total: r.rows.reduce((n, a) => n + a.points, 0) })).sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
+      const awards = ledger();
+      const arr = state.teams.map(t => {
+        const rows = awards.filter(a => a.teamId === t.id);
+        return { p: t, rows, total: rows.reduce((n, a) => n + a.points, 0) };
+      }).sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
+
       let rank = 0;
-      return pageHead('Leaderboard', 'Team championship points. Tap a team to view teammates & points.') +
+      return pageHead('Leaderboard', 'Team championship points. Tap any team to view its Teammates and points breakdown.') +
         `<div class="rank-list">${arr.map((r, i) => {
           if (!i || r.total !== arr[i - 1].total) rank = i + 1;
-          const members = state.players.filter(x => x.teamId === r.p.id);
-          const showMates = openTeammates.has(r.p.id);
-          return `<details class="rank-row" data-persist="${e(r.p.id)}">
+          const t = r.p;
+          const squad = state.players.filter(x => x.teamId === t.id);
+          const showSquad = filters.openTeammates.has(t.id);
+          return `<details class="rank-row" data-persist="${e(t.id)}">
             <summary>
               <span class="rank-index">${rank}</span>
-              ${crest(r.p)}
-              <span class="rank-name"><b>${e(r.p.name)}</b><small>${members.length} players · Tap for options</small></span>
+              ${crest(t)}
+              <span class="rank-name">
+                <b>${e(t.name)}</b>
+                <small>${squad.length} ${squad.length === 1 ? 'player' : 'players'}</small>
+              </span>
               <span class="rank-points">${r.total}<small>PTS</small></span>
             </summary>
             <div class="team-expand-body">
               <div class="team-expand-actions">
-                <button type="button" class="teammates-btn ${showMates ? 'open' : ''}" data-toggle-teammates="${e(r.p.id)}">${icon('people')}<span>Teammates (${members.length})</span></button>
-                <a class="seg" href="#team/${encodeURIComponent(r.p.id)}">Team Profile →</a>
+                <button type="button" class="teammates-btn ${showSquad ? 'open' : ''}" data-toggle-teammates="${e(t.id)}">${icon('people')}<span>Teammates (${squad.length})</span></button>
+                <a class="link-btn" href="#team/${encodeURIComponent(t.id)}">Full team page →</a>
               </div>
-              ${showMates ? `<div class="teammates-box"><span class="meta">Registered Teammates</span><div class="teammates-grid">${members.length ? members.map((m, idx) => `<span class="teammate-pill">${idx + 1}. ${e(m.name)}</span>`).join('') : '<span class="hint">No players listed for this team yet.</span>'}</div></div>` : ''}
-              <div class="award-list">${r.rows.length ? `<span class="meta">Points Breakdown</span><ul>${r.rows.map(a => `<li><a href="${a.href}">${e(a.eventTitle)}</a>${a.place ? ' · #' + e(a.place) : ''}${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>` : 'No championship points awarded yet.'}</div>
+              ${showSquad ? `<div class="teammates-box">
+                <div class="meta">Registered Teammates</div>
+                ${squad.length ? `<div class="teammates-grid">${squad.map((m, idx) => `<span class="teammate-pill">${idx + 1}. ${e(m.name)}</span>`).join('')}</div>` : '<p class="hint">No players assigned to this team yet.</p>'}
+              </div>` : ''}
+              <div class="award-list">${r.rows.length ? `<ul>${r.rows.map(a => `<li><a href="${a.eventLink}">${e(a.eventTitle)}</a>${a.place ? ' · #' + e(a.place) : ''}${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>` : 'No championship points awarded yet.'}</div>
             </div>
           </details>`;
         }).join('')}</div>`;
@@ -2307,7 +2274,7 @@
         if (isSet) return ['rally', 'yellow', 'red', 'timeout'].includes(x.kind);
         if (d.sport === 'armwrestling') return x.kind === 'arm_box_win' && x.slot;
         if (d.sport === 'rubiks') return x.kind === 'solve_time' && !x.clear;
-        if (d.sport === 'eating') return x.kind === 'eat_amount' && !x.clear;
+        if (isRepSport(d.sport)) return x.kind === 'eat_amount' && !x.clear;
         return ['goal', 'yellow', 'red'].includes(x.kind);
       }).reverse();
       const clk = st(f) === 'live' ? formatClock(computeClock(s.timeline, 'live')) : null, isStopped = clk && clk.stateLabel !== 'running';
@@ -2326,12 +2293,12 @@
         let rankCounter = 0;
         rubiksHtml = `
           ${clk ? `<div class="match-clock-wrap" style="margin:12px 0"><span class="match-clock-banner ${isStopped ? 'stopped' : ''}" data-live-clock="${e(f.id)}">Heat Clock · ${clk.text}</span></div>` : ''}
-          <h2 class="subhead">Contestant Solve Times</h2>
-          <p class="hint">All teams solve simultaneously. Ranked from fastest solve time to slowest.</p>
+          <h2 class="subhead">Contestant Leaderboard (Fastest Solve)</h2>
+          <p class="hint">Simultaneous multi-team challenge. Ranked by fastest solve time.</p>
           <div style="margin-top:10px">
             ${entries.length ? entries.map((ent, idx) => {
               if (ent.solved) {
-                if (idx === 0 || !entries[idx - 1].solved || entries[idx - 1].timeSec !== ent.timeSec) rankCounter = idx + 1;
+                if (idx === 0 || !entries[idx - 1].solved || entries[idx - 1].ms !== ent.ms) rankCounter = idx + 1;
               }
               const rankText = ent.solved ? '#' + rankCounter : ent.dnf ? 'DNF' : '—';
               return `<div class="rubiks-row ${ent.solved && rankCounter === 1 ? 'podium-1' : ''}">
@@ -2347,22 +2314,23 @@
           </div>
           ${teamSummary.length ? `<h2 class="subhead">Team Best Times</h2>
             ${teamSummary.map((row, idx) => `<div class="attempt-row">
-              <span style="font:700 18px/1 var(--title);color:var(--lime);min-width:22px">${Number.isFinite(row.bestSec) ? idx + 1 : '—'}</span>
+              <span style="font:700 18px/1 var(--title);color:var(--lime);min-width:22px">${row.bestMs < Infinity ? idx + 1 : '—'}</span>
               ${crest(row.team)}
               <span><b>${e(row.team.name)}</b> <small class="muted">(${row.solvedCount}/${row.totalCount} solved${row.bestPlayer ? ' · ' + e(row.bestPlayer.name) : ''})</small></span>
-              <strong>${Number.isFinite(row.bestSec) ? e(formatSolveDuration(row.bestSec)) : '—'}</strong>
+              <strong>${row.bestMs < Infinity ? e(formatDurationMs(row.bestMs)) : '—'}</strong>
             </div>`).join('')}` : ''}
         `;
       }
 
       let eatingHtml = '';
-      if (d.sport === 'eating') {
+      if (isRepSport(d.sport)) {
+        const isPushup = d.sport === 'pushup';
         const { entries, teamSummary, unit } = getEatingLeaderboard(d, s, state.teams, state.players);
         let rankCounter = 0;
         eatingHtml = `
           ${clk ? `<div class="match-clock-wrap" style="margin:12px 0"><span class="match-clock-banner ${isStopped ? 'stopped' : ''}" data-live-clock="${e(f.id)}">Contest Clock · ${clk.text}</span></div>` : ''}
-          <h2 class="subhead">Contestant Leaderboard (Most ${e(unit)} Eaten)</h2>
-          <p class="hint">Ranked by highest quantity eaten within the given time.</p>
+          <h2 class="subhead">${isPushup ? `Contestant Leaderboard (Most ${e(unit)} Completed)` : `Contestant Leaderboard (Most ${e(unit)} Eaten)`}</h2>
+          <p class="hint">${isPushup ? 'Ranked by highest number of push-ups completed. #1 wins overall.' : 'Ranked by highest quantity eaten within the given time.'}</p>
           <div style="margin-top:10px">
             ${entries.length ? entries.map((ent, idx) => {
               if (ent.recorded) {
@@ -2380,7 +2348,7 @@
               </div>`;
             }).join('') : '<p class="hint">No contestants registered yet.</p>'}
           </div>
-          ${teamSummary.length ? `<h2 class="subhead">Team Best Scores</h2>
+          ${teamSummary.length ? `<h2 class="subhead">${isPushup ? 'Team Best Push-Up Counts' : 'Team Best Scores'}</h2>
             ${teamSummary.map((row, idx) => `<div class="attempt-row">
               <span style="font:700 18px/1 var(--title);color:var(--lime);min-width:22px">${row.bestAmount >= 0 ? idx + 1 : '—'}</span>
               ${crest(row.team)}
@@ -2393,38 +2361,35 @@
       let boutsHtml = '';
       if (d.sport === 'armwrestling') {
         const arm = getArmWrestlingState(d, s, state.teams, state.players);
-        const stages = [...new Set(arm.boxes.map(b => b.stage || 'Quarter-Final'))];
-        boutsHtml = `
-          <h2 class="subhead">Team Bout Points</h2>
-          <div class="arm-team-strip">
-            ${arm.teamStandings.map(ts => `<div class="arm-team-pill">
-              ${crest(ts.team)}
-              <div><b>${e(ts.team.name)}</b><small>Bout wins</small></div>
-              <strong>${ts.wins}</strong>
-            </div>`).join('')}
-          </div>
-          ${stages.map(stName => {
-            const groupBoxes = arm.boxes.filter(b => (b.stage || 'Quarter-Final') === stName);
-            return `<h2 class="subhead">${e(stName)}s</h2>
-              <div class="arm-boxes-grid">
-                ${groupBoxes.map(bx => {
-                  const p1 = player(bx.p1Id), p2 = player(bx.p2Id);
-                  const t1 = p1 ? team(p1.teamId) : null, t2 = p2 ? team(p2.teamId) : null;
-                  const win1 = bx.winnerSlot === 'p1', win2 = bx.winnerSlot === 'p2';
-                  return `<div class="arm-box-card ${bx.winnerSlot ? 'decided' : st(f) === 'live' ? 'live-box' : ''}">
-                    <div class="arm-box-head"><span>${e(bx.label)}</span><span>${bx.winnerSlot ? 'Decided' : st(f) === 'live' ? 'Live Bout' : 'Scheduled'}</span></div>
-                    <div class="arm-slot ${win1 ? 'winner' : ''}">
-                      <div class="arm-slot-left">${crest(t1)}<div><b>${e(p1?.name || 'Player TBC')}</b><small>${e(t1?.name || 'Team TBC')}</small></div></div>
-                      ${win1 ? '<span class="win-badge">WON</span>' : ''}
-                    </div>
-                    <div class="arm-slot ${win2 ? 'winner' : ''}">
-                      <div class="arm-slot-left">${crest(t2)}<div><b>${e(p2?.name || 'Player TBC')}</b><small>${e(t2?.name || 'Team TBC')}</small></div></div>
-                      ${win2 ? '<span class="win-badge">WON</span>' : ''}
-                    </div>
-                  </div>`;
-                }).join('')}
+        const renderStagePublic = (stageCode, stageTitle) => {
+          const stageBoxes = arm.boxes.filter(b => b.stage === stageCode);
+          if (!stageBoxes.length) return '';
+          return `<h2 class="subhead">${stageTitle}</h2>
+            <div class="arm-boxes-grid">${stageBoxes.map(b => {
+              const p1 = player(b.p1Id), p2 = player(b.p2Id);
+              const t1 = p1 ? team(p1.teamId) : null, t2 = p2 ? team(p2.teamId) : null;
+              return `<div class="arm-box-card ${b.winnerSlot ? 'decided' : st(f) === 'live' ? 'live-box' : ''}">
+                <div class="arm-box-head"><span>${e(b.label)}</span><span>${b.winnerSlot ? '+1 Bout Pt' : st(f) === 'live' ? 'Live' : 'Scheduled'}</span></div>
+                <div class="arm-slot ${b.winnerSlot === 'p1' ? 'winner' : ''}">
+                  <div class="arm-slot-left">${crest(t1)}<div><b>${e(p1?.name || 'Participant TBC')}</b><small>${e(t1?.name || 'Team TBC')}</small></div></div>
+                  ${b.winnerSlot === 'p1' ? '<span class="win-badge">WON</span>' : ''}
+                </div>
+                <div class="arm-slot ${b.winnerSlot === 'p2' ? 'winner' : ''}">
+                  <div class="arm-slot-left">${crest(t2)}<div><b>${e(p2?.name || 'Participant TBC')}</b><small>${e(t2?.name || 'Team TBC')}</small></div></div>
+                  ${b.winnerSlot === 'p2' ? '<span class="win-badge">WON</span>' : ''}
+                </div>
               </div>`;
-          }).join('')}
+            }).join('')}</div>`;
+        };
+
+        boutsHtml = `
+          ${arm.teamStandings.length ? `<h2 class="subhead">Team Bout Points</h2>
+            <div class="arm-team-strip">${arm.teamStandings.map(ts => `
+              <div class="arm-team-pill">${crest(ts.team)}<div><b>${e(ts.team.name)}</b><small>Bout wins</small></div><strong>${ts.pts}</strong></div>
+            `).join('')}</div>` : ''}
+          ${renderStagePublic('FINAL', 'Championship Final')}
+          ${renderStagePublic('SF', 'Semi-Finals')}
+          ${renderStagePublic('QF', 'Quarter-Finals · 4 Match Boxes')}
         `;
       }
 
@@ -2457,11 +2422,11 @@
           ${boutsHtml}
           ${rubiksHtml}
           ${eatingHtml}
-          ${isIndividual && d.sport !== 'rubiks' && d.sport !== 'eating' && d.sport !== 'armwrestling' ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Team Attempts' : 'Competing Teams'}</h2>${teamRankIds.map(id => `<div class="attempt-row">${crest(team(id))}<span>${e(team(id)?.name || 'Team')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Competing teams will appear here.</p>'}` : ''}
+          ${isIndividual && !isContestSport(d.sport) && d.sport !== 'armwrestling' ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Team Attempts' : 'Competing Teams'}</h2>${teamRankIds.map(id => `<div class="attempt-row">${crest(team(id))}<span>${e(team(id)?.name || 'Team')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Competing teams will appear here.</p>'}` : ''}
           ${isSet ? `<h2 class="subhead">Sets</h2><p class="hint">Best of ${e(d.bestOf || 3)} · ${e(d.pointLimit || (d.sport === 'badminton' ? 21 : 25))} points per set${d.decidingLimit ? ' · Decider to ' + e(d.decidingLimit) : ''}</p>${sets.map((x, i) => `<div class="set-row">Set ${i + 1}<strong>${e(x.home)} – ${e(x.away)}</strong></div>`).join('')}${st(f) === 'live' && !s.winner && d.sport === 'volleyball' ? `<div class="set-row">Current set<strong>${e(s.home ?? 0)} – ${e(s.away ?? 0)}</strong></div>` : ''}` : ''}
           ${arenaHtml}
-          <h2 class="subhead">${isSet ? 'Rally Highlights' : d.sport === 'armwrestling' ? 'Bout Results Log' : d.sport === 'rubiks' ? 'Solve Feed' : d.sport === 'eating' ? 'Live Quantity Feed' : 'Goals & Cards'}</h2>
-          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : x.kind === 'timeout' ? '⏱ ' : d.sport === 'badminton' ? '🏸 ' : d.sport === 'volleyball' ? '🏐 ' : d.sport === 'armwrestling' ? '💪 ' : d.sport === 'rubiks' ? '🧩 ' : d.sport === 'eating' ? '🍽️ ' : '⚽ '}${e(x.label || x.reason || label(x.kind))}</span></li>`).join('')}</ol>` : '<p class="hint">No match highlights recorded yet.</p>'}
+          <h2 class="subhead">${isSet ? 'Rally Highlights' : d.sport === 'armwrestling' ? 'Bout Results Log' : d.sport === 'rubiks' ? 'Solve Feed' : d.sport === 'pushup' ? 'Live Push-Up Feed' : d.sport === 'eating' ? 'Live Quantity Feed' : 'Goals & Cards'}</h2>
+          ${publicTl.length ? `<ol class="timeline">${publicTl.map(x => `<li><time>${x.minute != null && x.minute !== '' ? e(x.minute) + '′' : '•'}</time><span>${/yellow|red/i.test(x.kind) ? '<i class="card-mark ' + (/red/i.test(x.kind) ? 'red' : 'yellow') + '" aria-hidden="true"></i>' : x.kind === 'timeout' ? '⏱ ' : d.sport === 'badminton' ? '🏸 ' : d.sport === 'volleyball' ? '🏐 ' : d.sport === 'armwrestling' ? '💪 ' : d.sport === 'rubiks' ? '🧩 ' : d.sport === 'pushup' ? '🏋️ ' : d.sport === 'eating' ? '🍽️ ' : '⚽ '}${e(x.label || x.reason || label(x.kind))}</span></li>`).join('')}</ol>` : '<p class="hint">No match highlights recorded yet.</p>'}
           ${st(f) === 'finished' && f.awards?.entries?.length ? `<h2 class="subhead">Championship awards</h2>${f.awards.entries.map(x => `<div class="attempt-row"><span>${e(team(x.teamId)?.name || 'Team')}${x.playerId ? ' · ' + e(player(x.playerId)?.name) : ''}</span><strong>${e(x.points)} pts</strong></div>`).join('')}` : ''}
         </article>`;
     }
@@ -2471,11 +2436,15 @@
       return pageHead('Live centre', fs.length ? `${fs.length} ${fs.length === 1 ? 'event' : 'events'} in progress` : 'Follow live scores and match action.') + (fs.length === 1 ? matchPage(fs[0]).replace(/^.*?<article/s, '<article').replace('<div class="info-line">', `<h2 class="subhead">${e(title(fs[0]))}</h2><p class="hint">${e(fs[0].details.venue)}</p><div class="info-line">`) : fs.length ? `<div class="fixture-list grid-2">${fs.map(fixtureCard).join('')}</div>` : empty('live', 'No events live right now', 'Open Fixtures for the latest schedule.'));
     }
 
-    function route() { let parts = location.hash.slice(1).split('/'); return { tab: parts[0] || 'home', id: parts[1] ? decodeURIComponent(parts[1]) : '' }; }
+    function route() {
+      let parts = location.hash.slice(1).split('/');
+      let tab = parts[0] || 'home';
+      if (tab === 'standings') tab = 'results';
+      return { tab, id: parts[1] ? decodeURIComponent(parts[1]) : '' };
+    }
 
     function renderPublic() {
       let { tab, id } = route();
-      if (tab === 'standings') tab = 'results';
       let panel = ({ home, fixtures: fixtureList, results: resultsPage, leaderboard, live: livePage, announcements: announcementsPage, committee: committeePage, contact: contactPage, match: () => matchPage(state.fixtures.find(f => f.id === id)), team: () => teamPage(id) })[tab] || home;
       let active = tab === 'team' ? 'home' : tab === 'match' ? (st(state.fixtures.find(f => f.id === id) || {}) === 'live' ? 'live' : 'fixtures') : tab;
       nav.innerHTML = views.map(v => `<a href="#${v}" ${v === active ? 'aria-current="page"' : ''}>${icon(v)}<span>${label(v)}</span></a>`).join('');
@@ -2491,10 +2460,8 @@
       document.querySelectorAll('[data-live-clock]').forEach(el => {
         const f = state.fixtures.find(x => x.id === el.getAttribute('data-live-clock'));
         if (f && st(f) === 'live') {
-          const clkText = formatClock(computeClock(score(f).timeline, 'live')).text;
-          if (el.textContent.startsWith('Heat Clock')) el.textContent = 'Heat Clock · ' + clkText;
-          else if (el.textContent.startsWith('Contest Clock')) el.textContent = 'Contest Clock · ' + clkText;
-          else el.textContent = clkText;
+          const prefix = (isContestSport(f.details.sport) && el.textContent.includes('Clock')) ? (f.details.sport === 'rubiks' ? 'Heat Clock · ' : 'Contest Clock · ') : '';
+          el.textContent = prefix + formatClock(computeClock(score(f).timeline, 'live')).text;
         }
       });
     }, 1000);
@@ -2566,9 +2533,9 @@
       finally { refreshing = false; }
     }
 
-    /* 5. ADMIN CONTROL ROOM */
+    /* 5. USER-FRIENDLY STAFF CONTROL ROOM */
     const app = document.querySelector('#app'), account = document.querySelector('#account'), notice = document.querySelector('#notice');
-    const permissions = { schedule: 'Schedule and lineups', score: 'Live scoring', awards: 'Championship awards', delete: 'Delete fixtures' };
+    const permissions = { schedule: 'Schedule and lineups', score: 'Live scoring', awards: 'Results & championship awards', delete: 'Delete fixtures' };
     const sports = {
       football: 'Football',
       volleyball: 'Volleyball',
@@ -2576,12 +2543,13 @@
       armwrestling: 'Arm Wrestling (8 Players · 4 Match Boxes)',
       rubiks: "Rubik's Cube Challenge (Timed Contestants)",
       eating: 'Eating Contest (Quantity Eaten)',
+      pushup: 'Push-Up Challenge (Repetition Count)',
       crossbar: 'Crossbar Challenge (Team Attempts)',
       custom: 'Individual / Team Event (Team Result Only)'
     };
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
-    let adminSearchQuery = '', adminStatusFilter = 'all';
+    let adminSearch = '', adminStatusFilter = 'all';
     let editingResultId = '';
     let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false } };
 
@@ -2591,7 +2559,7 @@
 
     function statusMsg(text = '', error = false) { notice.textContent = text; notice.className = error ? 'error' : ''; }
     async function reloadAdmin() { adminData = await snapshot(); app.removeAttribute('aria-busy'); renderAdmin(); }
-    function admBtn(text, action, cls = '') { return '<button type="button" class="' + cls + '" data-action="' + action + '">' + esc(text) + '</button>'; }
+    function admBtn(text, action, cls = '', disabled = false) { return '<button type="button" class="' + cls + '" data-action="' + action + '"' + (disabled ? ' disabled' : '') + '>' + esc(text) + '</button>'; }
     function admOpts(items, val, empty = '') { return (empty ? '<option value="">' + esc(empty) + '</option>' : '') + items.map(([k, n]) => '<option value="' + esc(k) + '" ' + (String(val) === String(k) ? 'selected' : '') + '>' + esc(n) + '</option>').join(''); }
     function admField(label, html) { return '<label class="field">' + esc(label) + html + '</label>'; }
     function admInput(name, val, type = 'text', attrs = '') { return '<input name="' + name + '" type="' + type + '" value="' + esc(val) + '" ' + attrs + '>'; }
@@ -2606,18 +2574,21 @@
       finally { app.inert = false; account.inert = false; busy = false; }
     }
 
-    function adminTopTabs() {
+    function adminNavBar() {
       const tabs = [
         ['fixtures', 'Fixtures & Order'],
+        ...(allowed('awards') ? [['resultsAdmin', 'Results (1st–3rd)']] : []),
         ...(adminData.role === 'admin' ? [
-          ['results', 'Results (1st–3rd)'],
           ['teams', 'Teams & Logos'],
           ['players', 'Players'],
           ['siteMeta', 'Brand & Notices'],
           ['access', 'Managers']
         ] : [])
       ];
-      return `<nav class="adm-nav-strip" aria-label="Control room sections">${tabs.map(([id, label]) => `<button type="button" class="adm-nav-tab ${view === id ? 'active' : ''}" data-action="${id}">${esc(label)}</button>`).join('')}</nav>`;
+      return `<nav class="adm-nav-strip" aria-label="Control room sections">${tabs.map(([v, lbl]) => {
+        const isActive = view === v || (v === 'fixtures' && ['new', 'details', 'score', 'awards'].includes(view));
+        return `<button type="button" class="adm-nav-tab ${isActive ? 'active' : ''}" data-action="${v}">${esc(lbl)}</button>`;
+      }).join('')}</nav>`;
     }
 
     function renderAdmin() {
@@ -2626,7 +2597,7 @@
       if (adminData.role !== 'admin' && adminData.role !== 'manager') { authAdmin(); return; }
       account.innerHTML = '<div class="account"><span class="pill">' + (adminData.role === 'admin' ? 'Main administrator' : 'Event manager') + '</span>' + admBtn('Sign out', 'logout') + '</div>';
       if (view === 'new' || view === 'details') { fixtureForm(); return; }
-      if (view === 'results') { resultsAdmin(); return; }
+      if (view === 'resultsAdmin') { resultsAdminView(); return; }
       if (view === 'access') { accessAdmin(); return; }
       if (view === 'siteMeta') { siteMetaAdmin(); return; }
       if (view === 'teams') { teamsAdmin(); return; }
@@ -2641,34 +2612,28 @@
     }
 
     function listingAdmin() {
-      const orderedAll = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder)
+      const orderedAll = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || [])
         .filter(f => adminData.role === 'admin' || !adminData.assigned.length || adminData.assigned.includes(f.id));
+      const canReorder = adminData.role === 'admin' && adminSearch === '' && adminStatusFilter === 'all';
+      const q = adminSearch.trim().toLowerCase();
 
-      const canReorder = adminData.role === 'admin' && !adminSearchQuery.trim() && adminStatusFilter === 'all';
-      const q = adminSearchQuery.trim().toLowerCase();
       const filtered = orderedAll.filter(f => {
         const s = f.score?.status || 'scheduled';
         if (adminStatusFilter !== 'all' && s !== adminStatusFilter) return false;
-        if (q) {
-          const hay = [f.details?.name, f.details?.venue, sports[f.details?.sport], teamName(f.details?.homeId), teamName(f.details?.awayId)].join(' ').toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
-        return true;
+        if (!q) return true;
+        const d = f.details || {};
+        const hay = [d.name, sports[d.sport], d.venue, d.stage, teamName(d.homeId), teamName(d.awayId)].join(' ').toLowerCase();
+        return hay.includes(q);
       });
 
-      const statusCounts = {
-        all: orderedAll.length,
-        live: orderedAll.filter(f => (f.score?.status || 'scheduled') === 'live').length,
-        scheduled: orderedAll.filter(f => (f.score?.status || 'scheduled') === 'scheduled').length,
-        finished: orderedAll.filter(f => (f.score?.status || 'scheduled') === 'finished').length
-      };
+      const publishedFixtureIds = new Set((adminData.siteMeta?.publishedResults || []).map(r => r.fixtureId).filter(Boolean));
 
-      app.innerHTML = adminTopTabs() +
+      app.innerHTML = adminNavBar() +
         `<section class="panel">
           <div class="bar">
             <div>
-              <h2>Fixtures &amp; Event Order</h2>
-              <p class="hint" style="margin:3px 0 0">${adminData.role === 'admin' ? 'Use ↑ and ↓ arrows to arrange the exact display order on the public Match Centre.' : 'Manage your assigned fixtures and live scores.'}</p>
+              <h2>Fixtures &amp; Events (${orderedAll.length})</h2>
+              <p class="hint" style="margin:2px 0 0">Use <b>↑ / ↓</b> to arrange the exact display order shown on the Match Centre.</p>
             </div>
             <div class="actions">
               ${allowed('schedule') ? admBtn('+ Add Event', 'new', 'accent') : ''}
@@ -2677,48 +2642,48 @@
           </div>
 
           <div class="adm-toolbar">
-            <input type="search" id="admFixtureSearch" class="adm-search" placeholder="Search events, teams, or venues…" value="${esc(adminSearchQuery)}">
+            <input type="search" id="admFixtureSearch" class="adm-search" value="${esc(adminSearch)}" placeholder="Search event, sport, team or venue…">
             <div class="adm-pills">
-              ${[['all', `All (${statusCounts.all})`], ['live', `Live (${statusCounts.live})`], ['scheduled', `Upcoming (${statusCounts.scheduled})`], ['finished', `Finished (${statusCounts.finished})`]].map(([k, lbl]) =>
-                `<button type="button" class="adm-pill-btn ${adminStatusFilter === k ? 'active' : ''}" data-adm-status="${k}">${esc(lbl)}</button>`
+              ${[['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']].map(([val, lbl]) =>
+                `<button type="button" class="adm-pill-btn ${adminStatusFilter === val ? 'active' : ''}" data-adm-status="${val}">${lbl}</button>`
               ).join('')}
             </div>
           </div>
 
-          ${!canReorder && adminData.role === 'admin' ? '<p class="hint">Clear search and select "All" to reorder events with ↑ / ↓ arrows.</p>' : ''}
+          ${!canReorder && adminData.role === 'admin' ? '<p class="hint">Clear search and set filter to <b>All</b> to reorder events with ↑ / ↓.</p>' : ''}
 
           <div>
             ${filtered.length ? filtered.map((f, idx) => {
               const d = f.details, s = f.score?.status || 'scheduled';
-              const badgeCls = s === 'live' ? 'live' : s === 'finished' ? 'finished' : '';
-              const badgeTxt = s === 'live' ? 'Live' : s === 'finished' ? 'Finished' : 'Upcoming';
-              return `<div class="adm-fixture-card ${s === 'live' ? 'is-live' : ''}" data-id="${esc(f.id)}">
-                ${canReorder ? `<div class="adm-order-col">
-                  <button type="button" class="adm-move-btn" data-action="moveUp" title="Move Up" ${idx === 0 ? 'disabled' : ''}>↑</button>
-                  <button type="button" class="adm-move-btn" data-action="moveDown" title="Move Down" ${idx === filtered.length - 1 ? 'disabled' : ''}>↓</button>
+              const hasManualResult = publishedFixtureIds.has(f.id);
+              return `<article class="adm-fixture-card ${s === 'live' ? 'is-live' : ''}">
+                ${canReorder ? `<div class="adm-order-col" data-order-id="${esc(f.id)}">
+                  <button type="button" class="adm-move-btn" data-action="moveFixtureUp" title="Move Up" ${idx === 0 ? 'disabled' : ''}>↑</button>
+                  <button type="button" class="adm-move-btn" data-action="moveFixtureDown" title="Move Down" ${idx === filtered.length - 1 ? 'disabled' : ''}>↓</button>
                 </div>` : ''}
                 <div class="adm-fixture-body">
                   <div class="adm-fixture-title-row">
-                    <strong>${esc(d.name)}</strong>
-                    <span class="adm-status-badge ${badgeCls}">${badgeTxt}</span>
+                    <strong style="font-size:1.05rem">${esc(d.name)}</strong>
+                    <span class="adm-status-badge ${s}">${s === 'finished' ? 'Finished' : s === 'live' ? 'Live' : 'Upcoming'}</span>
+                    ${hasManualResult ? '<span class="adm-status-badge finished">Podium Published</span>' : ''}
                   </div>
-                  <div class="meta" style="margin-top:4px">${esc([sports[d.sport], dateLabel(d.startTime), d.venue].filter(Boolean).join(' · '))}</div>
-                  <div class="actions" style="margin-top:10px">
-                    ${allowed('score', f) ? admBtn('Score Desk', 'score', 'primary') : ''}
-                    ${adminData.role === 'admin' ? admBtn('1st–3rd Result', 'quickResult') : ''}
-                    ${allowed('schedule', f) ? admBtn('Edit', 'details') : ''}
-                    ${allowed('delete', f) ? admBtn('Delete', 'delete', 'danger') : ''}
-                  </div>
+                  <span class="meta">${esc([sports[d.sport], dateLabel(d.startTime), d.venue].filter(Boolean).join(' · '))}</span>
                 </div>
-              </div>`;
+                <div class="actions" data-id="${esc(f.id)}">
+                  ${allowed('score', f) ? admBtn(s === 'live' ? 'Live Score' : 'Score', 'score', 'primary') : ''}
+                  ${allowed('awards', f) ? admBtn(hasManualResult ? 'Edit Result' : 'Result', 'quickResult') : ''}
+                  ${allowed('schedule', f) ? admBtn('Edit', 'details') : ''}
+                  ${allowed('delete', f) ? admBtn('Delete', 'delete', 'danger') : ''}
+                </div>
+              </article>`;
             }).join('') : '<p class="hint">No matching fixtures found.</p>'}
           </div>
         </section>`;
 
       const searchInp = app.querySelector('#admFixtureSearch');
       if (searchInp) {
-        searchInp.addEventListener('input', () => {
-          adminSearchQuery = searchInp.value;
+        searchInp.addEventListener('input', ev => {
+          adminSearch = ev.target.value;
           const pos = searchInp.selectionStart;
           listingAdmin();
           const nextInp = app.querySelector('#admFixtureSearch');
@@ -2727,145 +2692,145 @@
       }
     }
 
-    function resultsAdmin() {
-      if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
-      const manualResults = adminData.siteMeta?.manualResults || [];
-      const editRes = editingResultId ? manualResults.find(r => r.id === editingResultId) : null;
-      const orderedFixtures = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder);
-      const fixtureOpts = orderedFixtures.map(f => [f.id, `${f.details.name} (${sports[f.details.sport] || f.details.sport})`]);
+    function resultsAdminView() {
+      if (!allowed('awards')) { navigateAdmin('fixtures'); return; }
+      const resultsList = adminData.siteMeta?.publishedResults || [];
+      const editRec = editingResultId ? resultsList.find(r => r.id === editingResultId) : null;
+      const orderedFixtures = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || []);
       const teamOpts = adminData.teams.map(t => [t.id, t.name]);
 
-      const getSlot = placeNum => (editRes?.places || []).find(p => Number(p.place) === placeNum) || {};
+      const getSlot = place => (editRec?.places || []).find(p => Number(p.place) === place) || { place, teamId: '', playerId: '', note: '', points: '' };
       const s1 = getSlot(1), s2 = getSlot(2), s3 = getSlot(3);
-      const defaultPts = { 1: 10, 2: 6, 3: 3 };
 
-      const renderSlotCard = (placeNum, slotData) => {
-        const labelTxt = placeNum === 1 ? '🥇 1st Place' : placeNum === 2 ? '🥈 2nd Place' : '🥉 3rd Place';
-        const filteredPlayers = slotData.teamId
-          ? adminData.players.filter(p => p.teamId === slotData.teamId)
+      const renderPodiumSlot = (slot, titleText, slotClass, reqTeam = false) => {
+        const filteredPlayers = slot.teamId
+          ? adminData.players.filter(p => p.teamId === slot.teamId)
           : adminData.players;
-        return `<div class="adm-podium-slot slot-${placeNum}">
-          <h3><span>${labelTxt}</span></h3>
-          <label class="field">Winning Team
-            <select name="team_${placeNum}" data-podium-team="${placeNum}">
-              ${admOpts(teamOpts, slotData.teamId || '', placeNum === 1 ? 'Select 1st Place Team' : 'None / Skip')}
+        return `<div class="adm-podium-slot ${slotClass}">
+          <h3><span>${titleText}</span></h3>
+          <label class="field">Winning Team ${reqTeam ? '*' : '(Optional)'}
+            <select name="team_${slot.place}" data-result-team="${slot.place}" ${reqTeam ? 'required' : ''}>
+              ${admOpts(teamOpts, slot.teamId, reqTeam ? 'Select 1st place team' : '— None —')}
             </select>
           </label>
           <label class="field">Player Name (Optional)
-            <select name="player_${placeNum}" data-podium-player="${placeNum}">
-              ${admOpts(filteredPlayers.map(p => [p.id, `${p.name}${!slotData.teamId ? ' (' + teamName(p.teamId) + ')' : ''}`]), slotData.playerId || '', 'Team only (No player)')}
+            <select name="player_${slot.place}" data-result-player="${slot.place}">
+              ${admOpts(filteredPlayers.map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]), slot.playerId, '— Team / No specific player —')}
             </select>
           </label>
-          <div class="fields" style="margin:0">
-            <label class="field">Score / Time Note
-              <input type="text" name="note_${placeNum}" value="${esc(slotData.note || '')}" placeholder="e.g. 2–1 / 18.4s">
-            </label>
-            <label class="field">Leaderboard Pts
-              <input type="number" step="any" name="points_${placeNum}" value="${esc(slotData.points ?? defaultPts[placeNum])}" placeholder="0">
-            </label>
-          </div>
+          <label class="field">Score / Time Note (Optional)
+            <input type="text" name="note_${slot.place}" value="${esc(slot.note || '')}" placeholder="e.g. 2–1, 18.45s, 45 items">
+          </label>
+          <label class="field">Leaderboard Points
+            <input type="number" step="any" name="points_${slot.place}" value="${esc(slot.points ?? '')}" placeholder="e.g. ${slot.place === 1 ? '10' : slot.place === 2 ? '6' : '3'}">
+          </label>
         </div>`;
       };
 
-      app.innerHTML = adminTopTabs() +
+      app.innerHTML = adminNavBar() +
         `<section class="panel">
           <div class="bar">
             <div>
-              <h2>${editRes ? 'Edit Final Result: ' + esc(editRes.title) : 'Publish Final Event Result (1st – 2nd – 3rd)'}</h2>
-              <p class="hint" style="margin:3px 0 0">Only the final 1st, 2nd &amp; 3rd podium is shown on the public Results tab, and points are automatically added to the Leaderboard.</p>
+              <h2>${editRec ? 'Edit Published Result' : 'Publish Final Event Result (1st – 2nd – 3rd)'}</h2>
+              <p class="hint" style="margin:2px 0 0">Enter the final 1st, 2nd, and 3rd place winners. These appear directly on the public <b>Results</b> tab and update the <b>Leaderboard</b>.</p>
             </div>
-            ${editRes ? admBtn('Cancel Edit', 'cancelEditResult') : ''}
+            ${editRec ? admBtn('Cancel Edit', 'cancelEditResult') : ''}
           </div>
+
           <form id="manualResultForm">
-            <input type="hidden" name="resultId" value="${esc(editRes?.id || '')}">
+            <input type="hidden" name="resultId" value="${esc(editRec?.id || '')}">
             <div class="fields">
-              <label class="field">Link to Scheduled Fixture (Optional)
+              <label class="field">Link to Scheduled Event (Optional)
                 <select name="fixtureId" id="resFixtureSelect">
-                  ${admOpts(fixtureOpts, editRes?.fixtureId || '', '— Standalone / Custom Event —')}
+                  ${admOpts(orderedFixtures.map(f => [f.id, `${f.details.name} (${sports[f.details.sport] || f.details.sport})`]), editRec?.fixtureId || '', '— Standalone / Custom Event —')}
                 </select>
               </label>
-              <label class="field">Event Display Title
-                <input type="text" name="resultTitle" id="resTitleInput" value="${esc(editRes?.title || '')}" required placeholder="e.g. Rubik's Cube Challenge">
+              <label class="field">Event Display Title *
+                <input type="text" name="title" id="resTitleInput" value="${esc(editRec?.title || '')}" required placeholder="e.g. 100m Sprint · Final">
               </label>
-              <label class="field">Sport / Category
-                <select name="resultSport" id="resSportSelect">
-                  ${admOpts(Object.entries(sports), editRes?.sport || 'custom')}
-                </select>
-              </label>
-              <label class="field">Stage / Note (Optional)
-                <input type="text" name="resultStage" id="resStageInput" value="${esc(editRes?.stage || '')}" placeholder="e.g. Final">
+              <label class="field full">Sport / Category Label (Optional)
+                <input type="text" name="category" id="resCategoryInput" value="${esc(editRec?.category || '')}" placeholder="e.g. Athletics, Football, Rubik's Cube">
               </label>
             </div>
 
             <div class="adm-podium-grid">
-              ${renderSlotCard(1, s1)}
-              ${renderSlotCard(2, s2)}
-              ${renderSlotCard(3, s3)}
+              ${renderPodiumSlot(s1, '🥇 1st Place', 'slot-1', true)}
+              ${renderPodiumSlot(s2, '🥈 2nd Place', 'slot-2', false)}
+              ${renderPodiumSlot(s3, '🥉 3rd Place', 'slot-3', false)}
             </div>
 
             <div class="actions spaced">
-              <button class="primary">${editRes ? 'Update Published Result' : 'Publish Final Result'}</button>
-              ${editRes ? admBtn('Cancel', 'cancelEditResult') : ''}
+              <button class="primary">${editRec ? 'Update Published Result' : 'Publish Final Result'}</button>
+              ${editRec ? admBtn('Cancel', 'cancelEditResult') : ''}
             </div>
           </form>
         </section>
 
         <section class="panel">
-          <h2>Published Final Results (${manualResults.length})</h2>
-          <p class="hint">Use ↑ and ↓ arrows to arrange the display order of results on the public Results tab.</p>
-          <div>
-            ${manualResults.length ? manualResults.map((r, idx) => `<div class="adm-fixture-card" data-result-id="${esc(r.id)}">
-              <div class="adm-order-col">
+          <div class="bar">
+            <div>
+              <h2>Published Final Results (${resultsList.length})</h2>
+              <p class="hint" style="margin:2px 0 0">Use <b>↑ / ↓</b> to arrange the exact display order shown on the public <b>Results</b> tab.</p>
+            </div>
+          </div>
+          ${resultsList.length ? resultsList.map((r, idx) => {
+            const ordinal = n => n === 1 ? '1st' : n === 2 ? '2nd' : n === 3 ? '3rd' : `#${n}`;
+            return `<article class="adm-fixture-card">
+              <div class="adm-order-col" data-res-order-id="${esc(r.id)}">
                 <button type="button" class="adm-move-btn" data-action="moveResultUp" title="Move Up" ${idx === 0 ? 'disabled' : ''}>↑</button>
-                <button type="button" class="adm-move-btn" data-action="moveResultDown" title="Move Down" ${idx === manualResults.length - 1 ? 'disabled' : ''}>↓</button>
+                <button type="button" class="adm-move-btn" data-action="moveResultDown" title="Move Down" ${idx === resultsList.length - 1 ? 'disabled' : ''}>↓</button>
               </div>
               <div class="adm-fixture-body">
-                <div class="adm-fixture-title-row">
-                  <strong>${esc(r.title)}</strong>
-                  <span class="adm-status-badge finished">${esc(sports[r.sport] || r.sport || 'Event')}</span>
-                </div>
+                <strong>${esc(r.title)}</strong>
+                ${r.category ? `<span class="meta"> · ${esc(r.category)}</span>` : ''}
                 <div class="adm-result-summary-list">
-                  ${(r.places || []).map(p => `<span class="adm-result-chip r${p.place}">
-                    <b>${p.place === 1 ? '1st' : p.place === 2 ? '2nd' : '3rd'}:</b>
-                    ${esc(teamName(p.teamId))}${p.playerId ? ' (' + esc(adminData.players.find(x => x.id === p.playerId)?.name || '') + ')' : ''}
-                    ${p.note ? ' · ' + esc(p.note) : ''}
-                    ${Number(p.points) ? ' · +' + p.points + ' pts' : ''}
-                  </span>`).join('')}
-                </div>
-                <div class="actions" style="margin-top:10px">
-                  ${admBtn('Edit Result', 'editResult')}
-                  ${admBtn('Delete', 'deleteResult', 'danger')}
+                  ${(r.places || []).map(p => {
+                    const pObj = p.playerId ? adminData.players.find(x => x.id === p.playerId) : null;
+                    const pts = Number(p.points) || 0;
+                    return `<span class="adm-result-chip ${Number(p.place) === 1 ? 'r1' : ''}">
+                      <b>${ordinal(Number(p.place))}:</b> ${esc(teamName(p.teamId))}${pObj ? ` (${esc(pObj.name)})` : ''}${p.note ? ` · ${esc(p.note)}` : ''}${pts ? ` · +${pts} pts` : ''}
+                    </span>`;
+                  }).join('')}
                 </div>
               </div>
-            </div>`).join('') : '<p class="hint">No final results published yet. Use the form above to add 1st, 2nd &amp; 3rd place winners.</p>'}
-          </div>
+              <div class="actions" data-res-id="${esc(r.id)}">
+                ${admBtn('Edit', 'editPublishedResult')}
+                ${admBtn('Delete', 'deletePublishedResult', 'danger')}
+              </div>
+            </article>`;
+          }).join('') : '<p class="hint">No final results published yet. Use the form above to publish 1st, 2nd, and 3rd place winners.</p>'}
         </section>`;
 
       const form = app.querySelector('#manualResultForm');
-      const fixSel = form.querySelector('#resFixtureSelect');
-      fixSel.addEventListener('change', () => {
-        const fObj = adminData.fixtures.find(x => x.id === fixSel.value);
-        if (fObj) {
-          form.querySelector('#resTitleInput').value = fObj.details.name || '';
-          form.querySelector('#resSportSelect').value = fObj.details.sport || 'custom';
-          form.querySelector('#resStageInput').value = fObj.details.stage || '';
-        }
-      });
+      if (!form) return;
+
+      const fxSelect = form.querySelector('#resFixtureSelect');
+      if (fxSelect) {
+        fxSelect.addEventListener('change', () => {
+          const fx = adminData.fixtures.find(f => f.id === fxSelect.value);
+          if (fx) {
+            form.querySelector('#resTitleInput').value = fx.details.name || '';
+            form.querySelector('#resCategoryInput').value = sports[fx.details.sport] || fx.details.sport || '';
+          }
+        });
+      }
 
       form.addEventListener('change', ev => {
-        const placeNum = ev.target.dataset.podiumTeam;
-        if (placeNum) {
+        if (ev.target.dataset.resultTeam) {
+          const slotNum = ev.target.dataset.resultTeam;
           const tid = ev.target.value;
-          const pSel = form.querySelector(`[data-podium-player="${placeNum}"]`);
-          const list = tid ? adminData.players.filter(p => p.teamId === tid) : adminData.players;
-          pSel.innerHTML = admOpts(list.map(p => [p.id, `${p.name}${!tid ? ' (' + teamName(p.teamId) + ')' : ''}`]), '', 'Team only (No player)');
+          const playerSel = form.querySelector(`[data-result-player="${slotNum}"]`);
+          if (playerSel) {
+            const list = tid ? adminData.players.filter(p => p.teamId === tid) : adminData.players;
+            playerSel.innerHTML = admOpts(list.map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]), '', '— Team / No specific player —');
+          }
         }
-        const pPlace = ev.target.dataset.podiumPlayer;
-        if (pPlace && ev.target.value) {
-          const pl = adminData.players.find(p => p.id === ev.target.value);
-          if (pl) {
-            const tSel = form.querySelector(`[data-podium-team="${pPlace}"]`);
-            if (tSel && !tSel.value) tSel.value = pl.teamId;
+        if (ev.target.dataset.resultPlayer && ev.target.value) {
+          const slotNum = ev.target.dataset.resultPlayer;
+          const pObj = adminData.players.find(p => p.id === ev.target.value);
+          const teamSel = form.querySelector(`[data-result-team="${slotNum}"]`);
+          if (pObj && teamSel && !teamSel.value) {
+            teamSel.value = pObj.teamId;
           }
         }
       });
@@ -2907,19 +2872,18 @@
     function fixtureForm() {
       const d = { ...current()?.details }, teamOpts = adminData.teams.map(t => [t.id, t.name]), sport = d.sport || 'football';
       const defaultTeamIds = (d.teamIds && d.teamIds.length) ? d.teamIds : adminData.teams.map(t => t.id);
-      const selectedContestantIds = new Set(d.playerIds || []);
-      const armInitBoxes = Array.isArray(d.initialArmBoxes) && d.initialArmBoxes.length === 4
-        ? d.initialArmBoxes
-        : createDefaultArmBoxes(d, adminData.players);
+      const selectedContestants = new Set(d.playerIds || []);
+      const initArm = defaultArmBoxes(d);
       initDesigner(d);
 
-      app.innerHTML = adminTopTabs() + admBtn('← Back to fixtures', 'fixtures', 'back') +
+      app.innerHTML = adminNavBar() +
+        admBtn('← Back to fixtures', 'fixtures', 'back') +
         '<form class="panel" id="fixture"><h2>' + (current() ? 'Edit fixture' : 'Create event or fixture') + '</h2>' +
         '<div class="fields">' +
           admField('Event / fixture name', admInput('name', d.name, 'text', 'required maxlength="100" placeholder="Football · Group A"')) +
           admField('Competition stage', admInput('stage', d.stage, 'text', 'placeholder="Group A, semi-final, final…" maxlength="80"')) +
           admField('Sport / scoring format', admSelect('sport', admOpts(Object.entries(sports), sport))) +
-          admField('Match Structure', admSelect('format', admOpts([['team', 'Head-to-Head (2 Teams)'], ['individual', 'Multi-Team / Individual Program']], d.format || 'team'))) +
+          admField('Match Structure', admSelect('format', admOpts([['team', 'Head-to-Head (2 Teams)'], ['individual', 'Multi-Team / Individual Contest']], d.format || 'team'))) +
           admField('Start time (India)', admInput('startTime', localTime(d.startTime), 'datetime-local', 'required')) +
           admField('Venue', admInput('venue', d.venue, 'text', 'required maxlength="100"')) +
         '</div>' +
@@ -2928,33 +2892,27 @@
           admField('Away team', admSelect('awayId', admOpts(teamOpts, d.awayId, 'Select team'))) +
         '</div>' +
         '<div id="competingTeams"><fieldset><legend>Competing Teams</legend><div class="pick">' + adminData.teams.map(t => admCheckbox('teamIds', t.id, t.name, defaultTeamIds.includes(t.id))).join('') + '</div></fieldset></div>' +
-        `<div id="rubiksContestants" class="spaced">
-          <fieldset>
-            <legend id="contestantPickerLegend">Contestants (Select Players From Each Team)</legend>
-            <p class="hint" style="margin-top:2px">Choose the participating players from each team. (For Arm Wrestling, select 2 players per team = 8 total.)</p>
-            <div style="display:grid;gap:10px">
-              ${adminData.teams.map(t => {
-                const roster = adminData.players.filter(p => p.teamId === t.id);
-                return `<div style="border:1px solid #d6ded5;border-radius:10px;padding:10px;background:#f8faf7">
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                    <strong>${esc(t.name)} (${roster.length} players)</strong>
-                    ${roster.length ? `<button type="button" data-toggle-team-contestants="${esc(t.id)}" style="min-height:30px;padding:3px 9px;font-size:.8rem">Select / Clear All</button>` : ''}
-                  </div>
-                  <div class="fields" style="margin:0;gap:4px 12px">
-                    ${roster.length ? roster.map(p => admCheckbox('playerIds', p.id, p.name, selectedContestantIds.has(p.id))).join('') : '<span class="hint">No players in this team yet.</span>'}
-                  </div>
-                </div>`;
-              }).join('')}
-            </div>
-          </fieldset>
-        </div>` +
-        `<div id="armBoxesSetup" class="spaced">
-          <fieldset>
-            <legend>Arm Wrestling · 4 Match Boxes (2 Participants from Different Teams per Box)</legend>
-            <p class="hint" style="margin-top:2px">Assign 2 opponents from different teams into each of the 4 boxes (or leave blank to pair them in the live Scoring Desk).</p>
-            <div class="arm-setup-grid" id="armSetupBoxesContainer"></div>
-          </fieldset>
-        </div>` +
+        `<div id="rubiksContestants"><fieldset><legend id="contestantPickerLegend">Contestants (Select Players From Each Team)</legend>
+          <p class="hint" style="margin-top:4px">Pick the players representing each team in this event.</p>
+          <div style="display:grid;gap:10px">
+            ${adminData.teams.map(t => {
+              const tPlayers = adminData.players.filter(p => p.teamId === t.id);
+              return `<div style="border:1px solid #d6ded5;border-radius:10px;padding:10px 12px;background:#f9fbf8" data-cube-team-box="${esc(t.id)}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                  <strong>${esc(t.name)} (${tPlayers.length} players)</strong>
+                  <button type="button" style="padding:3px 9px;font-size:12px;min-height:30px" data-toggle-team-players="${esc(t.id)}">Select / Clear All</button>
+                </div>
+                <div class="pick" style="max-height:130px;padding:4px 8px">
+                  ${tPlayers.length ? tPlayers.map(p => admCheckbox('playerIds', p.id, p.name, selectedContestants.has(p.id))).join('') : '<span class="meta">No players in this team yet.</span>'}
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </fieldset></div>` +
+        `<div id="armBoxesSetup" class="spaced"><fieldset><legend>Quarter-Final Match Boxes (4 Bouts · 2 Players From Different Teams Each)</legend>
+          <p class="hint" style="margin-top:4px">Assign the 4 initial matchups below (or configure them live in the Scoring Desk). Players in each box must belong to different teams.</p>
+          <div class="arm-setup-grid" id="armSetupGrid"></div>
+        </fieldset></div>` +
         '<div id="lineups"></div>' +
         '<div class="fields" id="setRulesBox">' +
           admField('Best of (sets)', admInput('bestOf', d.bestOf ?? 3, 'number', 'min="1" max="99" step="2"')) +
@@ -2964,26 +2922,36 @@
           admCheckbox('winByTwo', 'yes', 'Win by two points', d.winByTwo ?? true) +
         '</div>' +
         '<div class="fields" id="crossbar">' + admField('Attempts per team', admInput('attemptLimit', d.attemptLimit ?? 5, 'number', 'min="1" max="100"')) + '</div>' +
-        '<div class="fields" id="eatingUnitBox">' + admField('Food / Measurement Unit (e.g. laddus, bananas, pieces, cups)', admInput('eatUnit', d.eatUnit ?? 'items', 'text', 'maxlength="30" placeholder="e.g. laddus, pieces, bananas"')) + '</div>' +
+        '<div class="fields" id="eatingUnitBox">' + admField('Count / Measurement Unit (e.g. push-ups, laddus, pieces)', admInput('eatUnit', d.eatUnit ?? (sport === 'pushup' ? 'push-ups' : 'items'), 'text', 'maxlength="30" placeholder="e.g. push-ups, laddus, pieces"')) + '</div>' +
         '<div class="actions spaced"><button class="primary">Save fixture</button>' + admBtn('Cancel', 'fixtures') + '</div></form>';
 
       const form = app.querySelector('#fixture');
 
       function renderArmSetupBoxes() {
-        const container = form.querySelector('#armSetupBoxesContainer');
-        if (!container) return;
-        const checkedPids = [...form.querySelectorAll('input[name="playerIds"]:checked')].map(el => el.value);
-        const pool = (checkedPids.length ? checkedPids.map(id => adminData.players.find(p => p.id === id)).filter(Boolean) : adminData.players)
-          .sort((a, b) => teamName(a.teamId).localeCompare(teamName(b.teamId)) || a.name.localeCompare(b.name));
+        const grid = form.querySelector('#armSetupGrid');
+        if (!grid) return;
+        const checkedPlayerIds = [...form.querySelectorAll('input[name="playerIds"]:checked')].map(el => el.value);
+        const pool = checkedPlayerIds.length
+          ? adminData.players.filter(p => checkedPlayerIds.includes(p.id))
+          : adminData.players;
 
-        container.innerHTML = [0, 1, 2, 3].map(idx => {
-          const curP1 = form.querySelector(`[name="armBox_${idx}_p1"]`)?.value ?? armInitBoxes[idx]?.p1Id ?? '';
-          const curP2 = form.querySelector(`[name="armBox_${idx}_p2"]`)?.value ?? armInitBoxes[idx]?.p2Id ?? '';
-          const optsList = pool.map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]);
+        const curValues = [0, 1, 2, 3].map(i => ({
+          p1: form.querySelector(`[name="arm_p1_${i}"]`)?.value ?? initArm[i].p1Id,
+          p2: form.querySelector(`[name="arm_p2_${i}"]`)?.value ?? initArm[i].p2Id
+        }));
+
+        grid.innerHTML = [0, 1, 2, 3].map(idx => {
+          const p1Val = curValues[idx].p1;
+          const p2Val = curValues[idx].p2;
+          const p1Team = adminData.players.find(p => p.id === p1Val)?.teamId || '';
+          const p2Team = adminData.players.find(p => p.id === p2Val)?.teamId || '';
+          const opts1 = pool.filter(p => !p2Team || p.teamId !== p2Team).map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]);
+          const opts2 = pool.filter(p => !p1Team || p.teamId !== p1Team).map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]);
           return `<div class="arm-setup-card">
-            <strong>Match Box ${idx + 1}</strong>
-            <label class="field">Contestant 1<select name="armBox_${idx}_p1">${admOpts(optsList, curP1, 'Select player')}</select></label>
-            <label class="field">Contestant 2 (Different Team)<select name="armBox_${idx}_p2">${admOpts(optsList, curP2, 'Select opponent')}</select></label>
+            <strong>Match ${idx + 1}</strong>
+            <select name="arm_p1_${idx}" data-arm-slot-select="${idx}">${admOpts(opts1, p1Val, 'Select Player 1')}</select>
+            <div style="text-align:center;font-weight:800;font-size:12px;color:#55675c">VS</div>
+            <select name="arm_p2_${idx}" data-arm-slot-select="${idx}">${admOpts(opts2, p2Val, 'Select Player 2 (Different Team)')}</select>
           </div>`;
         }).join('');
       }
@@ -3034,14 +3002,16 @@
 
       function update() {
         const sport = form.sport.value, isTeam = form.format.value === 'team';
-        const showContestants = sport === 'rubiks' || sport === 'eating' || sport === 'armwrestling';
+        const showContestants = isContestSport(sport) || sport === 'armwrestling';
         const legendEl = form.querySelector('#contestantPickerLegend');
         if (legendEl) {
           legendEl.textContent = sport === 'armwrestling'
             ? 'Arm Wrestling Participants (Pick 2 Players From Each Team = 8 Total)'
-            : sport === 'eating'
-              ? 'Eating Contest Participants (Select Players From Each Team)'
-              : 'Rubik’s Cube Contestants (Select Players From Each Team)';
+            : sport === 'pushup'
+              ? 'Push-Up Challenge Participants (Select Players From Each Team)'
+              : sport === 'eating'
+                ? 'Eating Contest Participants (Select Players From Each Team)'
+                : 'Rubik’s Cube Contestants (Select Players From Each Team)';
         }
         for (const [id, on] of [
           ['teams', isTeam],
@@ -3050,7 +3020,7 @@
           ['armBoxesSetup', sport === 'armwrestling'],
           ['setRulesBox', isSetSport(sport) && isTeam],
           ['crossbar', sport === 'crossbar'],
-          ['eatingUnitBox', sport === 'eating']
+          ['eatingUnitBox', isRepSport(sport)]
         ]) {
           let group = form.querySelector('#' + id); group.hidden = !on; group.querySelectorAll('input,select').forEach(e => e.disabled = !on);
         }
@@ -3084,12 +3054,12 @@
       form.addEventListener('pointerup', stopDrag); form.addEventListener('pointercancel', stopDrag);
 
       form.addEventListener('click', ev => {
-        const toggleTeamBtn = ev.target.closest('[data-toggle-team-contestants]');
+        const toggleTeamBtn = ev.target.closest('[data-toggle-team-players]');
         if (toggleTeamBtn) {
-          const tid = toggleTeamBtn.dataset.toggleTeamContestants;
-          const teamPlayerIds = new Set(adminData.players.filter(p => p.teamId === tid).map(p => p.id));
-          const boxes = [...form.querySelectorAll('input[name="playerIds"]')].filter(cb => teamPlayerIds.has(cb.value));
-          const allChecked = boxes.every(cb => cb.checked);
+          const tid = toggleTeamBtn.dataset.toggleTeamPlayers;
+          const box = form.querySelector(`[data-cube-team-box="${tid}"]`);
+          const boxes = [...box.querySelectorAll('input[type="checkbox"]')];
+          const allChecked = boxes.length && boxes.every(cb => cb.checked);
           boxes.forEach(cb => cb.checked = !allChecked);
           renderArmSetupBoxes();
           return;
@@ -3104,7 +3074,7 @@
       });
 
       form.addEventListener('change', ev => {
-        if (ev.target.name === 'playerIds') {
+        if (ev.target.name === 'playerIds' || ev.target.dataset.armSlotSelect !== undefined) {
           renderArmSetupBoxes();
           return;
         }
@@ -3128,7 +3098,9 @@
           if (ev.target.name === 'homeId') { designerState.Home.positions.forEach(p => p.playerId = ''); designerState.Home.open = true; }
           if (ev.target.name === 'awayId') { designerState.Away.positions.forEach(p => p.playerId = ''); designerState.Away.open = true; }
           if (ev.target.name === 'sport') {
-            if (form.sport.value === 'crossbar' || form.sport.value === 'rubiks' || form.sport.value === 'eating' || form.sport.value === 'armwrestling') form.format.value = 'individual';
+            if (form.sport.value === 'crossbar' || isContestSport(form.sport.value) || form.sport.value === 'armwrestling') form.format.value = 'individual';
+            if (form.sport.value === 'pushup' && (!form.eatUnit.value || form.eatUnit.value === 'items')) form.eatUnit.value = 'push-ups';
+            if (form.sport.value === 'eating' && (!form.eatUnit.value || form.eatUnit.value === 'push-ups')) form.eatUnit.value = 'items';
             if (['football', 'volleyball', 'badminton'].includes(form.sport.value)) {
               form.format.value = 'team';
               if (form.sport.value === 'badminton') {
@@ -3153,26 +3125,16 @@
       const values = new FormData(form), get = k => String(values.get(k) || '').trim(), all = k => values.getAll(k), sport = get('sport'), format = get('format');
       const selectedPlayerIds = all('playerIds');
       const playerTeamIds = [...new Set(selectedPlayerIds.map(pid => adminData.players.find(p => p.id === pid)?.teamId).filter(Boolean))];
-      const mergedTeamIds = (sport === 'rubiks' || sport === 'eating' || sport === 'armwrestling') ? [...new Set([...all('teamIds'), ...playerTeamIds])] : all('teamIds');
+      const mergedTeamIds = (isContestSport(sport) || sport === 'armwrestling') ? [...new Set([...all('teamIds'), ...playerTeamIds])] : all('teamIds');
 
       const initialArmBoxes = sport === 'armwrestling'
-        ? [0, 1, 2, 3].map(idx => {
-            const p1Id = get(`armBox_${idx}_p1`);
-            const p2Id = get(`armBox_${idx}_p2`);
-            if (p1Id && p2Id) {
-              const t1 = adminData.players.find(p => p.id === p1Id)?.teamId;
-              const t2 = adminData.players.find(p => p.id === p2Id)?.teamId;
-              if (t1 && t2 && t1 === t2) throw Error(`Match Box ${idx + 1}: Opponents must be from different teams.`);
-            }
-            return {
-              id: 'qf-' + (idx + 1),
-              stage: 'Quarter-Final',
-              label: 'Match ' + (idx + 1),
-              p1Id,
-              p2Id,
-              winnerSlot: null
-            };
-          })
+        ? [0, 1, 2, 3].map(idx => ({
+            id: `qf-${idx + 1}`,
+            stage: 'QF',
+            label: `Match ${idx + 1}`,
+            p1Id: get(`arm_p1_${idx}`),
+            p2Id: get(`arm_p2_${idx}`)
+          }))
         : undefined;
 
       let d = {
@@ -3186,7 +3148,7 @@
         homeId: get('homeId'),
         awayId: get('awayId'),
         teamIds: mergedTeamIds,
-        playerIds: (sport === 'rubiks' || sport === 'eating' || sport === 'armwrestling') ? selectedPlayerIds : [],
+        playerIds: (isContestSport(sport) || sport === 'armwrestling') ? selectedPlayerIds : [],
         initialArmBoxes,
         bestOf: Number(get('bestOf') || 3),
         pointLimit: Number(get('pointLimit') || (sport === 'badminton' ? 21 : 25)),
@@ -3194,7 +3156,7 @@
         initialServer: get('initialServer') || 'home',
         winByTwo: values.has('winByTwo'),
         attemptLimit: Number(get('attemptLimit') || 5),
-        eatUnit: get('eatUnit') || 'items',
+        eatUnit: get('eatUnit') || (sport === 'pushup' ? 'push-ups' : 'items'),
         badmintonPlayersHome: all('badmintonPlayersHome'),
         badmintonPlayersAway: all('badmintonPlayersAway')
       };
@@ -3202,7 +3164,7 @@
       if (format === 'team' && (!d.homeId || !d.awayId || d.homeId === d.awayId)) throw Error('Choose two different teams.');
       if (format === 'individual' && !d.teamIds.length && !d.playerIds.length) throw Error('Select at least one competing team or contestant.');
       if (['football', 'volleyball', 'badminton'].includes(sport) && format !== 'team') throw Error('This sport requires two head-to-head teams.');
-      if (sport === 'crossbar' && format !== 'individual') throw Error('Select Multi-Team / Individual Program for crossbar team attempts.');
+      if (sport === 'crossbar' && format !== 'individual') throw Error('Select Multi-Team / Individual Contest for crossbar team attempts.');
       for (const side of ['Home', 'Away']) {
         d['formation' + side] = designerState[side].formation;
         d['positions' + side] = designerState[side].positions;
@@ -3214,7 +3176,9 @@
 
     function editorAdmin() {
       const f = current(), scoring = view === 'score';
-      app.innerHTML = adminTopTabs() + admBtn('← Back to fixtures', 'fixtures', 'back') + '<section class="panel"><div class="bar"><div><p class="overline">' + (scoring ? 'Scoring desk' : 'Championship awards') + '</p><h2>' + esc(f.details.name) + '</h2></div>' + admBtn('Reload latest', 'refresh') + '</div><div id="editor"></div></section>';
+      app.innerHTML = adminNavBar() +
+        admBtn('← Back to fixtures', 'fixtures', 'back') +
+        '<section class="panel"><div class="bar"><div><p class="overline">' + (scoring ? 'Scoring desk' : 'Championship awards') + '</p><h2>' + esc(f.details.name) + '</h2></div>' + admBtn('Reload latest', 'refresh') + '</div><div id="editor"></div></section>';
       const el = app.querySelector('#editor');
       if (scoring) {
         mountScoring(el, f, adminData, async score => {
@@ -3244,7 +3208,7 @@
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
       const meta = adminData.siteMeta || { announcements: [], committee: [], contacts: [] };
       const br = adminData.branding || {};
-      app.innerHTML = adminTopTabs() +
+      app.innerHTML = adminNavBar() +
         `<form class="panel" id="siteMetaForm">
           <h2>Event Branding, Notices &amp; Contact</h2>
           <p class="hint">Edit the event name, logo, announcements, sports committee, and call directory.</p>
@@ -3285,7 +3249,7 @@
     function teamsAdmin() {
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
       const editT = editingTeamId ? adminData.teams.find(t => t.id === editingTeamId) : null;
-      app.innerHTML = adminTopTabs() +
+      app.innerHTML = adminNavBar() +
         `<section class="panel">
           <h2>${editT ? 'Edit Team: ' + esc(editT.name) : 'Add New Team'}</h2>
           <p class="hint">Upload a logo directly from your device or paste an image URL, and customize team names and accent colors.</p>
@@ -3338,7 +3302,7 @@
         .filter(p => playerFilterTeam === 'all' || p.teamId === playerFilterTeam)
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      app.innerHTML = adminTopTabs() +
+      app.innerHTML = adminNavBar() +
         `<section class="panel">
           <h2>${editP ? 'Edit Player: ' + esc(editP.name) : 'Add Player'}</h2>
           <form id="playerManageForm">
@@ -3387,7 +3351,8 @@
     function accessAdmin() {
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
       const managers = adminData.managers || [];
-      app.innerHTML = adminTopTabs() + '<section class="panel"><h2>Manager access</h2><p class="hint">Choose the actions and fixtures each manager can edit. Once added, they can register with the authorised email address.</p><div>' + managers.map((m, i) => '<article class="item"><div><strong>' + esc(m.email) + '</strong><div class="meta">' + esc(m.permissions.map(k => permissions[k]).join(', ')) + ' · ' + (m.assigned.length ? m.assigned.length + ' fixtures' : 'All fixtures') + '</div></div><div class="actions" data-index="' + i + '">' + admBtn('Edit access', 'editManager') + admBtn('Remove', 'removeManager', 'danger') + '</div></article>').join('') + '</div></section><section class="panel"><form id="manager"><h2 id="managerTitle">Add manager</h2><div class="fields">' + admField('Email address', admInput('email', '', 'email', 'required')) + '</div><div class="two"><fieldset><legend>Permissions</legend>' + Object.entries(permissions).map(([k, l]) => admCheckbox('permissions', k, l, false)).join('') + '</fieldset><fieldset><legend>Fixture access</legend><label class="check"><input type="radio" name="scope" value="all" checked>All fixtures</label><label class="check"><input type="radio" name="scope" value="selected">Selected fixtures only</label><div class="pick" id="assignment" hidden>' + adminData.fixtures.map(f => admCheckbox('assigned', f.id, f.details.name, false)).join('') + '</div></fieldset></div><div class="actions spaced"><button class="primary">Save manager access</button></div></form></section>';
+      app.innerHTML = adminNavBar() +
+        '<section class="panel"><h2>Manager access</h2><p class="hint">Choose the actions and fixtures each manager can edit. Once added, they can register with the authorised email address.</p><div>' + managers.map((m, i) => '<article class="item"><div><strong>' + esc(m.email) + '</strong><div class="meta">' + esc(m.permissions.map(k => permissions[k]).join(', ')) + ' · ' + (m.assigned.length ? m.assigned.length + ' fixtures' : 'All fixtures') + '</div></div><div class="actions" data-index="' + i + '">' + admBtn('Edit access', 'editManager') + admBtn('Remove', 'removeManager', 'danger') + '</div></article>').join('') + '</div></section><section class="panel"><form id="manager"><h2 id="managerTitle">Add manager</h2><div class="fields">' + admField('Email address', admInput('email', '', 'email', 'required')) + '</div><div class="two"><fieldset><legend>Permissions</legend>' + Object.entries(permissions).map(([k, l]) => admCheckbox('permissions', k, l, false)).join('') + '</fieldset><fieldset><legend>Fixture access</legend><label class="check"><input type="radio" name="scope" value="all" checked>All fixtures</label><label class="check"><input type="radio" name="scope" value="selected">Selected fixtures only</label><div class="pick" id="assignment" hidden>' + adminData.fixtures.map(f => admCheckbox('assigned', f.id, f.details.name, false)).join('') + '</div></fieldset></div><div class="actions spaced"><button class="primary">Save manager access</button></div></form></section>';
       app.querySelector('#manager').onchange = () => { const form = app.querySelector('#manager'); form.querySelector('#assignment').hidden = form.scope.value !== 'selected'; };
     }
 
@@ -3401,28 +3366,29 @@
       form.scrollIntoView({ behavior: 'smooth' });
     }
 
-    async function moveFixtureOrder(fixtureId, delta) {
-      const ordered = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder).map(f => f.id);
-      const idx = ordered.indexOf(fixtureId);
-      const targetIdx = idx + delta;
-      if (idx < 0 || targetIdx < 0 || targetIdx >= ordered.length) return;
-      [ordered[idx], ordered[targetIdx]] = [ordered[targetIdx], ordered[idx]];
+    async function moveFixtureOrder(fixtureId, dir) {
+      const ordered = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || []);
+      const ids = ordered.map(f => f.id);
+      const idx = ids.indexOf(fixtureId);
+      const target = idx + dir;
+      if (idx < 0 || target < 0 || target >= ids.length) return;
+      [ids[idx], ids[target]] = [ids[target], ids[idx]];
       await runAdmin(async () => {
-        const nextMeta = { ...adminData.siteMeta, fixtureOrder: ordered };
+        const nextMeta = { ...adminData.siteMeta, fixtureOrder: ids };
         await saveSiteMeta(nextMeta);
         await reloadAdmin();
         statusMsg('Event order updated.');
       });
     }
 
-    async function moveResultOrder(resultId, delta) {
-      const list = [...(adminData.siteMeta?.manualResults || [])];
-      const idx = list.findIndex(r => r.id === resultId);
-      const targetIdx = idx + delta;
-      if (idx < 0 || targetIdx < 0 || targetIdx >= list.length) return;
-      [list[idx], list[targetIdx]] = [list[targetIdx], list[idx]];
+    async function moveResultOrder(resId, dir) {
+      const list = [...(adminData.siteMeta?.publishedResults || [])];
+      const idx = list.findIndex(r => r.id === resId);
+      const target = idx + dir;
+      if (idx < 0 || target < 0 || target >= list.length) return;
+      [list[idx], list[target]] = [list[target], list[idx]];
       await runAdmin(async () => {
-        const nextMeta = { ...adminData.siteMeta, manualResults: list };
+        const nextMeta = { ...adminData.siteMeta, publishedResults: list };
         await saveSiteMeta(nextMeta);
         await reloadAdmin();
         statusMsg('Published results order updated.');
@@ -3439,61 +3405,56 @@
       const b = event.target.closest('[data-action]'); if (!b) return;
       const action = b.dataset.action, id = b.closest('[data-id]')?.dataset.id;
 
-      if (action === 'moveUp' && id) { await moveFixtureOrder(id, -1); return; }
-      if (action === 'moveDown' && id) { await moveFixtureOrder(id, 1); return; }
-
-      if (action === 'moveResultUp') {
-        const rid = b.closest('[data-result-id]')?.dataset.resultId;
-        if (rid) await moveResultOrder(rid, -1);
+      if (action === 'moveFixtureUp' || action === 'moveFixtureDown') {
+        const fid = b.closest('[data-order-id]')?.dataset.orderId;
+        if (fid) await moveFixtureOrder(fid, action === 'moveFixtureUp' ? -1 : 1);
         return;
       }
-      if (action === 'moveResultDown') {
-        const rid = b.closest('[data-result-id]')?.dataset.resultId;
-        if (rid) await moveResultOrder(rid, 1);
+      if (action === 'moveResultUp' || action === 'moveResultDown') {
+        const rid = b.closest('[data-res-order-id]')?.dataset.resOrderId;
+        if (rid) await moveResultOrder(rid, action === 'moveResultUp' ? -1 : 1);
         return;
       }
-
-      if (action === 'quickResult' && id) {
-        const existing = (adminData.siteMeta?.manualResults || []).find(r => r.fixtureId === id);
-        if (existing) {
-          editingResultId = existing.id;
-          navigateAdmin('results');
-        } else {
-          editingResultId = '';
-          navigateAdmin('results');
-          const fObj = adminData.fixtures.find(x => x.id === id);
-          const form = app.querySelector('#manualResultForm');
-          if (fObj && form) {
-            form.querySelector('#resFixtureSelect').value = fObj.id;
-            form.querySelector('#resTitleInput').value = fObj.details.name || '';
-            form.querySelector('#resSportSelect').value = fObj.details.sport || 'custom';
-            form.querySelector('#resStageInput').value = fObj.details.stage || '';
-          }
+      if (action === 'quickResult') {
+        const existing = (adminData.siteMeta?.publishedResults || []).find(r => r.fixtureId === id);
+        editingResultId = existing ? existing.id : '';
+        navigateAdmin('resultsAdmin');
+        if (!existing && id) {
+          const sel = app.querySelector('#resFixtureSelect');
+          if (sel) { sel.value = id; sel.dispatchEvent(new Event('change')); }
         }
         return;
       }
-
-      if (['fixtures', 'results', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players'].includes(action)) {
-        if (action === 'teams') editingTeamId = '';
-        if (action === 'players') editingPlayerId = '';
-        if (action === 'results') editingResultId = '';
-        navigateAdmin(action, id);
+      if (action === 'editPublishedResult') {
+        editingResultId = b.closest('[data-res-id]').dataset.resId;
+        resultsAdminView();
+        window.scrollTo(0, 0);
         return;
       }
-      if (action === 'editResult') { editingResultId = b.closest('[data-result-id]').dataset.resultId; resultsAdmin(); window.scrollTo(0, 0); return; }
-      if (action === 'cancelEditResult') { editingResultId = ''; resultsAdmin(); return; }
-      if (action === 'deleteResult') {
-        const rid = b.closest('[data-result-id]').dataset.resultId;
-        const rObj = (adminData.siteMeta?.manualResults || []).find(r => r.id === rid);
-        if (!confirm('Delete published result for "' + (rObj?.title || 'Event') + '"?')) return;
+      if (action === 'cancelEditResult') {
+        editingResultId = '';
+        resultsAdminView();
+        return;
+      }
+      if (action === 'deletePublishedResult') {
+        const rid = b.closest('[data-res-id]').dataset.resId;
+        const target = (adminData.siteMeta?.publishedResults || []).find(r => r.id === rid);
+        if (!confirm('Remove published result for "' + (target?.title || 'Event') + '"?')) return;
         await runAdmin(async () => {
-          const meta = { ...adminData.siteMeta };
-          meta.manualResults = (meta.manualResults || []).filter(r => r.id !== rid);
+          const nextList = (adminData.siteMeta?.publishedResults || []).filter(r => r.id !== rid);
           if (editingResultId === rid) editingResultId = '';
-          await saveSiteMeta(meta);
+          await saveSiteMeta({ ...adminData.siteMeta, publishedResults: nextList });
           await reloadAdmin();
-          statusMsg('Published result deleted.');
+          statusMsg('Published result removed.');
         });
+        return;
+      }
+
+      if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players', 'resultsAdmin'].includes(action)) {
+        if (action === 'teams') editingTeamId = '';
+        if (action === 'players') editingPlayerId = '';
+        if (action === 'resultsAdmin') editingResultId = '';
+        navigateAdmin(action, id);
         return;
       }
       if (action === 'editTeam') { editingTeamId = b.closest('[data-team-id]').dataset.teamId; teamsAdmin(); window.scrollTo(0, 0); return; }
@@ -3545,9 +3506,9 @@
         if (!confirm('Delete ' + f.details.name + ' and remove its result and award points?')) return;
         await runAdmin(async () => {
           await save(id, f.version, 'delete', {});
-          const curOrder = adminData.siteMeta?.fixtureOrder || [];
-          if (curOrder.includes(id)) {
-            await saveSiteMeta({ ...adminData.siteMeta, fixtureOrder: curOrder.filter(x => x !== id) });
+          const nextOrder = (adminData.siteMeta?.fixtureOrder || []).filter(x => x !== id);
+          if (adminData.role === 'admin' && nextOrder.length !== (adminData.siteMeta?.fixtureOrder || []).length) {
+            await saveSiteMeta({ ...adminData.siteMeta, fixtureOrder: nextOrder });
           }
           await reloadAdmin();
           statusMsg('Fixture deleted.');
@@ -3565,7 +3526,7 @@
     account.addEventListener('click', onAdminClick);
     app.addEventListener('submit', event => {
       const form = event.target;
-      if (!['fixture', 'auth', 'award', 'siteMetaForm', 'teamManageForm', 'playerManageForm', 'manager', 'manualResultForm'].includes(form.id)) return;
+      if (!['fixture', 'auth', 'award', 'manager', 'siteMetaForm', 'teamManageForm', 'playerManageForm', 'manualResultForm'].includes(form.id)) return;
       event.preventDefault();
       runAdmin(async () => {
         if (form.id === 'auth') {
@@ -3583,10 +3544,10 @@
           const d = readFixture(form), f = current();
           const newId = f?.id || crypto.randomUUID();
           await save(newId, f?.version || 0, 'details', d);
-          if (!f?.id && adminData.role === 'admin') {
-            const existingOrder = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder).map(x => x.id);
-            if (!existingOrder.includes(newId)) {
-              await saveSiteMeta({ ...adminData.siteMeta, fixtureOrder: [...existingOrder, newId] });
+          if (!f && adminData.role === 'admin') {
+            const curOrder = adminData.siteMeta?.fixtureOrder || [];
+            if (!curOrder.includes(newId)) {
+              await saveSiteMeta({ ...adminData.siteMeta, fixtureOrder: [...curOrder, newId] });
             }
           }
           view = 'fixtures'; activeId = ''; await reloadAdmin(); statusMsg('Fixture saved.');
@@ -3594,52 +3555,40 @@
         }
         if (form.id === 'manualResultForm') {
           const fd = new FormData(form);
-          const resultId = String(fd.get('resultId') || '').trim();
+          const resId = String(fd.get('resultId') || '').trim() || crypto.randomUUID();
           const fixtureId = String(fd.get('fixtureId') || '').trim();
-          const resultTitle = String(fd.get('resultTitle') || '').trim();
-          const resultSport = String(fd.get('resultSport') || 'custom').trim();
-          const resultStage = String(fd.get('resultStage') || '').trim();
-          if (!resultTitle) throw Error('Enter an event display title.');
+          const titleVal = String(fd.get('title') || '').trim();
+          const categoryVal = String(fd.get('category') || '').trim();
+          if (!titleVal) throw Error('Enter an event display title.');
 
-          const places = [1, 2, 3].map(p => ({
-            place: p,
-            teamId: String(fd.get(`team_${p}`) || '').trim(),
-            playerId: String(fd.get(`player_${p}`) || '').trim(),
-            note: String(fd.get(`note_${p}`) || '').trim(),
-            points: Number(fd.get(`points_${p}`) || 0)
-          })).filter(item => item.teamId);
+          const places = [1, 2, 3].map(place => {
+            const teamId = String(fd.get(`team_${place}`) || '').trim();
+            const playerId = String(fd.get(`player_${place}`) || '').trim();
+            const note = String(fd.get(`note_${place}`) || '').trim();
+            const rawPts = String(fd.get(`points_${place}`) || '').trim();
+            const points = rawPts === '' ? 0 : Number(rawPts);
+            return { place, teamId, playerId, note, points: Number.isFinite(points) ? points : 0 };
+          }).filter(p => p.teamId);
 
-          if (!places.length) throw Error('Select at least the 1st Place winning team.');
+          if (!places.some(p => p.place === 1)) throw Error('Select a winning team for 1st place.');
 
-          const entryObj = {
-            id: resultId || crypto.randomUUID(),
-            fixtureId,
-            title: resultTitle,
-            sport: resultSport,
-            stage: resultStage,
-            places,
-            updatedAt: new Date().toISOString()
-          };
+          const existingList = [...(adminData.siteMeta?.publishedResults || [])];
+          const recordObj = { id: resId, fixtureId, title: titleVal, category: categoryVal, places };
+          const idx = existingList.findIndex(r => r.id === resId);
+          if (idx >= 0) existingList[idx] = recordObj;
+          else existingList.push(recordObj);
 
-          const meta = { ...adminData.siteMeta };
-          const existingList = [...(meta.manualResults || [])];
-          if (resultId) {
-            meta.manualResults = existingList.map(r => r.id === resultId ? entryObj : r);
-          } else {
-            meta.manualResults = [...existingList, entryObj];
-          }
-          editingResultId = '';
-          await saveSiteMeta(meta);
+          await saveSiteMeta({ ...adminData.siteMeta, publishedResults: existingList });
 
           if (fixtureId) {
-            const fObj = adminData.fixtures.find(x => x.id === fixtureId);
-            if (fObj && (fObj.score?.status || 'scheduled') !== 'finished') {
-              const nextTimeline = [...(fObj.score?.timeline || []), { kind: 'finish', label: 'Final result published', at: new Date().toISOString() }];
-              const nextScore = replay(fObj.details, nextTimeline);
-              await save(fObj.id, fObj.version, 'score', nextScore);
+            const linkedFx = adminData.fixtures.find(x => x.id === fixtureId);
+            if (linkedFx && linkedFx.score?.status !== 'finished') {
+              const nextScore = record(linkedFx.details, linkedFx.score || {}, { kind: 'finish', label: 'Final result published' });
+              await save(linkedFx.id, linkedFx.version, 'score', nextScore).catch(() => {});
             }
           }
 
+          editingResultId = '';
           await reloadAdmin();
           statusMsg('Final 1st–3rd result published to Results & Leaderboard.');
           return;
@@ -3736,60 +3685,86 @@
     });
 
     /* 6. PROGRESSIVE WEB APP (PWA), DRAWER, ROUTING & BOOTSTRAP */
-    let deferredInstallPrompt = null;
+    let deferredInstallPrompt = null, manifestBlobUrl = '';
     const installBtn = document.getElementById('pwa-install-btn');
     const installLabel = document.getElementById('pwa-install-label');
 
-    function generateAppIconDataUrl(initials = 'LU') {
+    function buildAppIconDataUrl(size = 512, text = 'LU') {
       try {
         const c = document.createElement('canvas');
-        c.width = 512; c.height = 512;
+        c.width = size; c.height = size;
         const ctx = c.getContext('2d');
         ctx.fillStyle = '#0e1511';
-        ctx.fillRect(0, 0, 512, 512);
+        ctx.fillRect(0, 0, size, size);
+        const pad = Math.round(size * 0.08);
+        const r = Math.round(size * 0.2);
         ctx.fillStyle = '#c2f568';
         ctx.beginPath();
-        ctx.roundRect(48, 48, 416, 416, 96);
+        ctx.roundRect(pad, pad, size - pad * 2, size - pad * 2, r);
         ctx.fill();
         ctx.fillStyle = '#132012';
-        ctx.font = 'italic 900 210px sans-serif';
+        ctx.font = `italic 800 ${Math.round(size * 0.42)}px "Barlow Condensed", Impact, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(initials, 256, 268);
+        ctx.fillText(text, size / 2, size / 2 + Math.round(size * 0.02));
         return c.toDataURL('image/png');
       } catch {
         return '';
       }
     }
 
-    function updatePwaManifest(appName = 'Level Up ’26', description = 'Sports & games gala match centre') {
-      const initials = String(appName).replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || 'LU';
-      const iconUrl = generateAppIconDataUrl(initials);
-      const appleIcon = document.getElementById('apple-touch-icon');
-      if (appleIcon && iconUrl) appleIcon.href = iconUrl;
-      const manifestEl = document.getElementById('pwa-manifest');
-      if (manifestEl) {
-        const manifest = {
-          name: appName,
-          short_name: appName,
-          description,
-          start_url: location.pathname + location.search,
-          scope: location.pathname,
-          display: 'standalone',
-          orientation: 'portrait',
-          background_color: '#0e1511',
-          theme_color: '#0d1410',
-          icons: iconUrl ? [{ src: iconUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }] : []
-        };
-        manifestEl.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+    function updatePwaManifest(appName = 'Level Up ’26', appSub = 'Sports & games gala') {
+      const shortName = appName.length > 14 ? appName.slice(0, 14).trim() : appName;
+      const initials = appName.replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || 'LU';
+      const icon192 = buildAppIconDataUrl(192, initials);
+      const icon512 = buildAppIconDataUrl(512, initials);
+      const appleLink = document.getElementById('apple-touch-icon');
+      if (appleLink && icon192) appleLink.href = icon192;
+
+      const startUrl = location.origin && location.origin !== 'null'
+        ? location.origin + location.pathname
+        : './index.html';
+      const scopeUrl = location.origin && location.origin !== 'null'
+        ? location.origin + location.pathname.replace(/[^/]*$/, '')
+        : './';
+
+      const manifestObj = {
+        id: startUrl,
+        name: appName + ' · Match Centre',
+        short_name: shortName,
+        description: appSub,
+        start_url: startUrl,
+        scope: scopeUrl,
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#0e1511',
+        theme_color: '#0d1410',
+        icons: [
+          ...(icon192 ? [{ src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' }] : []),
+          ...(icon512 ? [
+            { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+          ] : [])
+        ]
+      };
+
+      const link = document.getElementById('pwa-manifest');
+      if (link) {
+        if (manifestBlobUrl) URL.revokeObjectURL(manifestBlobUrl);
+        const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        manifestBlobUrl = URL.createObjectURL(blob);
+        link.href = manifestBlobUrl;
       }
     }
 
-    if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) {
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
       const swCode = `
-        const CACHE = 'levelup-matchcentre-v1';
-        self.addEventListener('install', e => { self.skipWaiting(); });
-        self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
+        const CACHE = 'levelup-match-centre-v2';
+        self.addEventListener('install', e => {
+          self.skipWaiting();
+          e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./']).catch(() => {})));
+        });
+        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
         self.addEventListener('fetch', e => {
           if (e.request.method !== 'GET' || e.request.url.includes('supabase.co')) return;
           e.respondWith(
@@ -3801,15 +3776,14 @@
           );
         });
       `;
-      try {
-        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
-      } catch {}
+      const swUrl = URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }));
+      navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
     window.addEventListener('beforeinstallprompt', ev => {
       ev.preventDefault();
       deferredInstallPrompt = ev;
+      if (installBtn) installBtn.hidden = false;
       if (installLabel) installLabel.textContent = 'Install App on Phone';
     });
 
@@ -3831,17 +3805,14 @@
             deferredInstallPrompt = null;
             installBtn.hidden = true;
           }
-          setDrawer(false);
-        } else {
-          setDrawer(false);
-          const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-          const tip = isIos
-            ? 'To install this app on iPhone/iPad: tap the Share button at the bottom of Safari, then select "Add to Home Screen".'
-            : 'To install this app: open your browser menu (⋮) and tap "Install app" or "Add to Home screen".';
-          const existingTip = document.getElementById('pwa-guide-banner');
-          if (existingTip) existingTip.remove();
-          main.insertAdjacentHTML('afterbegin', `<div id="pwa-guide-banner" role="status" class="notice" style="justify-content:space-between"><span>${e(tip)}</span><button type="button" class="seg" onclick="this.parentElement.remove()">OK</button></div>`);
+          return;
         }
+        setDrawer(false);
+        const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const msg = isIos
+          ? 'To install as an app on iPhone/iPad: tap the Share icon at the bottom of Safari and choose "Add to Home Screen".'
+          : 'To install as an app: open your browser menu (⋮) and tap "Install app" or "Add to Home screen".';
+        main.insertAdjacentHTML('afterbegin', `<div role="status" class="notice" style="justify-content:space-between"><span>${msg}</span><button type="button" class="seg" onclick="this.parentElement.remove()">OK</button></div>`);
       });
     }
 
@@ -3869,11 +3840,11 @@
 
     document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
     main.addEventListener('click', ev => {
-      const toggleMatesBtn = ev.target.closest('[data-toggle-teammates]');
-      if (toggleMatesBtn) {
-        const tid = toggleMatesBtn.dataset.toggleTeammates;
-        if (openTeammates.has(tid)) openTeammates.delete(tid);
-        else openTeammates.add(tid);
+      const toggleTmBtn = ev.target.closest('[data-toggle-teammates]');
+      if (toggleTmBtn) {
+        const tid = toggleTmBtn.dataset.toggleTeammates;
+        if (filters.openTeammates.has(tid)) filters.openTeammates.delete(tid);
+        else filters.openTeammates.add(tid);
         renderPublic();
         return;
       }
@@ -3887,7 +3858,7 @@
     window.addEventListener('hashchange', syncShell);
     document.addEventListener('visibilitychange', () => { if (!document.hidden && route().tab !== 'admin') refreshPublic(); });
 
-    updatePwaManifest();
+    updatePwaManifest('Level Up ’26', 'Sports & games gala');
     syncShell();
     setInterval(() => { if (!document.hidden && route().tab !== 'admin') refreshPublic(); }, 5000);
   </script>
