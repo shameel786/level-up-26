@@ -252,6 +252,21 @@
     .result-podium-list { margin-top: 10px; padding-top: 8px; border-top: 1px solid #28352c; display: grid; gap: 5px; }
     .result-podium-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--text); }
     .result-place-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; padding: 1px 6px; border-radius: 5px; background: rgba(194, 245, 104, .16); border: 1px solid rgba(194, 245, 104, .4); color: var(--lime); font-weight: 800; font-size: 11px; margin-right: 6px; }
+    .podium-card { padding: 14px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 10px; }
+    .podium-card:hover { border-color: #628554; background: var(--panel-2); }
+    .podium-slots { display: grid; gap: 7px; }
+    .podium-slot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 11px; border-radius: 10px; background: #131c17; border: 1px solid #28352c; }
+    .podium-slot.place-1 { border-color: rgba(194, 245, 104, .5); background: linear-gradient(90deg, rgba(194, 245, 104, .12), #131c17); }
+    .podium-slot.place-2 { border-color: rgba(210, 224, 240, .32); }
+    .podium-slot.place-3 { border-color: rgba(224, 168, 114, .32); }
+    .podium-slot-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .podium-medal { min-width: 34px; height: 26px; padding: 0 7px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; font: 800 13px/1 var(--title); letter-spacing: .04em; flex: none; background: #223026; color: var(--text); }
+    .podium-slot.place-1 .podium-medal { background: var(--lime); color: #132012; }
+    .podium-slot.place-2 .podium-medal { background: #d5e1ee; color: #14202c; }
+    .podium-slot.place-3 .podium-medal { background: #e3a872; color: #241406; }
+    .podium-slot-right { text-align: right; flex: none; display: grid; gap: 2px; }
+    .podium-note { font: 700 13.5px/1.1 var(--body); color: var(--text); }
+    .podium-pts { font: 800 11px/1 var(--body); color: var(--lime); text-transform: uppercase; letter-spacing: .05em; }
 
     /* Match Detail & Clock */
     .live-article { padding: 18px; margin-top: 12px; }
@@ -402,6 +417,11 @@
     .adm-status-badge.finished { background: #dce8f8; color: #1d3c6a; }
     .adm-fixture-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
     .adm-fixture-actions button { min-height: 40px; padding: 8px 13px !important; }
+    .adm-podium-slot { border: 1.5px solid #d6ded5; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: #f8faf7; }
+    .adm-podium-slot.gold { border-color: #82b54b; background: #f3faec; }
+    .adm-podium-slot-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-weight: 800; font-size: 14.5px; color: var(--forest); }
+    .adm-podium-grid { display: grid; grid-template-columns: 1.2fr 1.2fr 1fr .8fr; gap: 10px; align-items: end; }
+    @media (max-width: 650px) { .adm-podium-grid { grid-template-columns: 1fr; } }
 
     /* Admin Pitch & Court Designer */
     .adm-pitch-wrap { margin-top: 12px; }
@@ -664,6 +684,7 @@
         committee: Array.isArray(rawMeta.committee) ? rawMeta.committee : [{ role: 'General Convenor', name: 'Sports Committee · Level Up ’26' }, { role: 'Match Control', name: 'Gala Technical Desk' }],
         contacts,
         fixtureOrder: Array.isArray(rawMeta.fixtureOrder) ? rawMeta.fixtureOrder : [],
+        publishedResults: Array.isArray(rawMeta.publishedResults) ? rawMeta.publishedResults : [],
         eventBranding: customBrand,
         teamOverrides,
         addedTeams,
@@ -1532,7 +1553,7 @@
       custom: 'Individual / Team Event'
     };
     const label = s => String(s || '').replace(/^./, c => c.toUpperCase());
-    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [], fixtureOrder: [] } };
+    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [], fixtureOrder: [], publishedResults: [] } };
     const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', resSport: 'all', resTeam: 'all', pitchSide: 'home', selectedPlayer: '' };
     const expandedTeamRoster = new Set();
     let loaded = false, failed = false, refreshing = false, lastHash = '', priorSignature = '';
@@ -1648,70 +1669,104 @@
       return pageHead('Fixtures', 'Kickoff times (IST) and venues.') + `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` + ([...groups].map(([k, arr]) => `<section class="group"><h2 class="day-title">${e(k)}</h2><div class="fixture-list grid-2">${arr.map(fixtureCard).join('')}</div></section>`).join('') || empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
     }
 
-    function resultCard(f) {
-      const d = f.details, s = score(f), isSet = isSetSport(d.sport), individual = mode(f);
-      const awards = [...(f.awards?.entries || [])].sort((a, b) => (Number(a.place) || 999) - (Number(b.place) || 999));
-      let outcomeHtml = '';
+    function placeOrdinal(place) {
+      const n = Number(place) || 1;
+      if (n === 1) return '1st';
+      if (n === 2) return '2nd';
+      if (n === 3) return '3rd';
+      return n + 'th';
+    }
 
-      if (!individual) {
-        const hScore = Number(isSet ? s.setsWon?.home : s.home) || 0;
-        const aScore = Number(isSet ? s.setsWon?.away : s.away) || 0;
-        const hWin = hScore > aScore, aWin = aScore > hScore;
-        outcomeHtml =
-          rowTeam(team(d.homeId), hScore, sideRosterSummary(d, 'home') + (hWin ? '<span class="win-badge" style="margin-left:6px">Winner</span>' : '')) +
-          rowTeam(team(d.awayId), aScore, sideRosterSummary(d, 'away') + (aWin ? '<span class="win-badge" style="margin-left:6px">Winner</span>' : ''));
-        if (isSet && s.sets?.length) {
-          outcomeHtml += `<p class="hint">Sets: ${s.sets.map(stItem => `${stItem.home}–${stItem.away}`).join(', ')}</p>`;
-        }
-      } else if (d.sport === 'rubiks') {
-        const { entries } = getRubiksLeaderboard(d, s, state.teams, state.players);
-        const solvedTop = entries.filter(x => x.solved).slice(0, 3);
-        outcomeHtml = solvedTop.length
-          ? `<div class="result-podium-list">${solvedTop.map((ent, idx) => `<div class="result-podium-row"><span><span class="result-place-badge">#${idx + 1}</span><b>${e(ent.player.name)}</b> (${e(ent.team?.name || 'Team')})</span><strong>${e(ent.displayTime)}</strong></div>`).join('')}</div>`
-          : '<p class="hint">No completed solves recorded.</p>';
-      } else {
-        const tIds = [...eventTeamIds(f)].sort((x, y) => {
-          if (d.sport === 'crossbar') return (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0);
-          return (Number(s.results?.[y]) || -Infinity) - (Number(s.results?.[x]) || -Infinity);
-        });
-        const shownTeams = tIds.slice(0, 3);
-        outcomeHtml = shownTeams.length
-          ? `<div class="result-podium-list">${shownTeams.map((tid, idx) => `<div class="result-podium-row"><span><span class="result-place-badge">#${idx + 1}</span><b>${e(team(tid)?.name || 'Team')}</b></span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[tid]?.hits ?? 0)} hits` : e(s.results?.[tid] ?? '—')}</strong></div>`).join('')}</div>`
-          : '';
-      }
+    function publishedResultCard(res) {
+      const linkedFixture = res.fixtureId ? state.fixtures.find(f => f.id === res.fixtureId) : null;
+      const categoryLabel = res.category || (linkedFixture ? sportName(linkedFixture) : '');
+      const podium = [...(res.podium || [])]
+        .filter(p => p && p.teamId)
+        .sort((a, b) => (Number(a.place) || 999) - (Number(b.place) || 999));
 
-      const awardsHtml = awards.length
-        ? `<div class="result-podium-list">${awards.map(a => `<div class="result-podium-row"><span>${a.place ? `<span class="result-place-badge">#${e(a.place)}</span>` : ''}<b>${e(team(a.teamId)?.name || 'Team')}</b>${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''}</span><strong style="color:var(--lime)">+${e(a.points)} pts</strong></div>`).join('')}</div>`
-        : '';
+      const cardInner = `
+        <div class="info-line">
+          <span class="fixture-sport">${e(categoryLabel || 'Final Result')}</span>
+          <span class="tag finished">Final Result</span>
+        </div>
+        <h3 class="fixture-title">${e(res.eventName || (linkedFixture ? title(linkedFixture) : 'Event'))}</h3>
+        <div class="podium-slots">
+          ${podium.map(p => {
+            const tObj = team(p.teamId);
+            const pObj = p.playerId ? player(p.playerId) : null;
+            const placeNum = Number(p.place) || 1;
+            const ptsNum = Number(p.points) || 0;
+            return `<div class="podium-slot place-${placeNum}">
+              <div class="podium-slot-left">
+                <span class="podium-medal">${e(placeOrdinal(placeNum))}</span>
+                ${crest(tObj)}
+                <div style="min-width:0">
+                  <b style="display:block;font-size:15px;color:var(--text)">${e(tObj?.name || 'Team')}</b>
+                  ${pObj ? `<small style="display:block;font-size:12px;color:var(--muted)">${e(pObj.name)}</small>` : ''}
+                </div>
+              </div>
+              <div class="podium-slot-right">
+                ${p.note ? `<span class="podium-note">${e(p.note)}</span>` : ''}
+                ${ptsNum ? `<span class="podium-pts">+${e(ptsNum)} pts</span>` : ''}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
 
-      return `<a class="fixture" href="${fixtureLink(f)}">
-        <div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span><span class="tag finished">Completed</span></div>
-        <h3 class="fixture-title">${e(title(f))}</h3>
-        ${outcomeHtml}
-        ${awardsHtml}
-        <div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div>
-      </a>`;
+      return linkedFixture
+        ? `<a class="podium-card" href="${fixtureLink(linkedFixture)}">${cardInner}</a>`
+        : `<div class="podium-card">${cardInner}</div>`;
     }
 
     function resultsPage() {
-      const finished = fixtures().filter(f => st(f) === 'finished');
-      const types = [...new Set(finished.map(f => f.details.sport))];
-      const list = finished.filter(f =>
-        (filters.resSport === 'all' || f.details.sport === filters.resSport) &&
-        (filters.resTeam === 'all' || groupTeam(f, filters.resTeam))
+      const allPublished = state.siteMeta?.publishedResults || [];
+      const categories = [...new Set(allPublished.map(r => r.category).filter(Boolean))];
+      const list = allPublished.filter(r =>
+        (filters.resSport === 'all' || r.category === filters.resSport) &&
+        (filters.resTeam === 'all' || (r.podium || []).some(p => p.teamId === filters.resTeam))
       );
 
-      return pageHead('Results', 'Confirmed scores, winners and championship points from completed events.') +
+      return pageHead('Results', 'Official 1st, 2nd & 3rd place winners.') +
         `<div class="tools">
-          ${options('resSport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}
+          ${categories.length ? options('resSport', [['all', 'All categories'], ...categories.map(c => [c, c])]) : ''}
           ${options('resTeam', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}
         </div>` +
         (list.length
-          ? `<div class="fixture-list grid-2">${list.map(resultCard).join('')}</div>`
-          : empty('results', finished.length ? 'No matching results' : 'No completed events yet', finished.length ? 'Try clearing a filter to see other finished events.' : 'Final results will appear here as soon as events finish.'));
+          ? `<div class="fixture-list grid-2">${list.map(publishedResultCard).join('')}</div>`
+          : empty('results', allPublished.length ? 'No matching results' : 'No final results published yet', allPublished.length ? 'Try clearing a filter to see other event results.' : 'Confirmed 1st, 2nd and 3rd place results will appear here once published.'));
     }
 
-    function ledger() { return fixtures().filter(f => st(f) === 'finished').flatMap(f => (f.awards?.entries || []).map(a => ({ ...a, points: Number(a.points) || 0, event: f }))); }
+    function ledger() {
+      const published = state.siteMeta?.publishedResults || [];
+      const linkedFixtureIds = new Set(published.map(r => r.fixtureId).filter(Boolean));
+
+      const fromPublished = published.flatMap(r => {
+        const linkedFixture = r.fixtureId ? state.fixtures.find(f => f.id === r.fixtureId) : null;
+        return (r.podium || [])
+          .filter(p => p && p.teamId && Number(p.points))
+          .map(p => ({
+            place: Number(p.place) || 0,
+            teamId: p.teamId,
+            playerId: p.playerId || '',
+            points: Number(p.points) || 0,
+            eventName: r.eventName || (linkedFixture ? title(linkedFixture) : 'Event'),
+            eventHref: linkedFixture ? fixtureLink(linkedFixture) : '#results'
+          }));
+      });
+
+      const fromLegacyFixtures = fixtures()
+        .filter(f => st(f) === 'finished' && !linkedFixtureIds.has(f.id))
+        .flatMap(f => (f.awards?.entries || []).map(a => ({
+          place: Number(a.place) || 0,
+          teamId: a.teamId,
+          playerId: a.playerId || '',
+          points: Number(a.points) || 0,
+          eventName: title(f),
+          eventHref: fixtureLink(f)
+        })));
+
+      return [...fromPublished, ...fromLegacyFixtures];
+    }
 
     function leaderboard() {
       const awards = ledger();
@@ -1738,7 +1793,7 @@
             </summary>
             <div class="award-list">
               ${r.rows.length
-                ? `<ul>${r.rows.map(a => `<li><a href="${fixtureLink(a.event)}">${e(title(a.event))}</a>${a.place ? ' · #' + e(a.place) : ''}${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>`
+                ? `<ul>${r.rows.map(a => `<li><a href="${e(a.eventHref)}">${e(a.eventName)}</a>${a.place ? ' · ' + e(placeOrdinal(a.place)) : ''}${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>`
                 : '<p class="hint">No championship points awarded yet.</p>'}
               <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
                 <button type="button" class="seg ${showMates ? 'active' : ''}" data-toggle-teammates="${e(r.t.id)}">${icon('people')}<span>Teammates (${r.squad.length})</span></button>
@@ -2030,6 +2085,7 @@
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
     let adminSearchQuery = '', adminStatusFilter = 'all';
+    let editingResultId = '', prefillResultFixtureId = '';
     let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false } };
 
     const current = () => adminData.fixtures.find(f => f.id === activeId);
@@ -2061,6 +2117,7 @@
 
       const navBarHtml = `<nav class="adm-nav-bar" aria-label="Control room sections">
         ${admBtn('Fixtures & Order', 'fixtures', 'adm-nav-tab ' + (['fixtures', 'new', 'details', 'score', 'awards'].includes(view) ? 'active' : ''))}
+        ${adminData.role === 'admin' || allowed('awards') ? admBtn('Results (1st–3rd)', 'resultsManager', 'adm-nav-tab ' + (view === 'resultsManager' ? 'active' : '')) : ''}
         ${adminData.role === 'admin' ? admBtn('Teams & Logos', 'teams', 'adm-nav-tab ' + (view === 'teams' ? 'active' : '')) : ''}
         ${adminData.role === 'admin' ? admBtn('Players', 'players', 'adm-nav-tab ' + (view === 'players' ? 'active' : '')) : ''}
         ${adminData.role === 'admin' ? admBtn('Brand & Notices', 'siteMeta', 'adm-nav-tab ' + (view === 'siteMeta' ? 'active' : '')) : ''}
@@ -2068,6 +2125,7 @@
       </nav>`;
 
       if (view === 'new' || view === 'details') { fixtureForm(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'resultsManager') { resultsAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
       if (view === 'access') { accessAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
       if (view === 'siteMeta') { siteMetaAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
       if (view === 'teams') { teamsAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
@@ -2136,8 +2194,8 @@
               </div>
               <div class="adm-fixture-actions" data-id="${esc(f.id)}">
                 ${allowed('score', f) ? admBtn(s === 'live' ? 'Score Live' : 'Score', 'score', 'primary') : ''}
+                ${allowed('awards', f) ? admBtn('Result', 'quickResult', 'accent') : ''}
                 ${allowed('schedule', f) ? admBtn('Edit', 'details') : ''}
-                ${allowed('awards', f) ? admBtn('Awards', 'awards') : ''}
                 ${allowed('delete', f) ? admBtn('Delete', 'delete', 'danger') : ''}
               </div>
             </article>`;
@@ -2460,6 +2518,153 @@
       rows.append(row);
     }
 
+    function buildPodiumSlotHtml(slot = {}, index = 0) {
+      const placeNum = Number(slot.place) || (index + 1);
+      const medalTitle = placeNum === 1 ? '🥇 1st Place (Winner)' : placeNum === 2 ? '🥈 2nd Place (Runner-Up)' : placeNum === 3 ? '🥉 3rd Place' : `🏅 ${placeOrdinal(placeNum)} Place`;
+      const selectedTeamId = slot.teamId || '';
+      const teamPlayers = selectedTeamId
+        ? adminData.players.filter(p => p.teamId === selectedTeamId).sort((a, b) => a.name.localeCompare(b.name))
+        : [];
+      const teamOpts = adminData.teams.map(t => [t.id, t.name]);
+      const defaultPts = slot.points !== undefined && slot.points !== '' ? slot.points : (placeNum === 1 ? 10 : placeNum === 2 ? 6 : placeNum === 3 ? 3 : 0);
+
+      return `<div class="adm-podium-slot ${placeNum === 1 ? 'gold' : ''}" data-podium-slot>
+        <input type="hidden" name="podiumPlace" value="${placeNum}">
+        <div class="adm-podium-slot-head">
+          <span>${medalTitle}</span>
+          ${placeNum > 3 ? `<button type="button" class="danger" data-action="removePodiumSlot" style="padding:3px 9px;font-size:12px">Remove</button>` : ''}
+        </div>
+        <div class="adm-podium-grid">
+          <label class="field">Team *
+            <select name="podiumTeamId" data-podium-team>
+              ${admOpts(teamOpts, selectedTeamId, '— Select Team —')}
+            </select>
+          </label>
+          <label class="field">Player (Optional)
+            <select name="podiumPlayerId" data-podium-player>
+              ${admOpts(teamPlayers.map(p => [p.id, p.name]), slot.playerId || '', 'Team Only (No specific player)')}
+            </select>
+          </label>
+          <label class="field">Score / Time Note (Optional)
+            <input type="text" name="podiumNote" value="${esc(slot.note || '')}" placeholder="e.g. 2-1 or 18.4s">
+          </label>
+          <label class="field">Leaderboard Pts
+            <input type="number" name="podiumPoints" step="any" value="${esc(defaultPts)}" placeholder="0">
+          </label>
+        </div>
+      </div>`;
+    }
+
+    function resultsAdmin() {
+      const published = adminData.siteMeta?.publishedResults || [];
+      let editItem = editingResultId ? published.find(r => r.id === editingResultId) : null;
+
+      if (!editItem && prefillResultFixtureId) {
+        const linkedF = adminData.fixtures.find(f => f.id === prefillResultFixtureId);
+        const existingForF = published.find(r => r.fixtureId === prefillResultFixtureId);
+        if (existingForF) {
+          editItem = existingForF;
+          editingResultId = existingForF.id;
+        } else if (linkedF) {
+          editItem = {
+            fixtureId: linkedF.id,
+            eventName: linkedF.details?.name || '',
+            category: standardName[linkedF.details?.sport] || label(linkedF.details?.sport || ''),
+            podium: [{ place: 1, points: 10 }, { place: 2, points: 6 }, { place: 3, points: 3 }]
+          };
+        }
+      }
+
+      const initialPodium = editItem?.podium?.length
+        ? editItem.podium
+        : [{ place: 1, points: 10 }, { place: 2, points: 6 }, { place: 3, points: 3 }];
+
+      const orderedFixtures = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || []);
+
+      app.innerHTML =
+        `<section class="panel">
+          <div class="bar">
+            <div>
+              <h2>${editItem?.id ? 'Edit Final Result: ' + esc(editItem.eventName) : 'Publish Event Final Result (1st · 2nd · 3rd)'}</h2>
+              <p class="hint" style="margin:3px 0 0">Select an event or type a custom name, set 1st, 2nd &amp; 3rd place winners, and assign points for the Leaderboard.</p>
+            </div>
+            ${editItem?.id ? admBtn('Cancel Edit', 'cancelEditResult') : ''}
+          </div>
+          <form id="manualResultForm">
+            <input type="hidden" name="resultId" value="${esc(editItem?.id || '')}">
+            <div class="fields">
+              <label class="field">Link to Scheduled Event (Optional)
+                <select name="fixtureId" id="resFixtureSelect">
+                  <option value="">— Custom / Standalone Event —</option>
+                  ${orderedFixtures.map(f => `<option value="${esc(f.id)}" ${(editItem?.fixtureId || '') === f.id ? 'selected' : ''}>${esc(f.details?.name)} (${esc(standardName[f.details?.sport] || f.details?.sport)})</option>`).join('')}
+                </select>
+              </label>
+              <label class="field">Event Title (Shown on Public Results) *
+                <input type="text" name="eventName" id="resEventName" value="${esc(editItem?.eventName || '')}" required placeholder="e.g. Rubik's Cube Challenge · Final">
+              </label>
+              <label class="field">Sport / Category Tag (Optional)
+                <input type="text" name="category" id="resCategory" value="${esc(editItem?.category || '')}" placeholder="e.g. Football, Athletics, Rubik's Cube">
+              </label>
+              <div style="display:flex;align-items:center">
+                <label class="check"><input type="checkbox" name="markFixtureFinished" checked>Mark linked fixture as Finished</label>
+              </div>
+            </div>
+
+            <div id="podiumSlotsContainer">
+              ${initialPodium.map((slot, idx) => buildPodiumSlotHtml(slot, idx)).join('')}
+            </div>
+
+            <div class="actions spaced">
+              ${admBtn('+ Add 4th / Extra Place', 'addPodiumSlot')}
+              <button class="primary">${editItem?.id ? 'Update Published Result' : 'Publish Final Result'}</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h2>Published Final Results (${published.length})</h2>
+          <p class="hint">Only the results listed below are displayed on the public Results page.</p>
+          <div>
+            ${published.length ? published.map(res => {
+              const podiumSummary = (res.podium || [])
+                .filter(p => p.teamId)
+                .map(p => `${placeOrdinal(p.place)}: ${teamName(p.teamId)}${p.playerId ? ' (' + (adminData.players.find(x => x.id === p.playerId)?.name || 'Player') + ')' : ''}${p.points ? ' [+' + p.points + ' pts]' : ''}`)
+                .join(' · ');
+              return `<article class="item">
+                <div>
+                  <strong>${esc(res.eventName)}</strong>
+                  <span class="meta">${esc([res.category, podiumSummary].filter(Boolean).join(' — '))}</span>
+                </div>
+                <div class="actions" data-result-id="${esc(res.id)}">
+                  ${admBtn('Edit', 'editPublishedResult')}
+                  ${admBtn('Delete', 'deletePublishedResult', 'danger')}
+                </div>
+              </article>`;
+            }).join('') : '<p class="hint">No final results published yet.</p>'}
+          </div>
+        </section>`;
+
+      const form = app.querySelector('#manualResultForm');
+      const fixSel = form.querySelector('#resFixtureSelect');
+      fixSel.onchange = () => {
+        const f = adminData.fixtures.find(x => x.id === fixSel.value);
+        if (f) {
+          form.querySelector('#resEventName').value = f.details?.name || '';
+          form.querySelector('#resCategory').value = standardName[f.details?.sport] || label(f.details?.sport || '');
+        }
+      };
+
+      form.addEventListener('change', ev => {
+        if (ev.target.matches('[data-podium-team]')) {
+          const slotEl = ev.target.closest('[data-podium-slot]');
+          const playerSel = slotEl.querySelector('[data-podium-player]');
+          const tid = ev.target.value;
+          const roster = tid ? adminData.players.filter(p => p.teamId === tid).sort((a, b) => a.name.localeCompare(b.name)) : [];
+          playerSel.innerHTML = admOpts(roster.map(p => [p.id, p.name]), '', 'Team Only (No specific player)');
+        }
+      });
+    }
+
     function siteMetaAdmin() {
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
       const meta = adminData.siteMeta || { announcements: [], committee: [], contacts: [] };
@@ -2630,6 +2835,48 @@
       }
       const b = event.target.closest('[data-action]'); if (!b) return;
       const action = b.dataset.action, id = b.closest('[data-id]')?.dataset.id;
+      if (action === 'quickResult') {
+        editingResultId = '';
+        prefillResultFixtureId = id;
+        navigateAdmin('resultsManager');
+        return;
+      }
+      if (action === 'addPodiumSlot') {
+        const container = app.querySelector('#podiumSlotsContainer');
+        const nextPlace = container.querySelectorAll('[data-podium-slot]').length + 1;
+        container.insertAdjacentHTML('beforeend', buildPodiumSlotHtml({ place: nextPlace, points: 0 }, nextPlace - 1));
+        return;
+      }
+      if (action === 'removePodiumSlot') {
+        b.closest('[data-podium-slot]')?.remove();
+        return;
+      }
+      if (action === 'editPublishedResult') {
+        prefillResultFixtureId = '';
+        editingResultId = b.closest('[data-result-id]').dataset.resultId;
+        resultsAdmin();
+        window.scrollTo(0, 0);
+        return;
+      }
+      if (action === 'cancelEditResult') {
+        editingResultId = '';
+        prefillResultFixtureId = '';
+        resultsAdmin();
+        return;
+      }
+      if (action === 'deletePublishedResult') {
+        const rid = b.closest('[data-result-id]').dataset.resultId;
+        const rObj = (adminData.siteMeta?.publishedResults || []).find(r => r.id === rid);
+        if (!window.confirm('Delete published result for "' + (rObj?.eventName || 'Event') + '"?')) return;
+        await runAdmin(async () => {
+          const nextPublished = (adminData.siteMeta?.publishedResults || []).filter(r => r.id !== rid);
+          if (editingResultId === rid) editingResultId = '';
+          await saveSiteMeta({ ...adminData.siteMeta, publishedResults: nextPublished });
+          await reloadAdmin();
+          statusMsg('Published result deleted.');
+        });
+        return;
+      }
       if (action === 'moveUp' || action === 'moveDown') {
         const ordered = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || []);
         const ids = ordered.map(f => f.id);
@@ -2645,9 +2892,10 @@
         });
         return;
       }
-      if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players'].includes(action)) {
+      if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players', 'resultsManager'].includes(action)) {
         if (action === 'teams') editingTeamId = '';
         if (action === 'players') editingPlayerId = '';
+        if (action === 'resultsManager') { editingResultId = ''; prefillResultFixtureId = ''; }
         navigateAdmin(action, id);
         return;
       }
@@ -2712,9 +2960,69 @@
     account.addEventListener('click', onAdminClick);
     app.addEventListener('submit', event => {
       const form = event.target;
-      if (!['fixture', 'auth', 'award', 'manager', 'siteMetaForm', 'teamManageForm', 'playerManageForm'].includes(form.id)) return;
+      if (!['fixture', 'auth', 'award', 'manager', 'siteMetaForm', 'teamManageForm', 'playerManageForm', 'manualResultForm'].includes(form.id)) return;
       event.preventDefault();
       runAdmin(async () => {
+        if (form.id === 'manualResultForm') {
+          const fd = new FormData(form);
+          const resultId = String(fd.get('resultId') || '').trim();
+          const fixtureId = String(fd.get('fixtureId') || '').trim();
+          const eventName = String(fd.get('eventName') || '').trim();
+          const category = String(fd.get('category') || '').trim();
+          const markFinished = form.querySelector('[name=markFixtureFinished]')?.checked;
+
+          if (!eventName) throw Error('Enter the event title.');
+
+          const slots = [...form.querySelectorAll('[data-podium-slot]')].map((slotEl, idx) => ({
+            place: Number(slotEl.querySelector('[name=podiumPlace]')?.value) || (idx + 1),
+            teamId: String(slotEl.querySelector('[name=podiumTeamId]')?.value || '').trim(),
+            playerId: String(slotEl.querySelector('[name=podiumPlayerId]')?.value || '').trim(),
+            note: String(slotEl.querySelector('[name=podiumNote]')?.value || '').trim(),
+            points: Number(slotEl.querySelector('[name=podiumPoints]')?.value) || 0
+          })).filter(s => s.teamId);
+
+          if (!slots.length) throw Error('Select at least the 1st place winning team.');
+
+          const recordObj = {
+            id: resultId || crypto.randomUUID(),
+            fixtureId,
+            eventName,
+            category,
+            podium: slots,
+            updatedAt: new Date().toISOString()
+          };
+
+          const existingList = adminData.siteMeta?.publishedResults || [];
+          const nextPublished = resultId
+            ? existingList.map(r => r.id === resultId ? recordObj : r)
+            : [recordObj, ...existingList];
+
+          await saveSiteMeta({ ...adminData.siteMeta, publishedResults: nextPublished });
+
+          if (fixtureId) {
+            const linkedF = adminData.fixtures.find(f => f.id === fixtureId);
+            if (linkedF) {
+              const awardEntries = slots.map(s => ({
+                place: s.place,
+                teamId: s.teamId,
+                playerId: s.playerId || '',
+                points: s.points
+              }));
+              await save(linkedF.id, linkedF.version, 'awards', { entries: awardEntries });
+              if (markFinished && (linkedF.score?.status || 'scheduled') !== 'finished') {
+                const updatedF = (await snapshot()).fixtures.find(f => f.id === fixtureId) || linkedF;
+                const nextScore = record(updatedF.details, updatedF.score || {}, { kind: 'finish', label: 'Final result published' });
+                await save(updatedF.id, updatedF.version, 'score', nextScore);
+              }
+            }
+          }
+
+          editingResultId = '';
+          prefillResultFixtureId = '';
+          await reloadAdmin();
+          statusMsg('Final result published and synced with Leaderboard.');
+          return;
+        }
         if (form.id === 'auth') {
           const email = form.email.value.trim(), password = form.password.value;
           if (authMode === 'register') {
