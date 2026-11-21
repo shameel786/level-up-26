@@ -35,17 +35,28 @@
     button:disabled { opacity: .5; }
     .hidden, [hidden] { display: none !important; }
 
-    /* App Frame */
-    .app-frame { width: 100%; max-width: 540px; min-height: 100vh; margin: 0 auto; background: var(--bg); position: relative; box-shadow: 0 0 0 1px #1e2922, 0 24px 60px rgba(0, 0, 0, .65); display: flex; flex-direction: column; }
+    /* App Frame - Comfortable PC Width (not full screen) & Clip Inside */
+    .app-frame {
+      width: 100%;
+      max-width: 760px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      position: relative;
+      overflow-x: clip;
+      box-shadow: 0 0 0 1px #1e2922, 0 24px 60px rgba(0, 0, 0, .65);
+      display: flex;
+      flex-direction: column;
+    }
 
     /* Topbar */
-    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(14, 21, 17, .92); backdrop-filter: blur(14px); border-bottom: 1px solid #222e26; padding: 0 16px; }
-    .top-inner { height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-icon { display: grid; place-items: center; border-radius: 10px; background: var(--lime); width: 36px; height: 36px; color: #132012; font: italic 800 18px/1 var(--title); letter-spacing: -.04em; overflow: hidden; flex: none; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(14, 21, 17, .92); backdrop-filter: blur(14px); border-bottom: 1px solid #222e26; padding: 0 20px; }
+    .top-inner { height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .brand-icon { display: grid; place-items: center; border-radius: 10px; background: var(--lime); width: 38px; height: 38px; color: #132012; font: italic 800 18px/1 var(--title); letter-spacing: -.04em; overflow: hidden; flex: none; }
     .brand-icon img { height: 100%; width: 100%; object-fit: contain; }
     .brand-icon.photo { background: none; }
-    .brand b { display: block; font: italic 800 21px/.92 var(--title); letter-spacing: -.03em; }
+    .brand b { display: block; font: italic 800 22px/.92 var(--title); letter-spacing: -.03em; }
     .brand i { color: var(--lime); font-style: italic; }
     .brand small { display: block; color: var(--muted); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-top: 2px; }
     .menu-btn { width: 40px; height: 40px; border-radius: 11px; background: var(--panel); border: 1px solid var(--line); color: var(--text); display: grid; place-items: center; }
@@ -55,12 +66,43 @@
     .skip { position: absolute; left: -200vw; }
     .skip:focus { left: 10px; top: 10px; z-index: 50; background: #17251f; padding: 10px; }
 
-    /* Slide Drawer */
-    .drawer-backdrop { position: fixed; inset: 0; background: rgba(4, 8, 6, .72); backdrop-filter: blur(4px); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .22s ease; }
+    /* Slide Drawer - Contained Inside Web App Frame */
+    .drawer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 8, 6, .72);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
     .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
-    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(310px, 84vw); background: #131c17; border-left: 1px solid #2b382f; z-index: 45; transform: translateX(100%); transition: transform .25s cubic-bezier(.22, 1, .36, 1); display: flex; flex-direction: column; padding: 18px; overflow-y: auto; }
+    .drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(320px, 84%);
+      background: #131c17;
+      border-left: 1px solid #2b382f;
+      z-index: 45;
+      transform: translateX(100%);
+      transition: transform .25s cubic-bezier(.22, 1, .36, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+      overflow-y: auto;
+    }
     .drawer.open { transform: translateX(0); }
-    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+    .drawer-inner-sticky {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
     .drawer-head strong { font: italic 800 22px/1 var(--title); text-transform: uppercase; letter-spacing: -.02em; }
     .drawer-head strong span { color: var(--lime); }
     .drawer-nav { display: grid; gap: 9px; }
@@ -69,42 +111,42 @@
     .drawer-item:hover { border-color: var(--lime); background: var(--panel-2); }
     .drawer-item.accent { background: var(--lime); color: #132012; border-color: var(--lime); font-weight: 750; }
     .drawer-item.accent:hover { background: #d5ff89; }
-    .drawer-sep { height: 1px; background: var(--line); margin: 6px 0; }
+    .drawer-sep { height: 1px; background: var(--line); margin: 4px 0; }
 
     /* Main Content */
-    main.container { padding: 16px 16px 96px; flex: 1; }
+    main.container { padding: 18px 20px 98px; flex: 1; }
     #public-shell h1, #public-shell h2, #public-shell h3, #public-shell p { margin: 0; }
     #public-shell h1, #public-shell h2, #public-shell h3 { font-family: var(--title); line-height: 1.02; }
     #public-shell h1, #public-shell h2 { text-transform: uppercase; }
     .loading, .notice { margin: 18px 0; color: var(--muted); }
 
     /* Hero */
-    .hero { position: relative; overflow: hidden; isolation: isolate; border: 1px solid #354738; border-radius: 18px; background: radial-gradient(circle at 85% 20%, rgba(194, 245, 104, .22), transparent 52%), linear-gradient(135deg, #16291c 0%, #1d3524 60%, #2c4727 100%); padding: 22px 20px; }
+    .hero { position: relative; overflow: hidden; isolation: isolate; border: 1px solid #354738; border-radius: 18px; background: radial-gradient(circle at 85% 20%, rgba(194, 245, 104, .22), transparent 52%), linear-gradient(135deg, #16291c 0%, #1d3524 60%, #2c4727 100%); padding: 26px 24px; }
     .hero:before, .hero:after { content: ""; position: absolute; inset: 0; z-index: -1; }
     .hero:before { background: url('./assets/pitch.jpg') center/cover no-repeat; opacity: .35; }
     .hero:after { background: linear-gradient(180deg, rgba(10, 22, 14, .45), rgba(10, 22, 14, .92)); }
-    .hero-kicker { display: inline-flex; align-items: center; gap: 7px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--lime); }
+    .hero-kicker { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--lime); }
     .hero-kicker:before { content: ""; width: 16px; height: 2px; background: var(--lime); }
-    .hero h1 { font-size: 52px; font-weight: 800; font-style: italic; letter-spacing: -.04em; line-height: .88; margin-top: 8px; }
+    .hero h1 { font-size: clamp(46px, 7vw, 60px); font-weight: 800; font-style: italic; letter-spacing: -.04em; line-height: .88; margin-top: 8px; }
     .hero h1 span { color: var(--lime); }
-    .hero-bottom { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-    .hero-actions { display: flex; gap: 8px; }
+    .hero-bottom { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 9px; }
     .primary, .secondary, .link-btn, .seg, .tool-input { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; }
-    .primary, .secondary { border-radius: 10px; padding: 9px 14px; border: 1px solid transparent; font-size: 13px; }
+    .primary, .secondary { border-radius: 10px; padding: 10px 16px; border: 1px solid transparent; font-size: 13.5px; }
     .primary { background: var(--lime); color: #142013; }
     .secondary { background: rgba(24, 38, 28, .85); border-color: #465a48; color: var(--text); }
     .primary:hover { background: #d7ff91; }
     .secondary:hover { border-color: var(--lime); }
-    .stats { display: inline-flex; gap: 14px; padding: 7px 12px; background: rgba(12, 20, 15, .75); border: 1px solid rgba(194, 245, 104, .22); border-radius: 10px; }
-    .stats > div + div { padding-left: 14px; border-left: 1px solid #354738; }
-    .stats strong { font: 700 20px/1 var(--title); color: var(--lime); display: block; }
-    .stats small { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; margin-top: 2px; }
+    .stats { display: inline-flex; gap: 16px; padding: 8px 14px; background: rgba(12, 20, 15, .75); border: 1px solid rgba(194, 245, 104, .22); border-radius: 10px; }
+    .stats > div + div { padding-left: 16px; border-left: 1px solid #354738; }
+    .stats strong { font: 700 22px/1 var(--title); color: var(--lime); display: block; }
+    .stats small { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; margin-top: 2px; }
 
     /* Cards & Lists */
-    .section { margin-top: 22px; }
-    .sect-head, .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-    .sect-head h2 { font-size: 26px; font-style: italic; letter-spacing: -.02em; }
-    .link-btn { font-size: 12.5px; color: var(--lime); background: none; border: none; padding: 4px 0; }
+    .section { margin-top: 24px; }
+    .sect-head, .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
+    .sect-head h2 { font-size: 28px; font-style: italic; letter-spacing: -.02em; }
+    .link-btn { font-size: 13px; color: var(--lime); background: none; border: none; padding: 4px 0; }
     .card, .fixture, .team-tile, .rank-row, .sport-table, .live-article { border: 1px solid var(--line); background: var(--panel); border-radius: 14px; }
     .empty { padding: 16px; display: flex; align-items: center; gap: 14px; }
     .empty-icon { width: 40px; height: 40px; border: 1px solid #3a4c3d; background: #1f2e24; border-radius: 11px; display: grid; place-items: center; color: var(--lime); flex: none; }
@@ -112,7 +154,7 @@
     .empty p, .muted, .hint { color: var(--muted); font-size: 13px; margin-top: 2px; }
 
     /* Announcements & Contacts */
-    .announce-list { display: grid; gap: 8px; }
+    .announce-list { display: grid; gap: 9px; }
     .announce-card { padding: 13px 15px; border-radius: 13px; background: linear-gradient(90deg, rgba(194, 245, 104, .11), rgba(22, 32, 26, .95)); border: 1px solid rgba(194, 245, 104, .32); display: flex; gap: 11px; align-items: flex-start; }
     .announce-badge { padding: 3px 7px; border-radius: 6px; background: var(--lime); color: #132012; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; flex: none; margin-top: 2px; }
     .announce-card strong { display: block; font-size: 14.5px; color: var(--text); }
@@ -128,6 +170,9 @@
 
     /* Teams */
     .teams-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    @media (min-width: 640px) {
+      .teams-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
     .team-tile { display: flex; align-items: center; gap: 11px; padding: 13px 12px; position: relative; overflow: hidden; text-align: left; width: 100%; }
     .team-tile:before { position: absolute; top: 0; left: 0; bottom: 0; width: 3.5px; background: var(--team); content: ""; }
     .team-tile b, .team-line b { font: 700 20px/1.05 var(--title); letter-spacing: .01em; }
@@ -136,16 +181,16 @@
     .crest img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
 
     /* Bottom Navigation */
-    .bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 540px; z-index: 25; border-top: 1px solid #2b382f; background: rgba(14, 21, 17, .94); backdrop-filter: blur(14px); padding-bottom: env(safe-area-inset-bottom); }
+    .bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 760px; z-index: 25; border-top: 1px solid #2b382f; background: rgba(14, 21, 17, .94); backdrop-filter: blur(14px); padding-bottom: env(safe-area-inset-bottom); }
     .nav-inner { display: flex; justify-content: space-around; }
-    .nav-inner a { flex: 1; color: var(--muted); min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-weight: 650; font-size: 10.5px; position: relative; }
+    .nav-inner a { flex: 1; color: var(--muted); min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-weight: 650; font-size: 11px; position: relative; }
     .nav-inner a .ico { width: 19px; height: 19px; }
     .nav-inner a[aria-current=page] { color: var(--lime); }
-    .nav-inner a[aria-current=page]:after { content: ""; height: 3px; background: var(--lime); width: 30px; position: absolute; top: 0; border-radius: 0 0 3px 3px; }
+    .nav-inner a[aria-current=page]:after { content: ""; height: 3px; background: var(--lime); width: 32px; position: absolute; top: 0; border-radius: 0 0 3px 3px; }
 
     /* Fixtures & Standings */
     .page-head { margin: 6px 0 16px; display: block; }
-    .page-head h1 { font-size: 40px; font-style: italic; letter-spacing: -.03em; }
+    .page-head h1 { font-size: 42px; font-style: italic; letter-spacing: -.03em; }
     .page-head p { color: var(--muted); margin-top: 4px; font-size: 13.5px; }
     .tools, .chip-row { display: flex; gap: 7px; flex-wrap: wrap; }
     .tools { margin-bottom: 16px; }
@@ -153,7 +198,10 @@
     .seg.active { background: var(--lime); border-color: var(--lime); color: #142013; }
     .tool-input { max-width: 100%; min-height: 36px; }
     .fixture-list, .rank-list { display: grid; gap: 10px; }
-    .fixture { padding: 14px 15px; display: block; }
+    @media (min-width: 660px) {
+      .fixture-list.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .fixture { padding: 14px 16px; display: block; }
     .fixture:hover, .team-tile:hover, .rank-row summary:hover { border-color: #628554; background: var(--panel-2); }
     .info-line, .foot-line { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
     .fixture-sport, .meta { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
@@ -174,41 +222,41 @@
     .group { margin: 12px 0 22px; }
 
     .sport-table { overflow: auto; }
-    #public-shell table { border-collapse: collapse; width: 100%; text-align: center; font-size: 13px; }
-    #public-shell th, #public-shell td { padding: 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-    #public-shell thead th { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: #1a261f; }
+    #public-shell table { border-collapse: collapse; width: 100%; text-align: center; font-size: 13.5px; }
+    #public-shell th, #public-shell td { padding: 11px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    #public-shell thead th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: #1a261f; }
     #public-shell tbody tr:last-child td { border-bottom: 0; }
     #public-shell th:nth-child(2), #public-shell td:nth-child(2) { text-align: left; }
     .stand-team { display: flex; align-items: center; gap: 8px; font-weight: 600; }
     .live-pill-mini { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px; background: #27432b; color: var(--lime); border: 1px solid #4e7e46; letter-spacing: .06em; }
 
     /* Leaderboard */
-    .rank-row summary { cursor: pointer; display: flex; align-items: center; gap: 11px; padding: 12px 14px; list-style: none; }
+    .rank-row summary { cursor: pointer; display: flex; align-items: center; gap: 11px; padding: 12px 15px; list-style: none; }
     .rank-row summary::-webkit-details-marker { display: none; }
     .rank-index { min-width: 24px; font: 700 22px var(--title); color: var(--lime); }
     .rank-name { flex: 1; min-width: 0; }
-    .rank-name b { display: block; font-size: 15px; }
+    .rank-name b { display: block; font-size: 15.5px; }
     .rank-name small { color: var(--muted); font-size: 12px; }
     .rank-points { font: 700 22px var(--title); color: var(--lime); }
     .rank-points small { font: 600 10px var(--body); color: var(--muted); margin-left: 3px; }
-    .award-list { padding: 0 14px 12px 48px; font-size: 13px; color: var(--muted); }
+    .award-list { padding: 0 15px 12px 48px; font-size: 13px; color: var(--muted); }
     .award-list li { margin: 4px 0; }
     .badge-count { font: 700 11px var(--body); vertical-align: middle; margin-left: 6px; color: var(--lime); background: #253623; border: 1px solid #465d41; border-radius: 99px; padding: 2px 8px; }
 
     /* Match Detail & Clock */
-    .live-article { padding: 16px; margin-top: 12px; }
+    .live-article { padding: 18px; margin-top: 12px; }
     .match-clock-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; }
     .match-clock-banner { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 99px; background: #1f3324; border: 1px solid #476d44; color: var(--lime); font: 700 13.5px/1 var(--body); font-variant-numeric: tabular-nums; }
     .match-clock-banner.stopped { background: #2b2617; border-color: #6b5a27; color: #f9d452; }
     .extra-time-pill { display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(249, 212, 82, .16); border: 1px solid rgba(249, 212, 82, .45); color: #f9d452; font: 800 10.5px/1.1 var(--body); letter-spacing: .04em; }
-    .match-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; padding: 18px 0; }
-    .match-side { display: grid; justify-items: center; gap: 7px; font: 700 18px/1.1 var(--title); }
-    .match-side small.roster-tag { font: 600 11px/1.25 var(--body); color: var(--muted); max-width: 130px; }
-    .match-score > strong { font: 800 44px/1 var(--title); color: var(--lime); white-space: nowrap; }
+    .match-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; text-align: center; padding: 20px 0; }
+    .match-side { display: grid; justify-items: center; gap: 7px; font: 700 20px/1.1 var(--title); }
+    .match-side small.roster-tag { font: 600 11.5px/1.25 var(--body); color: var(--muted); max-width: 170px; }
+    .match-score > strong { font: 800 48px/1 var(--title); color: var(--lime); white-space: nowrap; }
     .match-score > strong > small { display: block; font: 600 11px var(--body); color: var(--muted); margin-top: 5px; }
     .subhead { font-size: 21px; margin: 20px 0 8px; }
 
-    /* Bout Cards (Arm Wrestling & Head-to-Head Rounds) */
+    /* Bout Cards */
     .bout-list { display: grid; gap: 8px; margin-top: 8px; }
     .bout-card { padding: 11px 13px; border-radius: 11px; background: #1a261f; border: 1px solid var(--line); display: grid; gap: 6px; }
     .bout-card.active { border-color: var(--lime); background: #203125; }
@@ -221,11 +269,11 @@
     .win-badge { font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 5px; background: var(--lime); color: #132012; text-transform: uppercase; flex: none; }
 
     /* Badminton Court Banner */
-    .badminton-panel { padding: 12px; border-radius: 12px; background: linear-gradient(180deg, #1b382c 0%, #152b22 100%); border: 1.5px solid #487660; margin-top: 10px; }
+    .badminton-panel { padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #1b382c 0%, #152b22 100%); border: 1.5px solid #487660; margin-top: 10px; }
     .badminton-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; }
-    .badminton-side { padding: 8px; border-radius: 9px; background: rgba(12, 20, 15, .55); border: 1px solid rgba(255,255,255,.08); }
+    .badminton-side { padding: 10px; border-radius: 9px; background: rgba(12, 20, 15, .55); border: 1px solid rgba(255,255,255,.08); }
     .badminton-side.serving { border-color: var(--lime); background: rgba(194, 245, 104, .12); }
-    .badminton-pts { font: 800 32px/1 var(--title); color: var(--text); }
+    .badminton-pts { font: 800 34px/1 var(--title); color: var(--text); }
     .badminton-side.serving .badminton-pts { color: var(--lime); }
     .serve-pill { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; padding: 2px 7px; border-radius: 99px; background: var(--lime); color: #132012; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
 
@@ -233,7 +281,7 @@
     .pitch-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
     .pitch-tab { flex: 1; padding: 8px 10px; border-radius: 9px; background: #1b271f; border: 1px solid var(--line); color: var(--muted); font-weight: 700; font-size: 12.5px; }
     .pitch-tab.active { background: var(--lime); color: #132012; border-color: var(--lime); }
-    .pitch-stage { position: relative; width: 100%; aspect-ratio: 3 / 4; max-height: 440px; border-radius: 14px; border: 2px solid #678e6a; background: radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.22) 14.5%, rgba(255,255,255,.22) 15.5%, transparent 16%), linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.25) 49.8%, rgba(255,255,255,.25) 50.2%, transparent 50.4%), repeating-linear-gradient(to top, #1f3d29 0 28px, #254731 28px 56px); overflow: hidden; user-select: none; }
+    .pitch-stage { position: relative; width: 100%; max-width: 460px; margin: 0 auto; aspect-ratio: 3 / 4; max-height: 440px; border-radius: 14px; border: 2px solid #678e6a; background: radial-gradient(circle at 50% 50%, transparent 14%, rgba(255,255,255,.22) 14.5%, rgba(255,255,255,.22) 15.5%, transparent 16%), linear-gradient(to bottom, transparent 49.6%, rgba(255,255,255,.25) 49.8%, rgba(255,255,255,.25) 50.2%, transparent 50.4%), repeating-linear-gradient(to top, #1f3d29 0 28px, #254731 28px 56px); overflow: hidden; user-select: none; }
     .pitch-stage.volley-court { aspect-ratio: 1 / 1.05; max-height: 360px; background: linear-gradient(to bottom, rgba(255,255,255,.35) 33%, rgba(255,255,255,.35) 33.8%, transparent 33.8%), linear-gradient(180deg, #b86a35 0%, #9e5627 100%); border-color: #f3f5ec; }
     .pitch-stage.volley-court:before { content: "NET"; position: absolute; top: 0; left: 0; right: 0; height: 22px; background: rgba(14, 21, 17, .82); color: var(--lime); font-size: 10px; font-weight: 800; letter-spacing: .16em; display: grid; place-items: center; border: none; }
     .pitch-stage.volley-court:after { display: none; }
@@ -376,9 +424,9 @@
     <a class="skip" href="#content">Skip to match centre</a>
     <header class="topbar">
       <div class="top-inner">
-        <a class="brand" href="#home" aria-label="Level Up ’26 home">
+        <a class="brand" href="#home" aria-label="Match centre home">
           <span class="brand-icon" id="brand-icon" aria-hidden="true">LU</span>
-          <span><b>LEVEL UP <i>’26</i></b><small>Sports &amp; games gala</small></span>
+          <span><b id="brand-title">LEVEL UP <i>’26</i></b><small id="brand-sub">Sports &amp; games gala</small></span>
         </a>
         <button type="button" class="menu-btn" id="open-drawer" aria-label="Open menu">
           <span data-icon="menu"></span>
@@ -389,18 +437,21 @@
     <main class="container" id="content" tabindex="-1"><div class="loading">Loading match centre…</div></main>
     <nav class="bottom" aria-label="Main navigation"><div class="nav-inner" id="navigation"></div></nav>
 
+    <!-- Drawer & Backdrop Inside App Frame -->
     <div class="drawer-backdrop" id="drawer-backdrop"></div>
     <aside class="drawer" id="side-drawer" aria-label="Menu">
-      <div class="drawer-head">
-        <strong>LEVEL UP <span>’26</span></strong>
-        <button type="button" class="menu-btn" id="close-drawer" aria-label="Close menu"><span data-icon="close"></span></button>
-      </div>
-      <div class="drawer-nav">
-        <a class="drawer-item" href="#announcements"><span class="drawer-item-left"><span data-icon="announce"></span><span>Announcements</span></span><span>›</span></a>
-        <a class="drawer-item" href="#committee"><span class="drawer-item-left"><span data-icon="people"></span><span>Sports Committee</span></span><span>›</span></a>
-        <a class="drawer-item" href="#contact"><span class="drawer-item-left"><span data-icon="phone"></span><span>Contact Details</span></span><span>›</span></a>
-        <div class="drawer-sep"></div>
-        <a class="drawer-item accent" href="#admin"><span class="drawer-item-left"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></span><span>→</span></a>
+      <div class="drawer-inner-sticky">
+        <div class="drawer-head">
+          <strong id="drawer-brand-title">LEVEL UP <span>’26</span></strong>
+          <button type="button" class="menu-btn" id="close-drawer" aria-label="Close menu"><span data-icon="close"></span></button>
+        </div>
+        <div class="drawer-nav">
+          <a class="drawer-item" href="#announcements"><span class="drawer-item-left"><span data-icon="announce"></span><span>Announcements</span></span><span>›</span></a>
+          <a class="drawer-item" href="#committee"><span class="drawer-item-left"><span data-icon="people"></span><span>Sports Committee</span></span><span>›</span></a>
+          <a class="drawer-item" href="#contact"><span class="drawer-item-left"><span data-icon="phone"></span><span>Contact Details</span></span><span>›</span></a>
+          <div class="drawer-sep"></div>
+          <a class="drawer-item accent" href="#admin"><span class="drawer-item-left"><span data-icon="settings"></span><span>Staff &amp; Admin Sign-In</span></span><span>→</span></a>
+        </div>
       </div>
     </aside>
   </div>
@@ -410,15 +461,15 @@
     <header>
       <div class="header-inner">
         <a class="brand" href="#home">
-          <img src="./assets/event-logo.png" width="38" height="34" style="object-fit:contain" alt="" onerror="this.style.display='none'">
-          <span>LEVEL UP <em>’26</em></span>
+          <img id="admin-brand-logo" src="./assets/event-logo.png" width="38" height="34" style="object-fit:contain;border-radius:6px" alt="" onerror="this.style.display='none'">
+          <span id="admin-brand-title">LEVEL UP <em>’26</em></span>
         </a>
         <a class="public-link" href="#home">← Match centre</a>
       </div>
     </header>
     <main>
       <div class="intro">
-        <div><p class="overline">Level Up ’26</p><h1>Gala control room</h1></div>
+        <div><p class="overline" id="admin-overline">Level Up ’26</p><h1>Gala control room</h1></div>
         <div id="account"></div>
       </div>
       <div id="notice" role="status" aria-live="polite"></div>
@@ -474,17 +525,79 @@
 
     function logoUrl(path) {
       if (!path || typeof path !== 'string') return '';
-      if (path.startsWith('/')) return 'https://campus-auction-arena.vercel.app' + path;
-      if (/^https?:\/\//i.test(path) || /^data:image\//i.test(path)) return path;
-      return 'https://jkelyomdaylljxnvhuhi.supabase.co/storage/v1/object/public/' + path.replace(/^\/+/, '');
+      const raw = path.trim();
+      if (!raw) return '';
+      if (/^data:image\//i.test(raw)) return raw;
+      if (/^https?:\/\//i.test(raw)) {
+        try {
+          const u = new URL(raw);
+          if (u.pathname.startsWith('/api/photo/')) {
+            return 'https://campus-auction-arena.vercel.app' + u.pathname + u.search;
+          }
+          return raw;
+        } catch {
+          return raw;
+        }
+      }
+      if (raw.startsWith('/')) {
+        return 'https://campus-auction-arena.vercel.app' + raw;
+      }
+      if (/^api\/photo\//i.test(raw)) {
+        return 'https://campus-auction-arena.vercel.app/' + raw;
+      }
+      if (/^assets\//i.test(raw) || /^\.\/assets\//i.test(raw)) {
+        return raw.startsWith('./') ? raw : './' + raw;
+      }
+      return 'https://jkelyomdaylljxnvhuhi.supabase.co/storage/v1/object/public/' + raw.replace(/^\/+/, '');
     }
 
     async function snapshot() {
       const result = await rpc('snapshot', {});
-      for (const team of result.teams) team.logo = logoUrl(team.logo);
-      result.branding.logo = logoUrl(result.branding.logo);
       const metaRec = (result.fixtures || []).find(f => f.id === META_ID || f.details?.isSiteMeta);
       const rawMeta = metaRec?.details?.siteMeta || {};
+
+      // Merge event branding overrides
+      const customBrand = rawMeta.eventBranding || {};
+      result.branding = {
+        ...(result.branding || {}),
+        name: customBrand.name !== undefined && customBrand.name !== '' ? customBrand.name : (result.branding?.name || 'LEVEL UP ’26'),
+        subtitle: customBrand.subtitle !== undefined && customBrand.subtitle !== '' ? customBrand.subtitle : (result.branding?.subtitle || 'Sports & games gala'),
+        college: customBrand.college !== undefined && customBrand.college !== '' ? customBrand.college : (result.branding?.college || 'Markaz Wafy Games Gala · 2026'),
+        logo: logoUrl(customBrand.logo || result.branding?.logo || result.branding?.image || '')
+      };
+
+      // Merge team overrides, added teams, and deleted teams
+      const teamOverrides = rawMeta.teamOverrides || {};
+      const deletedTeamIds = new Set(rawMeta.deletedTeamIds || []);
+      const baseTeams = (result.teams || []).filter(t => !deletedTeamIds.has(t.id)).map(t => {
+        const ov = teamOverrides[t.id] || {};
+        return {
+          ...t,
+          name: ov.name || t.name,
+          color: ov.color || t.color,
+          logo: logoUrl(ov.logo !== undefined ? ov.logo : (t.logo || t.image || t.logo_url || t.avatar || ''))
+        };
+      });
+      const addedTeams = (rawMeta.addedTeams || []).filter(t => !deletedTeamIds.has(t.id)).map(t => ({
+        ...t,
+        logo: logoUrl(t.logo || '')
+      }));
+      result.teams = [...baseTeams, ...addedTeams];
+
+      // Merge player overrides, added players, and deleted players
+      const playerOverrides = rawMeta.playerOverrides || {};
+      const deletedPlayerIds = new Set(rawMeta.deletedPlayerIds || []);
+      const basePlayers = (result.players || []).filter(p => !deletedPlayerIds.has(p.id) && !deletedTeamIds.has(p.teamId)).map(p => {
+        const ov = playerOverrides[p.id] || {};
+        return {
+          ...p,
+          name: ov.name || p.name,
+          teamId: ov.teamId || p.teamId
+        };
+      });
+      const addedPlayers = (rawMeta.addedPlayers || []).filter(p => !deletedPlayerIds.has(p.id) && !deletedTeamIds.has(p.teamId));
+      result.players = [...basePlayers, ...addedPlayers];
+
       const contacts = Array.isArray(rawMeta.contacts)
         ? rawMeta.contacts
         : (typeof rawMeta.contact === 'string' && rawMeta.contact.trim()
@@ -494,11 +607,56 @@
       result.siteMeta = {
         announcements: Array.isArray(rawMeta.announcements) ? rawMeta.announcements : [{ title: 'Welcome to Level Up ’26', body: 'Follow live match updates, standings and championship points right here.' }],
         committee: Array.isArray(rawMeta.committee) ? rawMeta.committee : [{ role: 'General Convenor', name: 'Sports Committee · Level Up ’26' }, { role: 'Match Control', name: 'Gala Technical Desk' }],
-        contacts
+        contacts,
+        eventBranding: customBrand,
+        teamOverrides,
+        addedTeams,
+        deletedTeamIds: [...deletedTeamIds],
+        playerOverrides,
+        addedPlayers,
+        deletedPlayerIds: [...deletedPlayerIds]
       };
       result.metaRecord = metaRec || null;
       result.fixtures = (result.fixtures || []).filter(f => f.id !== META_ID && !f.details?.isSiteMeta);
       return result;
+    }
+
+    async function saveSiteMeta(nextSiteMeta) {
+      const ver = adminData.metaRecord?.version || 0;
+      await save(META_ID, ver, 'details', {
+        isSiteMeta: true,
+        name: 'System Site Info',
+        venue: 'Control Desk',
+        sport: 'custom',
+        format: 'team',
+        startTime: '2099-01-01T00:00:00.000Z',
+        siteMeta: nextSiteMeta
+      });
+    }
+
+    function fileToCompressedDataUrl(file, maxDim = 256) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve('');
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Could not read image file.'));
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Invalid image file.'));
+          img.onload = () => {
+            const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+            const w = Math.max(1, Math.round(img.width * scale));
+            const h = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/webp', 0.86));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
     }
 
     function save(id, version, section, value = {}) { return rpc('save', { p_id: id, p_version: version, p_section: section, p_value: value }); }
@@ -1044,7 +1202,11 @@
     const fixtures = () => [...state.fixtures].sort((a, b) => String(a.details.startTime || '9999').localeCompare(String(b.details.startTime || '9999')));
     const fixtureLink = f => '#match/' + encodeURIComponent(f.id);
 
-    function crest(t) { let u = imgURL(t?.logo); return `<span class="crest" style="--team:${color(t?.color)}">${u ? `<img alt="" loading="lazy" src="${e(u)}">` : e((t?.name || '?').slice(0, 2).toUpperCase())}</span>`; }
+    function crest(t) {
+      let u = imgURL(t?.logo);
+      let initials = e((t?.name || '?').slice(0, 2).toUpperCase());
+      return `<span class="crest" style="--team:${color(t?.color)}">${u ? `<img alt="" loading="lazy" src="${e(u)}" onerror="this.replaceWith(document.createTextNode('${initials}'))">` : initials}</span>`;
+    }
     function empty(name, heading, body) { return `<div class="card empty"><span class="empty-icon">${icon(name)}</span><div><strong>${e(heading)}</strong><p>${e(body)}</p></div></div>`; }
     function sectionHead(title, link, href) { return `<div class="sect-head"><h2>${title}</h2>${link ? `<a class="link-btn" href="${href}">${link}</a>` : ''}</div>`; }
     function status(f) {
@@ -1096,9 +1258,9 @@
           ${loaded ? `<div class="stats"><div><strong>${state.teams.length}</strong><small>Teams</small></div><div><strong>${state.players.length}</strong><small>Players</small></div></div>` : ''}
         </div>
       </section>
-      <section class="section">${sectionHead('Live now' + (live.length ? `<span class="badge-count">${live.length}</span>` : ''), 'Live centre', '#live')}<div class="fixture-list">${live.length ? live.slice(0, 3).map(fixtureCard).join('') : empty('live', 'No events live right now', 'Live scores appear here the moment a match kicks off.')}</div></section>
+      <section class="section">${sectionHead('Live now' + (live.length ? `<span class="badge-count">${live.length}</span>` : ''), 'Live centre', '#live')}<div class="fixture-list grid-2">${live.length ? live.slice(0, 4).map(fixtureCard).join('') : empty('live', 'No events live right now', 'Live scores appear here the moment a match kicks off.')}</div></section>
       ${renderAnnouncements(2)}
-      <section class="section">${sectionHead('Up next', 'All fixtures', '#fixtures')}<div class="fixture-list">${next.length ? next.slice(0, 3).map(fixtureCard).join('') : empty('fixtures', 'Awaiting the schedule', 'Upcoming fixtures appear here when published.')}</div></section>
+      <section class="section">${sectionHead('Up next', 'All fixtures', '#fixtures')}<div class="fixture-list grid-2">${next.length ? next.slice(0, 4).map(fixtureCard).join('') : empty('fixtures', 'Awaiting the schedule', 'Upcoming fixtures appear here when published.')}</div></section>
       <section class="section">${sectionHead('Competing teams', 'Leaderboard', '#leaderboard')}<div class="teams-grid">${state.teams.map(t => `<a class="team-tile" style="--team:${color(t.color)}" href="#team/${encodeURIComponent(t.id)}">${crest(t)}<span><b>${e(t.name)}</b><small class="team-caption">${state.players.filter(p => p.teamId === t.id).length} players</small></span></a>`).join('')}</div></section>`;
     }
 
@@ -1130,7 +1292,7 @@
       let all = fixtures(), types = [...new Set(all.map(f => f.details.sport))], dates = new Map(all.filter(f => f.details.startTime).map(f => [day(f.details.startTime, fmtKey), day(f.details.startTime)]));
       let list = all.filter(f => (filters.status === 'all' || st(f) === filters.status) && (filters.sport === 'all' || f.details.sport === filters.sport) && (filters.team === 'all' || groupTeam(f, filters.team)) && (filters.date === 'all' || day(f.details.startTime, fmtKey) === filters.date));
       let groups = new Map; for (let f of list) { let k = day(f.details.startTime); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(f); }
-      return pageHead('Fixtures', 'Kickoff times (IST) and venues.') + `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` + ([...groups].map(([k, arr]) => `<section class="group"><h2 class="day-title">${e(k)}</h2><div class="fixture-list">${arr.map(fixtureCard).join('')}</div></section>`).join('') || empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
+      return pageHead('Fixtures', 'Kickoff times (IST) and venues.') + `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` + ([...groups].map(([k, arr]) => `<section class="group"><h2 class="day-title">${e(k)}</h2><div class="fixture-list grid-2">${arr.map(fixtureCard).join('')}</div></section>`).join('') || empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
     }
 
     function standings() {
@@ -1157,10 +1319,10 @@
         return `<section class="group">${sectionHead(e(standardName[sport] || label(sport)) + (stage ? ' · ' + e(stage) : ''))}
           <div class="sport-table"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>${isSet ? 'SD' : football ? 'GD' : 'Diff'}</th>${football ? '<th>Pts</th>' : ''}</tr></thead><tbody>${rank.map((r, i) => `<tr><td>${i + 1}</td><td><a class="stand-team" href="#team/${encodeURIComponent(r.id)}">${crest(team(r.id))}<span>${e(team(r.id)?.name)}</span>${r.isLive ? '<span class="live-pill-mini">LIVE</span>' : ''}</a></td><td>${r.played}</td><td>${r.won}</td><td>${r.drawn}</td><td>${r.lost}</td><td>${r.for - r.against}</td>${football ? `<td><b>${r.pts}</b></td>` : ''}</tr>`).join('')}</tbody></table></div>
           ${football ? '<p class="hint">Includes live &amp; full-time matches · Win 3 · Draw 1 · Loss 0</p>' : ''}
-          ${activeGames.length ? `<div class="fixture-list" style="margin-top:10px">${activeGames.map(fixtureCard).join('')}</div>` : ''}
+          ${activeGames.length ? `<div class="fixture-list grid-2" style="margin-top:10px">${activeGames.map(fixtureCard).join('')}</div>` : ''}
         </section>`;
       }).join('');
-      return pageHead('Standings', 'Live & final group tables and knockout results.') + (tables + (knockout.length ? `<section class="group">${sectionHead('Knockout stage')}<div class="fixture-list">${knockout.map(fixtureCard).join('')}</div></section>` : '') || empty('standings', 'Waiting for the first fixtures', 'Sport tables will appear after team fixtures are scheduled.'));
+      return pageHead('Standings', 'Live & final group tables and knockout results.') + (tables + (knockout.length ? `<section class="group">${sectionHead('Knockout stage')}<div class="fixture-list grid-2">${knockout.map(fixtureCard).join('')}</div></section>` : '') || empty('standings', 'Waiting for the first fixtures', 'Sport tables will appear after team fixtures are scheduled.'));
     }
 
     function ledger() { return fixtures().filter(f => st(f) === 'finished').flatMap(f => (f.awards?.entries || []).map(a => ({ ...a, points: Number(a.points) || 0, event: f }))); }
@@ -1177,7 +1339,7 @@
       let members = state.players.filter(p => p.teamId === id), fs = fixtures().filter(f => groupTeam(f, id));
       return `<a class="link-btn" href="#home">← Back to home</a>` + pageHead(t.name, `${members.length} registered players`) +
         `<section>${sectionHead('Squad Roster')}<div class="teams-grid">${members.length ? members.map((p, idx) => `<div class="team-tile" style="--team:${color(t.color)}"><span class="crest" style="--team:${color(t.color)}">${idx + 1}</span><span><b>${e(p.name)}</b><small class="team-caption">${e(t.name)}</small></span></div>`).join('') : empty('people', 'No players listed', 'Players for this team will appear here.')}</div></section>` +
-        `<section class="section">${sectionHead('Team Fixtures')}<div class="fixture-list">${fs.map(fixtureCard).join('') || empty('fixtures', 'No team fixtures yet', 'Published events for this team will appear here.')}</div></section>`;
+        `<section class="section">${sectionHead('Team Fixtures')}<div class="fixture-list grid-2">${fs.map(fixtureCard).join('') || empty('fixtures', 'No team fixtures yet', 'Published events for this team will appear here.')}</div></section>`;
     }
 
     function interactiveArena(d, s) {
@@ -1292,7 +1454,7 @@
 
     function livePage() {
       let fs = fixtures().filter(f => st(f) === 'live');
-      return pageHead('Live centre', fs.length ? `${fs.length} ${fs.length === 1 ? 'event' : 'events'} in progress` : 'Follow live scores and match action.') + (fs.length === 1 ? matchPage(fs[0]).replace(/^.*?<article/s, '<article').replace('<div class="info-line">', `<h2 class="subhead">${e(title(fs[0]))}</h2><p class="hint">${e(fs[0].details.venue)}</p><div class="info-line">`) : fs.length ? `<div class="fixture-list">${fs.map(fixtureCard).join('')}</div>` : empty('live', 'No events live right now', 'Open Fixtures for the latest schedule.'));
+      return pageHead('Live centre', fs.length ? `${fs.length} ${fs.length === 1 ? 'event' : 'events'} in progress` : 'Follow live scores and match action.') + (fs.length === 1 ? matchPage(fs[0]).replace(/^.*?<article/s, '<article').replace('<div class="info-line">', `<h2 class="subhead">${e(title(fs[0]))}</h2><p class="hint">${e(fs[0].details.venue)}</p><div class="info-line">`) : fs.length ? `<div class="fixture-list grid-2">${fs.map(fixtureCard).join('')}</div>` : empty('live', 'No events live right now', 'Open Fixtures for the latest schedule.'));
     }
 
     function route() { let parts = location.hash.slice(1).split('/'); return { tab: parts[0] || 'home', id: parts[1] ? decodeURIComponent(parts[1]) : '' }; }
@@ -1306,7 +1468,7 @@
       main.innerHTML = message() + (loaded ? panel() : (tab === 'home' ? home().split('<section class="section">')[0] : '') + (failed ? '' : `<div class="loading" role="status">Loading match centre…</div>`));
       for (let el of main.querySelectorAll('details')) if (open.has(el.dataset.persist)) el.open = true;
       if (lastHash !== location.hash) { window.scrollTo(0, 0); lastHash = location.hash; }
-      document.title = `${label(views.includes(tab) ? tab : tab === 'match' ? 'Event details' : tab === 'team' ? 'Team' : tab)} · Level Up ’26`;
+      document.title = `${label(views.includes(tab) ? tab : tab === 'match' ? 'Event details' : tab === 'team' ? 'Team' : tab)} · ${state.branding?.name || 'Level Up ’26'}`;
     }
 
     setInterval(() => {
@@ -1317,6 +1479,58 @@
       });
     }, 1000);
 
+    function formatEventTitleHtml(name, emTag = 'i') {
+      const clean = e(name || 'LEVEL UP ’26');
+      const parts = clean.split(' ');
+      if (parts.length > 1) {
+        const last = parts.pop();
+        return `${parts.join(' ')} <${emTag}>${last}</${emTag}>`;
+      }
+      return clean;
+    }
+
+    function applyBrandingUI(branding = {}) {
+      const evName = branding.name || 'LEVEL UP ’26';
+      const evSub = branding.subtitle || 'Sports & games gala';
+      const logo = branding.logo || './assets/event-logo.png';
+
+      const bTitle = document.getElementById('brand-title');
+      if (bTitle) bTitle.innerHTML = formatEventTitleHtml(evName, 'i');
+      const bSub = document.getElementById('brand-sub');
+      if (bSub) bSub.textContent = evSub;
+      const dTitle = document.getElementById('drawer-brand-title');
+      if (dTitle) dTitle.innerHTML = formatEventTitleHtml(evName, 'span');
+      const aTitle = document.getElementById('admin-brand-title');
+      if (aTitle) aTitle.innerHTML = formatEventTitleHtml(evName, 'em');
+      const aOver = document.getElementById('admin-overline');
+      if (aOver) aOver.textContent = evName;
+
+      const admImg = document.getElementById('admin-brand-logo');
+      if (admImg && admImg.dataset.src !== logo) {
+        admImg.dataset.src = logo;
+        admImg.style.display = '';
+        admImg.src = logo;
+      }
+
+      const el = document.getElementById('brand-icon');
+      if (el && el.dataset.loadedLogo !== logo) {
+        const initials = evName.replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || 'LU';
+        const img = new Image();
+        img.alt = '';
+        img.onload = () => {
+          el.dataset.loadedLogo = logo;
+          el.classList.add('photo');
+          el.replaceChildren(img);
+        };
+        img.onerror = () => {
+          el.dataset.loadedLogo = logo;
+          el.classList.remove('photo');
+          el.textContent = initials;
+        };
+        img.src = logo;
+      }
+    }
+
     async function refreshPublic() {
       if (refreshing || route().tab === 'admin') return;
       refreshing = true;
@@ -1325,13 +1539,7 @@
         if (!Array.isArray(next?.teams) || !Array.isArray(next?.fixtures)) throw Error('Invalid snapshot');
         let sig = JSON.stringify([next.teams, next.players, next.fixtures, next.branding, next.siteMeta]), changed = sig !== priorSignature || failed;
         Object.assign(state, next); loaded = true; failed = false; priorSignature = sig;
-        let logo = next.branding?.logo || './assets/event-logo.png', el = document.getElementById('brand-icon');
-        if (!el.querySelector('img') && el.dataset.failed !== logo) {
-          let img = new Image(); img.alt = '';
-          img.onload = () => { el.classList.add('photo'); el.replaceChildren(img); };
-          img.onerror = () => { el.dataset.failed = logo; el.classList.remove('photo'); };
-          img.src = logo;
-        }
+        applyBrandingUI(next.branding);
         if (changed) renderPublic();
       } catch { if (!failed) { failed = true; renderPublic(); } }
       finally { refreshing = false; }
@@ -1374,12 +1582,15 @@
     }
 
     function renderAdmin() {
+      applyBrandingUI(adminData?.branding || {});
       account.innerHTML = '';
       if (adminData.role !== 'admin' && adminData.role !== 'manager') { authAdmin(); return; }
       account.innerHTML = '<div class="account"><span class="pill">' + (adminData.role === 'admin' ? 'Main administrator' : 'Event manager') + '</span>' + admBtn('Sign out', 'logout') + '</div>';
       if (view === 'new' || view === 'details') { fixtureForm(); return; }
       if (view === 'access') { accessAdmin(); return; }
       if (view === 'siteMeta') { siteMetaAdmin(); return; }
+      if (view === 'teams') { teamsAdmin(); return; }
+      if (view === 'players') { playersAdmin(); return; }
       if (view === 'score' || view === 'awards') { if (!current()) { view = 'fixtures'; renderAdmin(); return; } editorAdmin(); return; }
       listingAdmin();
     }
@@ -1393,7 +1604,7 @@
       let fixtures = [...adminData.fixtures].filter(f => adminData.role === 'admin' || !adminData.assigned.length || adminData.assigned.includes(f.id)).sort((a, b) => (a.details.startTime || '').localeCompare(b.details.startTime || ''));
       app.innerHTML = '<section class="panel"><div class="bar"><h2>Fixtures & events</h2><div class="actions">' +
         (allowed('schedule') ? admBtn('+ Add fixture', 'new', 'accent') : '') +
-        (adminData.role === 'admin' ? admBtn('Site info & notices', 'siteMeta') + admBtn('Managers', 'access') : '') +
+        (adminData.role === 'admin' ? admBtn('Teams & Logos', 'teams') + admBtn('Players', 'players') + admBtn('Event & Notices', 'siteMeta') + admBtn('Managers', 'access') : '') +
         admBtn('Refresh', 'refresh') +
         '</div></div>' + (fixtures.length ? fixtures.map(f => {
           let d = f.details, s = f.score.status || 'scheduled';
@@ -1664,10 +1875,23 @@
     function siteMetaAdmin() {
       if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
       const meta = adminData.siteMeta || { announcements: [], committee: [], contacts: [] };
+      const br = adminData.branding || {};
       app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
         `<form class="panel" id="siteMetaForm">
-          <h2>Announcements, Committee &amp; Contact</h2>
-          <p class="hint">Updates here appear immediately in the public Home screen and Slide Menu pages.</p>
+          <h2>Event Branding, Notices &amp; Contact</h2>
+          <p class="hint">Edit the event name, logo, announcements, sports committee, and call directory.</p>
+          <fieldset class="spaced"><legend>Event Name &amp; Logo</legend>
+            <div class="fields">
+              <label class="field">Event Title<input name="eventName" value="${esc(br.name || 'LEVEL UP ’26')}" placeholder="e.g. LEVEL UP ’26" required></label>
+              <label class="field">Header Subtitle<input name="eventSubtitle" value="${esc(br.subtitle || 'Sports & games gala')}" placeholder="e.g. Sports & games gala"></label>
+              <label class="field">Hero Banner Kicker<input name="eventCollege" value="${esc(br.college || 'Markaz Wafy Games Gala · 2026')}" placeholder="e.g. Markaz Wafy Games Gala · 2026"></label>
+              <label class="field">Event Logo URL (or upload below)<input name="eventLogoUrl" value="${esc(br.logo || '')}" placeholder="https://... or leave blank after upload"></label>
+              <label class="field full">Upload Event Logo Image (PNG / JPG / WebP)
+                <input type="file" id="eventLogoFile" accept="image/*">
+              </label>
+            </div>
+            ${br.logo ? `<div style="display:flex;align-items:center;gap:12px;margin-top:6px"><img src="${esc(br.logo)}" alt="Event Logo" style="width:48px;height:48px;object-fit:contain;border-radius:8px;background:#142b22;padding:4px"><span class="hint" style="margin:0">Current event logo preview</span></div>` : ''}
+          </fieldset>
           <fieldset class="spaced"><legend>Announcements</legend>
             <div id="annRows">${(meta.announcements || []).map(a => `<div class="fields" style="border-bottom:1px solid #d6ded5;padding-bottom:10px"><label class="field">Title<input name="annTitle" value="${esc(a.title)}"></label><label class="field">Details<input name="annBody" value="${esc(a.body || '')}"></label></div>`).join('')}</div>
             ${admBtn('+ Add announcement', 'addAnnRow')}
@@ -1687,6 +1911,110 @@
           </fieldset>
           <div class="actions spaced"><button class="primary">Publish Site Info</button></div>
         </form>`;
+    }
+
+
+    let editingTeamId = '';
+    function teamsAdmin() {
+      if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
+      const editT = editingTeamId ? adminData.teams.find(t => t.id === editingTeamId) : null;
+      app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
+        `<section class="panel">
+          <h2>${editT ? 'Edit Team: ' + esc(editT.name) : 'Add New Team'}</h2>
+          <p class="hint">Upload a logo directly from your device or paste an image URL, and customize team names and accent colors.</p>
+          <form id="teamManageForm">
+            <input type="hidden" name="teamId" value="${esc(editT?.id || '')}">
+            <div class="fields">
+              <label class="field">Team Name<input name="teamName" value="${esc(editT?.name || '')}" required placeholder="e.g. Royal Strikers"></label>
+              <label class="field">Team Accent Color<input name="teamColor" type="color" value="${esc(editT?.color || '#c2f568')}" style="height:42px;padding:3px"></label>
+              <label class="field">Logo Image URL (Optional)<input name="teamLogoUrl" value="${esc(editT?.logo || '')}" placeholder="https://..."></label>
+              <label class="field">Upload Team Logo (PNG / JPG / WebP)<input type="file" id="teamLogoFile" accept="image/*"></label>
+            </div>
+            ${editT?.logo ? `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><img src="${esc(editT.logo)}" alt="" style="width:44px;height:44px;object-fit:contain;border-radius:8px;background:#142b22;padding:4px"><span class="hint" style="margin:0">Current logo</span></div>` : ''}
+            <div class="actions">
+              <button class="primary">${editT ? 'Save Team Changes' : '+ Add Team'}</button>
+              ${editT ? admBtn('Cancel Edit', 'cancelEditTeam') : ''}
+            </div>
+          </form>
+        </section>
+        <section class="panel">
+          <h2>All Competing Teams (${adminData.teams.length})</h2>
+          <div>
+            ${adminData.teams.length ? adminData.teams.map(t => {
+              const count = adminData.players.filter(p => p.teamId === t.id).length;
+              return `<article class="item">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="width:42px;height:42px;border-radius:10px;background:#142b22;color:#c4f66a;display:grid;place-items:center;font-weight:800;overflow:hidden;border:2px solid ${esc(t.color || '#9dbd75')}">
+                    ${t.logo ? `<img src="${esc(t.logo)}" alt="" style="width:100%;height:100%;object-fit:contain;padding:2px">` : esc((t.name || '?').slice(0, 2).toUpperCase())}
+                  </span>
+                  <div>
+                    <strong>${esc(t.name)}</strong>
+                    <span class="meta">${count} ${count === 1 ? 'player' : 'players'}</span>
+                  </div>
+                </div>
+                <div class="actions" data-team-id="${esc(t.id)}">
+                  ${admBtn('Edit / Logo', 'editTeam')}
+                  ${admBtn('Delete', 'deleteTeam', 'danger')}
+                </div>
+              </article>`;
+            }).join('') : '<p class="hint">No teams available yet.</p>'}
+          </div>
+        </section>`;
+    }
+
+    let editingPlayerId = '', playerFilterTeam = 'all';
+    function playersAdmin() {
+      if (adminData.role !== 'admin') { navigateAdmin('fixtures'); return; }
+      const editP = editingPlayerId ? adminData.players.find(p => p.id === editingPlayerId) : null;
+      const teamOpts = adminData.teams.map(t => [t.id, t.name]);
+      const filteredPlayers = adminData.players
+        .filter(p => playerFilterTeam === 'all' || p.teamId === playerFilterTeam)
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      app.innerHTML = admBtn('← Back to fixtures', 'fixtures', 'back') +
+        `<section class="panel">
+          <h2>${editP ? 'Edit Player: ' + esc(editP.name) : 'Add Player'}</h2>
+          <form id="playerManageForm">
+            <input type="hidden" name="playerId" value="${esc(editP?.id || '')}">
+            <div class="fields">
+              <label class="field">Player Name<input name="playerName" value="${esc(editP?.name || '')}" required placeholder="e.g. Muhammed Shameel"></label>
+              <label class="field">Assigned Team<select name="playerTeamId" required>${admOpts(teamOpts, editP?.teamId || (playerFilterTeam !== 'all' ? playerFilterTeam : ''), 'Select team')}</select></label>
+            </div>
+            <div class="actions">
+              <button class="primary">${editP ? 'Save Player' : '+ Add Player'}</button>
+              ${editP ? admBtn('Cancel Edit', 'cancelEditPlayer') : ''}
+            </div>
+          </form>
+        </section>
+        <section class="panel">
+          <div class="bar">
+            <h2>All Players (${filteredPlayers.length})</h2>
+            <select id="adminPlayerTeamFilter" style="min-width:170px">
+              <option value="all" ${playerFilterTeam === 'all' ? 'selected' : ''}>All Teams (${adminData.players.length})</option>
+              ${adminData.teams.map(t => `<option value="${esc(t.id)}" ${playerFilterTeam === t.id ? 'selected' : ''}>${esc(t.name)} (${adminData.players.filter(p => p.teamId === t.id).length})</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            ${filteredPlayers.length ? filteredPlayers.map(p => `<article class="item">
+              <div>
+                <strong>${esc(p.name)}</strong>
+                <span class="meta">${esc(teamName(p.teamId))}</span>
+              </div>
+              <div class="actions" data-player-id="${esc(p.id)}">
+                ${admBtn('Edit', 'editPlayer')}
+                ${admBtn('Delete', 'deletePlayer', 'danger')}
+              </div>
+            </article>`).join('') : '<p class="hint">No players found in this view.</p>'}
+          </div>
+        </section>`;
+
+      const filterSel = app.querySelector('#adminPlayerTeamFilter');
+      if (filterSel) {
+        filterSel.onchange = () => {
+          playerFilterTeam = filterSel.value;
+          playersAdmin();
+        };
+      }
     }
 
     function accessAdmin() {
@@ -1709,7 +2037,46 @@
     async function onAdminClick(event) {
       const b = event.target.closest('[data-action]'); if (!b) return;
       const action = b.dataset.action, id = b.closest('[data-id]')?.dataset.id;
-      if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta'].includes(action)) { navigateAdmin(action, id); return; }
+      if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players'].includes(action)) {
+        if (action === 'teams') editingTeamId = '';
+        if (action === 'players') editingPlayerId = '';
+        navigateAdmin(action, id);
+        return;
+      }
+      if (action === 'editTeam') { editingTeamId = b.closest('[data-team-id]').dataset.teamId; teamsAdmin(); window.scrollTo(0, 0); return; }
+      if (action === 'cancelEditTeam') { editingTeamId = ''; teamsAdmin(); return; }
+      if (action === 'deleteTeam') {
+        const tid = b.closest('[data-team-id]').dataset.teamId;
+        const tObj = adminData.teams.find(t => t.id === tid);
+        if (!confirm('Delete team "' + (tObj?.name || 'Team') + '" and hide its players?')) return;
+        await runAdmin(async () => {
+          const meta = { ...adminData.siteMeta };
+          meta.deletedTeamIds = [...new Set([...(meta.deletedTeamIds || []), tid])];
+          meta.addedTeams = (meta.addedTeams || []).filter(t => t.id !== tid);
+          if (editingTeamId === tid) editingTeamId = '';
+          await saveSiteMeta(meta);
+          await reloadAdmin();
+          statusMsg('Team deleted.');
+        });
+        return;
+      }
+      if (action === 'editPlayer') { editingPlayerId = b.closest('[data-player-id]').dataset.playerId; playersAdmin(); window.scrollTo(0, 0); return; }
+      if (action === 'cancelEditPlayer') { editingPlayerId = ''; playersAdmin(); return; }
+      if (action === 'deletePlayer') {
+        const pid = b.closest('[data-player-id]').dataset.playerId;
+        const pObj = adminData.players.find(p => p.id === pid);
+        if (!confirm('Delete player "' + (pObj?.name || 'Player') + '"?')) return;
+        await runAdmin(async () => {
+          const meta = { ...adminData.siteMeta };
+          meta.deletedPlayerIds = [...new Set([...(meta.deletedPlayerIds || []), pid])];
+          meta.addedPlayers = (meta.addedPlayers || []).filter(p => p.id !== pid);
+          if (editingPlayerId === pid) editingPlayerId = '';
+          await saveSiteMeta(meta);
+          await reloadAdmin();
+          statusMsg('Player deleted.');
+        });
+        return;
+      }
       if (action === 'toggleAuth') { authMode = authMode === 'login' ? 'register' : 'login'; statusMsg(); authAdmin(); return; }
       if (action === 'addAward') { addAward({}); return; }
       if (action === 'removeAward') { b.closest('.award-row').remove(); return; }
@@ -1737,7 +2104,7 @@
     account.addEventListener('click', onAdminClick);
     app.addEventListener('submit', event => {
       const form = event.target;
-      if (!['fixture', 'auth', 'award', 'manager', 'siteMetaForm'].includes(form.id)) return;
+      if (!['fixture', 'auth', 'award', 'manager', 'siteMetaForm', 'teamManageForm', 'playerManageForm'].includes(form.id)) return;
       event.preventDefault();
       runAdmin(async () => {
         if (form.id === 'auth') {
@@ -1764,15 +2131,78 @@
         }
         if (form.id === 'siteMetaForm') {
           const fd = new FormData(form);
+          const fileInput = form.querySelector('#eventLogoFile');
+          const uploadedLogo = fileInput?.files?.[0] ? await fileToCompressedDataUrl(fileInput.files[0], 240) : '';
+          const logoVal = uploadedLogo || String(fd.get('eventLogoUrl') || '').trim();
+          const eventBranding = {
+            name: String(fd.get('eventName') || '').trim() || 'LEVEL UP ’26',
+            subtitle: String(fd.get('eventSubtitle') || '').trim(),
+            college: String(fd.get('eventCollege') || '').trim(),
+            logo: logoVal
+          };
           const titles = fd.getAll('annTitle'), bodies = fd.getAll('annBody');
           const announcements = titles.map((t, i) => ({ title: String(t).trim(), body: String(bodies[i] || '').trim() })).filter(a => a.title);
           const names = fd.getAll('commName'), roles = fd.getAll('commRole');
           const committee = names.map((n, i) => ({ name: String(n).trim(), role: String(roles[i] || '').trim() })).filter(c => c.name);
           const cNames = fd.getAll('contactName'), cRoles = fd.getAll('contactRole'), cPhones = fd.getAll('contactPhone');
           const contacts = cNames.map((n, i) => ({ name: String(n).trim(), role: String(cRoles[i] || '').trim(), phone: String(cPhones[i] || '').trim() })).filter(c => c.name || c.phone);
-          const ver = adminData.metaRecord?.version || 0;
-          await save(META_ID, ver, 'details', { isSiteMeta: true, name: 'System Site Info', venue: 'Control Desk', sport: 'custom', format: 'team', startTime: '2099-01-01T00:00:00.000Z', siteMeta: { announcements, committee, contacts } });
-          view = 'fixtures'; await reloadAdmin(); statusMsg('Site announcements & contact directory published.');
+
+          const nextMeta = { ...adminData.siteMeta, eventBranding, announcements, committee, contacts };
+          await saveSiteMeta(nextMeta);
+          view = 'fixtures'; await reloadAdmin(); statusMsg('Event branding, announcements & contact published.');
+          return;
+        }
+        if (form.id === 'teamManageForm') {
+          const fd = new FormData(form);
+          const tid = String(fd.get('teamId') || '').trim();
+          const name = String(fd.get('teamName') || '').trim();
+          const color = String(fd.get('teamColor') || '#c2f568').trim();
+          if (!name) throw Error('Enter a team name.');
+          const fileInput = form.querySelector('#teamLogoFile');
+          const uploadedLogo = fileInput?.files?.[0] ? await fileToCompressedDataUrl(fileInput.files[0], 220) : '';
+          const logo = uploadedLogo || String(fd.get('teamLogoUrl') || '').trim();
+
+          const meta = { ...adminData.siteMeta };
+          if (tid) {
+            const isAdded = (meta.addedTeams || []).some(t => t.id === tid);
+            if (isAdded) {
+              meta.addedTeams = meta.addedTeams.map(t => t.id === tid ? { ...t, name, color, logo } : t);
+            } else {
+              meta.teamOverrides = { ...(meta.teamOverrides || {}), [tid]: { name, color, logo } };
+            }
+          } else {
+            const newTeam = { id: crypto.randomUUID(), name, color, logo };
+            meta.addedTeams = [...(meta.addedTeams || []), newTeam];
+          }
+          editingTeamId = '';
+          await saveSiteMeta(meta);
+          await reloadAdmin();
+          statusMsg(tid ? 'Team updated.' : 'New team added.');
+          return;
+        }
+        if (form.id === 'playerManageForm') {
+          const fd = new FormData(form);
+          const pid = String(fd.get('playerId') || '').trim();
+          const name = String(fd.get('playerName') || '').trim();
+          const teamId = String(fd.get('playerTeamId') || '').trim();
+          if (!name || !teamId) throw Error('Enter player name and select a team.');
+
+          const meta = { ...adminData.siteMeta };
+          if (pid) {
+            const isAdded = (meta.addedPlayers || []).some(p => p.id === pid);
+            if (isAdded) {
+              meta.addedPlayers = meta.addedPlayers.map(p => p.id === pid ? { ...p, name, teamId } : p);
+            } else {
+              meta.playerOverrides = { ...(meta.playerOverrides || {}), [pid]: { name, teamId } };
+            }
+          } else {
+            const newPlayer = { id: crypto.randomUUID(), name, teamId };
+            meta.addedPlayers = [...(meta.addedPlayers || []), newPlayer];
+          }
+          editingPlayerId = '';
+          await saveSiteMeta(meta);
+          await reloadAdmin();
+          statusMsg(pid ? 'Player updated.' : 'New player added.');
           return;
         }
         if (form.id === 'manager') {
