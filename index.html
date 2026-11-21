@@ -484,6 +484,29 @@
     .adm-team-roster-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 5px; margin-bottom: 6px; border-bottom: 1px solid #e5ece4; font-weight: 700; font-size: 13px; }
     .adm-team-roster-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 10px; }
 
+    /* Arm Wrestling 4-Box Bracket & Team Scoreboard */
+    .sc-arm-boxes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+    .sc-arm-box { border: 1.5px solid #cbd7cb; border-radius: 11px; padding: 11px 12px; background: #f8faf7; display: grid; gap: 8px; }
+    .sc-arm-box.decided { border-color: #79b048; background: #f1f9ea; }
+    .sc-arm-box-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: #4d6152; }
+    .sc-arm-fighter { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 9px; border-radius: 8px; background: white; border: 1px solid #d6ded5; }
+    .sc-arm-fighter.winner { border-color: #639c36; background: #e3f5d4; }
+    .sc-arm-fighter-info { min-width: 0; }
+    .sc-arm-fighter-info b { display: block; font-size: 13.5px; color: #192820; }
+    .sc-arm-fighter-info small { display: block; font-size: 11px; color: #55675c; font-weight: 600; }
+    .sc-arm-team-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .sc-arm-team-pill { background: #17251f; color: white; border-radius: 10px; padding: 9px 11px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sc-arm-team-pill strong { font: 800 22px/1 var(--title); color: #c4f66a; }
+    .pub-arm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 8px; }
+    .pub-arm-box { padding: 11px 12px; border-radius: 12px; background: #1a261f; border: 1px solid var(--line); display: grid; gap: 7px; }
+    .pub-arm-box.live-box { border-color: rgba(194, 245, 104, .45); }
+    .pub-arm-box.done-box { border-color: #4f7a49; background: #1c2c22; }
+    .pub-arm-fighter { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 8px; border-radius: 8px; background: #131c17; border: 1px solid #26332a; }
+    .pub-arm-fighter.win { border-color: var(--lime); background: rgba(194, 245, 104, .12); }
+    .pub-arm-team-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 10px 0 14px; }
+    .pub-arm-team-card { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 11px; border-radius: 10px; background: #1a261f; border: 1px solid var(--line); }
+    .pub-arm-team-card strong { font: 800 22px/1 var(--title); color: var(--lime); }
+
     @media (max-width: 650px) {
       #admin-shell .header-inner, #admin-shell main { padding-left: 14px; padding-right: 14px; }
       #admin-shell .intro { align-items: flex-start; }
@@ -491,7 +514,7 @@
       #admin-shell .fields, #admin-shell .two, #admin-shell .fields-3 { grid-template-columns: 1fr; }
       #admin-shell .award-row { grid-template-columns: 1fr 1fr; }
       #admin-shell .bar, #admin-shell .item { flex-wrap: wrap; }
-      .sc-grid { grid-template-columns: 1fr; }
+      .sc-grid, .sc-arm-boxes, .pub-arm-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -899,6 +922,25 @@
           case 'bout_remove':
             score.bouts = score.bouts.filter(x => x.id !== e.boutId || x.winner);
             break;
+          case 'arm_boxes_set': {
+            score.armBoxes = Array.isArray(e.boxes) ? e.boxes.map(box => ({
+              id: box.id,
+              stage: box.stage || 'Quarter-Final',
+              label: box.label || 'Match',
+              playerAId: box.playerAId || '',
+              playerBId: box.playerBId || '',
+              winnerSlot: box.winnerSlot || ''
+            })) : [];
+            break;
+          }
+          case 'arm_box_win': {
+            if (!Array.isArray(score.armBoxes)) score.armBoxes = [];
+            const box = score.armBoxes.find(x => x.id === e.boxId);
+            if (box) {
+              box.winnerSlot = e.slot || '';
+            }
+            break;
+          }
           case 'correct':
             score.home = e.home; score.away = e.away;
             if (Array.isArray(e.sets)) {
@@ -988,6 +1030,14 @@
             break;
           case 'bout_remove':
             check(sport === 'armwrestling' && !individual, 'Bouts are for arm wrestling events.');
+            break;
+          case 'arm_boxes_set':
+            check(sport === 'armwrestling', 'Match boxes are for arm wrestling events.');
+            check(Array.isArray(e.boxes), 'Invalid match boxes.');
+            break;
+          case 'arm_box_win':
+            check(sport === 'armwrestling', 'Match boxes are for arm wrestling events.');
+            check(e.boxId && ['A', 'B', ''].includes(e.slot), 'Invalid bout winner selection.');
             break;
           case 'point': check(!individual && (sport === 'custom' || sport === 'armwrestling'), 'Choose a team event.'); break;
           case 'correct': check(!individual && (!s.winner || isSetSport(sport)), 'Undo the last action to edit a completed match.'); check(integer(e.home) && integer(e.away), 'Scores must be whole numbers.'); if (isSetSport(sport)) e.rules = setRules(details); break;
@@ -1085,6 +1135,62 @@
       return { entries, teamSummary };
     }
 
+    function createDefaultArmBoxes(details, allPlayers) {
+      if (Array.isArray(details.initialArmBoxes) && details.initialArmBoxes.length) {
+        return details.initialArmBoxes.map((b, i) => ({
+          id: b.id || ('qf-' + (i + 1)),
+          stage: b.stage || 'Quarter-Final',
+          label: b.label || ('Match ' + (i + 1)),
+          playerAId: b.playerAId || '',
+          playerBId: b.playerBId || '',
+          winnerSlot: ''
+        }));
+      }
+      const selected = (details.playerIds || []).map(pid => allPlayers.find(p => p.id === pid)).filter(Boolean);
+      const tIds = (details.teamIds && details.teamIds.length)
+        ? details.teamIds
+        : [...new Set(selected.map(p => p.teamId))];
+      const buckets = tIds.map(tid => selected.filter(p => p.teamId === tid));
+      const p = (tIdx, slotIdx) => buckets[tIdx]?.[slotIdx]?.id || '';
+      return [
+        { id: 'qf-1', stage: 'Quarter-Final', label: 'Match 1', playerAId: p(0, 0), playerBId: p(1, 0), winnerSlot: '' },
+        { id: 'qf-2', stage: 'Quarter-Final', label: 'Match 2', playerAId: p(2, 0), playerBId: p(3, 0), winnerSlot: '' },
+        { id: 'qf-3', stage: 'Quarter-Final', label: 'Match 3', playerAId: p(0, 1), playerBId: p(2, 1), winnerSlot: '' },
+        { id: 'qf-4', stage: 'Quarter-Final', label: 'Match 4', playerAId: p(1, 1), playerBId: p(3, 1), winnerSlot: '' }
+      ];
+    }
+
+    function getArmWrestlingState(details, scoreObj, allTeams, allPlayers) {
+      const boxes = Array.isArray(scoreObj.armBoxes) && scoreObj.armBoxes.length
+        ? scoreObj.armBoxes
+        : createDefaultArmBoxes(details, allPlayers);
+      const playerMap = new Map(allPlayers.map(p => [p.id, p]));
+      const teamMap = new Map(allTeams.map(t => [t.id, t]));
+      const registeredPlayers = (details.playerIds || []).map(id => playerMap.get(id)).filter(Boolean);
+      const teamIds = [...new Set([
+        ...(details.teamIds || []),
+        ...registeredPlayers.map(p => p.teamId),
+        ...boxes.flatMap(b => [playerMap.get(b.playerAId)?.teamId, playerMap.get(b.playerBId)?.teamId])
+      ])].filter(id => teamMap.has(id));
+
+      const boutPoints = new Map(teamIds.map(id => [id, 0]));
+      for (const box of boxes) {
+        const winPid = box.winnerSlot === 'A' ? box.playerAId : box.winnerSlot === 'B' ? box.playerBId : '';
+        const winTid = winPid ? playerMap.get(winPid)?.teamId : '';
+        if (winTid) boutPoints.set(winTid, (boutPoints.get(winTid) || 0) + 1);
+      }
+
+      const teamStandings = teamIds
+        .map(id => ({ team: teamMap.get(id), points: boutPoints.get(id) || 0 }))
+        .sort((a, b) => b.points - a.points || a.team.name.localeCompare(b.team.name));
+
+      const qfBoxes = boxes.filter(b => b.stage === 'Quarter-Final');
+      const sfBoxes = boxes.filter(b => b.stage === 'Semi-Final');
+      const finalBoxes = boxes.filter(b => b.stage === 'Final');
+
+      return { boxes, qfBoxes, sfBoxes, finalBoxes, teamStandings, registeredPlayers, teamIds };
+    }
+
     function node(tag, title, className) { const el = document.createElement(tag); if (title != null) el.textContent = title; if (className) el.className = className; return el; }
     function scSelect(items) { const el = node('select'); for (const [v, t] of items) el.add(new Option(t, v)); return el; }
     function numeric(value, min = 0, max = null) { const el = node('input'); el.type = 'number'; el.value = value; el.min = min; if (max != null) el.max = max; return el; }
@@ -1110,7 +1216,7 @@
       function button(label, run, style = '') { const b = node('button', label, 'sc-btn ' + style); b.type = 'button'; b.addEventListener('click', run); return b; }
       function section(name) { const box = node('div', null, 'sc-box'); box.append(node('h4', name)); panel.append(box); return box; }
       const statusLabel = score.status === 'live' ? score.period || 'Live' : score.status === 'finished' ? 'Final result' : 'Scheduled';
-      if (!individual) {
+      if (!individual && d.sport !== 'armwrestling') {
         const board = node('div', null, 'sc-board');
         for (const side of sides) {
           const col = node('div');
@@ -1118,7 +1224,6 @@
           col.append(node('span', team(side) + serveTag), node('strong', String(score[side])));
           if (d.sport === 'volleyball') col.append(node('small', score.setsWon[side] + ' sets · ' + (score.timeouts[side] || 0) + '/2 TO'));
           if (d.sport === 'badminton') col.append(node('small', score.setsWon[side] + ' sets won'));
-          if (d.sport === 'armwrestling') col.append(node('small', 'Bout pre-points'));
           board.append(col);
         }
         panel.append(board, node('p', statusLabel, 'sc-period'));
@@ -1415,40 +1520,160 @@
             bGrid.append(srvWrap);
             box.append(bGrid);
           }
-        } else if (!individual && d.sport === 'armwrestling') {
-          const box = section('Arm Wrestling · Bouts & Rounds (+1 Pre-Point per Bout)');
-          const hRoster = (data.players || []).filter(p => p.teamId === d.homeId);
-          const aRoster = (data.players || []).filter(p => p.teamId === d.awayId);
-          const roundInp = node('input'); roundInp.type = 'text'; roundInp.value = 'Round ' + (score.bouts.length + 1); roundInp.placeholder = 'e.g. Round 1 / 70kg';
-          const hPick = scSelect([['', 'Select ' + team('home') + ' player'], ...hRoster.map(p => [p.id, p.name])]);
-          const aPick = scSelect([['', 'Select ' + team('away') + ' player'], ...aRoster.map(p => [p.id, p.name])]);
-          const addGrid = node('div', null, 'sc-grid');
-          addGrid.append(scField('Round / Category Label', roundInp), node('div'), scField(team('home') + ' Participant', hPick), scField(team('away') + ' Participant', aPick));
-          box.append(addGrid);
-          box.append(button('+ Add Bout Pairing', () => {
-            const bId = crypto.randomUUID();
-            submit({ kind: 'bout_add', boutId: bId, round: roundInp.value.trim() || ('Round ' + (score.bouts.length + 1)), homePlayerId: hPick.value, awayPlayerId: aPick.value, label: 'Bout added · ' + player(hPick.value) + ' vs ' + player(aPick.value) });
-          }, 'sc-primary'));
+        } else if (d.sport === 'armwrestling') {
+          const arm = getArmWrestlingState(d, score, data.teams || [], data.players || []);
+          const allBoxes = arm.boxes.map(b => ({ ...b }));
+          const eligiblePlayers = arm.registeredPlayers.length
+            ? arm.registeredPlayers
+            : (data.players || []).filter(p => !arm.teamIds.length || arm.teamIds.includes(p.teamId));
 
-          if (score.bouts.length) {
-            const listWrap = node('div'); listWrap.style.marginTop = '12px';
-            for (const b of score.bouts) {
-              const row = node('div', null, 'sc-bout-item ' + (b.winner ? 'done' : ''));
-              const info = node('div');
-              info.innerHTML = `<small style="color:#55675c;font-weight:700;text-transform:uppercase">${esc(b.round)}</small><div><strong>${esc(player(b.homePlayerId))}</strong> (${esc(team('home'))}) vs <strong>${esc(player(b.awayPlayerId))}</strong> (${esc(team('away'))})</div>`;
-              const ctrl = node('div', null, 'sc-row');
-              if (b.winner) {
-                ctrl.append(node('span', 'Winner: ' + player(b.winner === 'home' ? b.homePlayerId : b.awayPlayerId) + ' (+1 ' + team(b.winner) + ')', 'sc-state live'));
-              } else {
-                ctrl.append(button('Win: ' + player(b.homePlayerId), () => submit({ kind: 'bout_win', boutId: b.id, side: 'home', playerId: b.homePlayerId, label: b.round + ' won by ' + player(b.homePlayerId) + ' (+1 ' + team('home') + ')' }), 'sc-primary'));
-                ctrl.append(button('Win: ' + player(b.awayPlayerId), () => submit({ kind: 'bout_win', boutId: b.id, side: 'away', playerId: b.awayPlayerId, label: b.round + ' won by ' + player(b.awayPlayerId) + ' (+1 ' + team('away') + ')' }), 'sc-primary'));
-                ctrl.append(button('Remove', () => submit({ kind: 'bout_remove', boutId: b.id, label: 'Bout removed' }), 'sc-stop'));
-              }
-              row.append(info, ctrl);
-              listWrap.append(row);
-            }
-            box.append(listWrap);
+          const teamBar = node('div', null, 'sc-arm-team-bar');
+          for (const ts of arm.teamStandings) {
+            const pill = node('div', null, 'sc-arm-team-pill');
+            pill.innerHTML = `<div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#9ea99c">Bout Points</div><div style="font-weight:700;font-size:14px">${esc(ts.team.name)}</div></div><strong>${ts.points}</strong>`;
+            teamBar.append(pill);
           }
+          if (arm.teamStandings.length) panel.append(teamBar);
+
+          const saveBoxes = (nextBoxes, lbl) => submit({ kind: 'arm_boxes_set', boxes: nextBoxes, label: lbl });
+
+          const renderStageSection = (stageTitle, stageKey, stageList, allowPairEdit = true) => {
+            const sec = section(stageTitle);
+            const grid = node('div', null, 'sc-arm-boxes');
+
+            stageList.forEach(box => {
+              const pA = players.get(box.playerAId);
+              const pB = players.get(box.playerBId);
+              const card = node('div', null, 'sc-arm-box ' + (box.winnerSlot ? 'decided' : ''));
+              const head = node('div', null, 'sc-arm-box-head');
+              head.append(
+                node('span', box.label),
+                node('span', box.winnerSlot ? 'Winner Decided' : 'Ready')
+              );
+              card.append(head);
+
+              if (allowPairEdit && !box.winnerSlot) {
+                const optsA = [['', 'Select Player 1…'], ...eligiblePlayers
+                  .filter(p => !pB || p.teamId !== pB.teamId)
+                  .map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])];
+                const optsB = [['', 'Select Player 2 (Different Team)…'], ...eligiblePlayers
+                  .filter(p => !pA || p.teamId !== pA.teamId)
+                  .map(p => [p.id, `${p.name} (${teamById(p.teamId)})`])];
+
+                const selA = scSelect(optsA);
+                selA.value = box.playerAId || '';
+                selA.style.width = '100%';
+                selA.style.minHeight = '36px';
+                selA.style.padding = '5px 8px';
+                selA.style.borderRadius = '7px';
+                selA.style.border = '1px solid #b8c7bb';
+
+                const selB = scSelect(optsB);
+                selB.value = box.playerBId || '';
+                selB.style.width = '100%';
+                selB.style.minHeight = '36px';
+                selB.style.padding = '5px 8px';
+                selB.style.border = '1px solid #b8c7bb';
+
+                selA.onchange = () => {
+                  const next = allBoxes.map(x => x.id === box.id ? { ...x, playerAId: selA.value } : x);
+                  saveBoxes(next, `${box.label} pairing updated`);
+                };
+                selB.onchange = () => {
+                  const next = allBoxes.map(x => x.id === box.id ? { ...x, playerBId: selB.value } : x);
+                  saveBoxes(next, `${box.label} pairing updated`);
+                };
+                card.append(selA, selB);
+              }
+
+              for (const [slot, pObj] of [['A', pA], ['B', pB]]) {
+                const isWin = box.winnerSlot === slot;
+                const fRow = node('div', null, 'sc-arm-fighter ' + (isWin ? 'winner' : ''));
+                const fInfo = node('div', null, 'sc-arm-fighter-info');
+                fInfo.innerHTML = pObj
+                  ? `<b>${esc(pObj.name)}</b><small>${esc(teamById(pObj.teamId))}</small>`
+                  : `<b style="color:#7c8c80">Unassigned</b><small>Pick player above</small>`;
+                fRow.append(fInfo);
+
+                if (pObj && pA && pB) {
+                  if (isWin) {
+                    const winGroup = node('div', null, 'sc-row');
+                    const badge = node('span', '🏆 WON (+1)', 'sc-state live');
+                    badge.style.fontSize = '11px';
+                    const undoBtn = button('Undo', () => submit({ kind: 'arm_box_win', boxId: box.id, slot: '', label: `${box.label} winner cleared` }));
+                    undoBtn.style.minHeight = '30px';
+                    undoBtn.style.padding = '2px 8px';
+                    undoBtn.style.fontSize = '12px';
+                    winGroup.append(badge, undoBtn);
+                    fRow.append(winGroup);
+                  } else if (!box.winnerSlot) {
+                    const wonBtn = button('Won', () => submit({
+                      kind: 'arm_box_win',
+                      boxId: box.id,
+                      slot,
+                      label: `${box.stage} · ${box.label}: ${pObj.name} (${teamById(pObj.teamId)}) won (+1 pt)`
+                    }), 'sc-primary');
+                    wonBtn.style.minHeight = '34px';
+                    wonBtn.style.padding = '4px 12px';
+                    fRow.append(wonBtn);
+                  }
+                }
+                card.append(fRow);
+              }
+              grid.append(card);
+            });
+            sec.append(grid);
+            return sec;
+          };
+
+          renderStageSection('Round 1 · Quarter-Finals (4 Match Boxes)', 'Quarter-Final', arm.qfBoxes, true);
+
+          // Progression buttons for Semi-Finals & Final
+          const progBox = section('Knockout Progression');
+          const progRow = node('div', null, 'sc-row');
+          const qfWinners = arm.qfBoxes.map(b => b.winnerSlot === 'A' ? b.playerAId : b.winnerSlot === 'B' ? b.playerBId : '').filter(Boolean);
+
+          if (arm.sfBoxes.length === 0) {
+            const genSfBtn = button(`Generate Semi-Finals (2 Boxes) · ${qfWinners.length}/4 Winners Ready`, () => {
+              check(qfWinners.length === 4, 'Finish all 4 Quarter-Final boxes first so all 4 winners can advance.');
+              const next = [
+                ...allBoxes,
+                { id: 'sf-1', stage: 'Semi-Final', label: 'Semi-Final 1', playerAId: qfWinners[0], playerBId: qfWinners[1], winnerSlot: '' },
+                { id: 'sf-2', stage: 'Semi-Final', label: 'Semi-Final 2', playerAId: qfWinners[2], playerBId: qfWinners[3], winnerSlot: '' }
+              ];
+              saveBoxes(next, 'Semi-Finals (2 Boxes) generated');
+            }, qfWinners.length === 4 ? 'sc-primary' : '');
+            progRow.append(genSfBtn);
+          }
+
+          if (arm.sfBoxes.length > 0) {
+            renderStageSection('Semi-Finals (2 Match Boxes)', 'Semi-Final', arm.sfBoxes, true);
+            const sfWinners = arm.sfBoxes.map(b => b.winnerSlot === 'A' ? b.playerAId : b.winnerSlot === 'B' ? b.playerBId : '').filter(Boolean);
+            if (arm.finalBoxes.length === 0) {
+              const genFinBtn = button(`Generate Championship Final (1 Box) · ${sfWinners.length}/2 Winners Ready`, () => {
+                check(sfWinners.length === 2, 'Finish both Semi-Final boxes first so the 2 finalists can advance.');
+                const next = [
+                  ...allBoxes,
+                  { id: 'final-1', stage: 'Final', label: 'Championship Final', playerAId: sfWinners[0], playerBId: sfWinners[1], winnerSlot: '' }
+                ];
+                saveBoxes(next, 'Championship Final box generated');
+              }, sfWinners.length === 2 ? 'sc-primary' : '');
+              progRow.append(genFinBtn);
+            }
+          }
+
+          if (arm.finalBoxes.length > 0) {
+            renderStageSection('Championship Final', 'Final', arm.finalBoxes, true);
+          }
+
+          if (arm.sfBoxes.length > 0 || arm.finalBoxes.length > 0) {
+            progRow.append(button('Reset Semi/Final Boxes', () => {
+              const qfOnly = allBoxes.filter(b => b.stage === 'Quarter-Final');
+              saveBoxes(qfOnly, 'Knockout Semi/Final boxes cleared');
+            }, 'sc-stop'));
+          }
+          if (progRow.children.length) progBox.append(progRow);
+          else progBox.remove();
         } else if (!individual) {
           const box = section('Add point');
           if (score.winner) box.append(node('p', team(score.winner) + ' won the match.'));
@@ -1472,7 +1697,7 @@
             box.append(scField('Team Score / Result Value', val), button('Save team result', () => submit({ kind: 'result', teamId: pick.value, value: val.valueAsNumber, label: teamById(pick.value) + ' · ' + val.value }), 'sc-primary'));
           }
         }
-        if (!individual) {
+        if (!individual && d.sport !== 'armwrestling') {
           const correction = node('details', null, 'sc-box'); correction.append(node('summary', 'Edit / Correct Score & Sets'));
           const h = numeric(score.home), a = numeric(score.away);
           correction.append(scField('Current ' + team('home'), h), scField('Current ' + team('away'), a));
@@ -1604,11 +1829,12 @@
         subNote = `<p class="hint">${tCount} ${tCount === 1 ? 'team' : 'teams'} · ${entries.length} contestants${fastest ? ` · Fastest: <b>${e(fastest.player.name)}</b> (${e(fastest.displayTime)})` : ''}</p>`;
       } else if (isSet && st(f) === 'live' && !s.winner) {
         subNote = `<p class="hint">Set ${(s.sets?.length || 0) + 1} · ${e(s.home ?? 0)} – ${e(s.away ?? 0)}${d.sport === 'badminton' ? ' · ' + e(team(s.server === 'away' ? d.awayId : d.homeId)?.name || '') + ' serving' : ''}</p>`;
-      } else if (d.sport === 'armwrestling' && hasScore) {
-        const doneBouts = (s.bouts || []).filter(b => b.winner).length;
-        subNote = `<p class="hint">${doneBouts} of ${(s.bouts || []).length} bouts completed · Bout pre-points</p>`;
+      } else if (d.sport === 'armwrestling') {
+        const arm = getArmWrestlingState(d, s, state.teams, state.players);
+        const doneCount = arm.boxes.filter(b => b.winnerSlot).length;
+        subNote = `<p class="hint">${arm.teamStandings.length} teams · ${doneCount} of ${arm.boxes.length} bouts completed</p>`;
       }
-      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? (d.sport === 'rubiks' ? '' : `<p class="hint">${tCount} ${tCount === 1 ? 'competing team' : 'competing teams'}</p>`) : rowTeam(team(d.homeId), hasScore ? (isSet ? s.setsWon?.home : s.home) ?? 0 : '', sideRosterSummary(d, 'home') + homeServe) + rowTeam(team(d.awayId), hasScore ? (isSet ? s.setsWon?.away : s.away) ?? 0 : '', sideRosterSummary(d, 'away') + awayServe)}${subNote}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
+      return `<a class="fixture" href="${fixtureLink(f)}"><div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span>${status(f)}</div><h3 class="fixture-title">${e(title(f))}</h3>${individual ? (d.sport === 'rubiks' || d.sport === 'armwrestling' ? '' : `<p class="hint">${tCount} ${tCount === 1 ? 'competing team' : 'competing teams'}</p>`) : rowTeam(team(d.homeId), hasScore ? (isSet ? s.setsWon?.home : s.home) ?? 0 : '', sideRosterSummary(d, 'home') + homeServe) + rowTeam(team(d.awayId), hasScore ? (isSet ? s.setsWon?.away : s.away) ?? 0 : '', sideRosterSummary(d, 'away') + awayServe)}${subNote}<div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.startTime ? ' · ' + e(day(d.startTime, fmtTime)) : ''}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div></a>`;
     }
     function pageHead(name, p) { return `<header class="page-head"><div><h1>${e(name)}</h1>${p ? `<p>${e(p)}</p>` : ''}</div></header>`; }
     function message() { return failed ? `<div role="status" class="notice">${loaded ? 'Live updates paused. Showing last available scores.' : 'Match centre could not load.'}<button class="seg" data-retry>Retry</button></div>` : ''; }
@@ -1852,7 +2078,7 @@
       let arenaHtml = (d.sport === 'football' || d.sport === 'volleyball') ? interactiveArena(d, s) : '', sets = s.sets || [];
       let publicTl = [...(s.timeline || [])].filter(x => {
         if (isSet) return ['rally', 'yellow', 'red', 'timeout'].includes(x.kind);
-        if (d.sport === 'armwrestling') return x.kind === 'bout_win';
+        if (d.sport === 'armwrestling') return x.kind === 'arm_box_win' && x.slot;
         if (d.sport === 'rubiks') return x.kind === 'solve_time' && !x.clear;
         return ['goal', 'yellow', 'red'].includes(x.kind);
       }).reverse();
@@ -1879,9 +2105,7 @@
               if (ent.solved) {
                 if (idx === 0 || !entries[idx - 1].solved || entries[idx - 1].timeSec !== ent.timeSec) rankCounter = idx + 1;
               }
-              const rankText = ent.solved ? `#${rankCounter}` : (ent.dnf ? '—' : '•');
-              const statusText = ent.solved ? ent.displayTime : (ent.dnf ? 'DNF' : (st(f) === 'live' ? 'Solving…' : 'Registered'));
-              const timeCls = ent.solved ? '' : (ent.dnf ? 'dnf' : 'pending');
+              const rankText = ent.solved ? '#' + rankCounter : ent.dnf ? 'DNF' : '—';
               return `<div class="rubiks-row ${ent.solved && rankCounter === 1 ? 'podium-1' : ''}">
                 <span class="rubiks-rank">${rankText}</span>
                 ${crest(ent.team)}
@@ -1889,37 +2113,61 @@
                   <b>${e(ent.player.name)}</b>
                   <small>${e(ent.team?.name || 'Team')}</small>
                 </div>
-                <span class="rubiks-time ${timeCls}">${e(statusText)}</span>
+                <span class="rubiks-time ${ent.dnf ? 'dnf' : !ent.solved ? 'pending' : ''}">${ent.solved ? e(ent.displayTime) : ent.dnf ? 'DNF' : 'Solving…'}</span>
               </div>`;
-            }).join('') : '<p class="hint">Registered contestants will appear here.</p>'}
+            }).join('') : '<p class="hint">No contestants registered yet.</p>'}
           </div>
-          ${teamSummary.length ? `
-            <h2 class="subhead">Team Best Times</h2>
-            <div style="margin-top:8px">
-              ${teamSummary.map((ts, idx) => {
-                const hasBest = Number.isFinite(ts.bestSec);
-                return `<div class="attempt-row">
-                  <span style="font:800 18px/1 var(--title);color:var(--lime);min-width:22px">${hasBest ? idx + 1 : '•'}</span>
-                  ${crest(ts.team)}
-                  <span><b>${e(ts.team.name)}</b>${ts.bestPlayer ? `<small class="hint" style="display:block;margin:0">Fastest: ${e(ts.bestPlayer.name)} (${ts.solvedCount}/${ts.totalCount} solved)</small>` : `<small class="hint" style="display:block;margin:0">${ts.totalCount} contestants</small>`}</span>
-                  <strong style="font:800 20px/1 var(--title);color:${hasBest ? 'var(--lime)' : 'var(--muted)'}">${hasBest ? e(formatSolveDuration(ts.bestSec)) : '—'}</strong>
-                </div>`;
-              }).join('')}
-            </div>` : ''}
+          ${teamSummary.length ? `<h2 class="subhead">Team Best Times</h2>
+            ${teamSummary.map((row, idx) => `<div class="attempt-row">
+              <span style="font:700 18px/1 var(--title);color:var(--lime);min-width:22px">${Number.isFinite(row.bestSec) ? idx + 1 : '—'}</span>
+              ${crest(row.team)}
+              <span><b>${e(row.team.name)}</b> <small class="muted">(${row.solvedCount}/${row.totalCount} solved${row.bestPlayer ? ' · ' + e(row.bestPlayer.name) : ''})</small></span>
+              <strong>${Number.isFinite(row.bestSec) ? e(formatSolveDuration(row.bestSec)) : '—'}</strong>
+            </div>`).join('')}` : ''}
         `;
       }
 
-      const boutsHtml = d.sport === 'armwrestling' ? `<h2 class="subhead">Bouts &amp; Rounds</h2>
-        <p class="hint">Each round winner earns +1 bout pre-point for their team. Most bout wins takes the match.</p>
-        ${(s.bouts || []).length ? `<div class="bout-list">${s.bouts.map(b => `
-          <div class="bout-card ${!b.winner && st(f) === 'live' ? 'active' : ''}">
-            <div class="bout-head"><span>${e(b.round)}</span><span>${b.winner ? '+1 Pre-Point · ' + e(team(b.winner === 'home' ? d.homeId : d.awayId)?.name || '') : (st(f) === 'live' ? 'In Progress' : 'Scheduled')}</span></div>
-            <div class="bout-versus">
-              <div class="bout-side ${b.winner === 'home' ? 'win' : ''}"><span>${e(player(b.homePlayerId)?.name || 'Participant')}</span>${b.winner === 'home' ? '<span class="win-badge">WIN</span>' : ''}</div>
-              <span class="bout-vs">VS</span>
-              <div class="bout-side away ${b.winner === 'away' ? 'win' : ''}">${b.winner === 'away' ? '<span class="win-badge">WIN</span>' : ''}<span>${e(player(b.awayPlayerId)?.name || 'Participant')}</span></div>
-            </div>
-          </div>`).join('')}</div>` : '<p class="hint">Round pairings will appear here once scheduled.</p>'}` : '';
+      let boutsHtml = '';
+      if (d.sport === 'armwrestling') {
+        const arm = getArmWrestlingState(d, s, state.teams, state.players);
+        const renderPubStage = (heading, boxList) => {
+          if (!boxList.length) return '';
+          return `<h2 class="subhead">${e(heading)}</h2>
+            <div class="pub-arm-grid">${boxList.map(b => {
+              const pA = player(b.playerAId), pB = player(b.playerBId);
+              const tA = pA ? team(pA.teamId) : null, tB = pB ? team(pB.teamId) : null;
+              const winA = b.winnerSlot === 'A', winB = b.winnerSlot === 'B';
+              return `<div class="pub-arm-box ${b.winnerSlot ? 'done-box' : st(f) === 'live' ? 'live-box' : ''}">
+                <div class="bout-head"><span>${e(b.label)}</span><span>${b.winnerSlot ? '+1 Bout Pt' : (st(f) === 'live' ? 'In Progress' : 'Scheduled')}</span></div>
+                <div class="pub-arm-fighter ${winA ? 'win' : ''}">
+                  <div style="display:flex;align-items:center;gap:7px;min-width:0">
+                    ${crest(tA)}
+                    <div style="min-width:0"><b style="display:block;font-size:13.5px">${e(pA?.name || 'TBC')}</b><small class="meta" style="font-size:10px">${e(tA?.name || '')}</small></div>
+                  </div>
+                  ${winA ? '<span class="win-badge">WON</span>' : ''}
+                </div>
+                <div class="pub-arm-fighter ${winB ? 'win' : ''}">
+                  <div style="display:flex;align-items:center;gap:7px;min-width:0">
+                    ${crest(tB)}
+                    <div style="min-width:0"><b style="display:block;font-size:13.5px">${e(pB?.name || 'TBC')}</b><small class="meta" style="font-size:10px">${e(tB?.name || '')}</small></div>
+                  </div>
+                  ${winB ? '<span class="win-badge">WON</span>' : ''}
+                </div>
+              </div>`;
+            }).join('')}</div>`;
+        };
+        boutsHtml = `
+          ${arm.teamStandings.length ? `<h2 class="subhead">Team Bout Points</h2>
+            <div class="pub-arm-team-strip">${arm.teamStandings.map(ts => `
+              <div class="pub-arm-team-card">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0">${crest(ts.team)}<b style="font-size:13.5px">${e(ts.team.name)}</b></div>
+                <strong>${ts.points}</strong>
+              </div>`).join('')}</div>` : ''}
+          ${renderPubStage('Quarter-Finals (4 Match Boxes)', arm.qfBoxes)}
+          ${renderPubStage('Semi-Finals (2 Match Boxes)', arm.sfBoxes)}
+          ${renderPubStage('Championship Final', arm.finalBoxes)}
+        `;
+      }
 
       const badmintonLiveHtml = d.sport === 'badminton' && !isScheduled ? `<div class="badminton-panel">
         <div class="badminton-grid">
@@ -1949,7 +2197,7 @@
           ${badmintonLiveHtml}
           ${boutsHtml}
           ${rubiksHtml}
-          ${isIndividual && d.sport !== 'rubiks' ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Team Attempts' : 'Competing Teams'}</h2>${teamRankIds.map(id => `<div class="attempt-row">${crest(team(id))}<span>${e(team(id)?.name || 'Team')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Competing teams will appear here.</p>'}` : ''}
+          ${isIndividual && d.sport !== 'rubiks' && d.sport !== 'armwrestling' ? `<h2 class="subhead">${d.sport === 'crossbar' ? 'Team Attempts' : 'Competing Teams'}</h2>${teamRankIds.map(id => `<div class="attempt-row">${crest(team(id))}<span>${e(team(id)?.name || 'Team')}</span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[id]?.hits ?? 0)} / ${e(s.attempts?.[id]?.total ?? 0)} hits` : e(s.results?.[id] ?? '—')}</strong></div>`).join('') || '<p class="hint">Competing teams will appear here.</p>'}` : ''}
           ${isSet ? `<h2 class="subhead">Sets</h2><p class="hint">Best of ${e(d.bestOf || 3)} · ${e(d.pointLimit || (d.sport === 'badminton' ? 21 : 25))} points per set${d.decidingLimit ? ' · Decider to ' + e(d.decidingLimit) : ''}</p>${sets.map((x, i) => `<div class="set-row">Set ${i + 1}<strong>${e(x.home)} – ${e(x.away)}</strong></div>`).join('')}${st(f) === 'live' && !s.winner && d.sport === 'volleyball' ? `<div class="set-row">Current set<strong>${e(s.home ?? 0)} – ${e(s.away ?? 0)}</strong></div>` : ''}` : ''}
           ${arenaHtml}
           <h2 class="subhead">${isSet ? 'Rally Highlights' : d.sport === 'armwrestling' ? 'Bout Results Log' : d.sport === 'rubiks' ? 'Solve Feed' : 'Goals & Cards'}</h2>
@@ -2062,7 +2310,7 @@
       football: 'Football',
       volleyball: 'Volleyball',
       badminton: 'Badminton',
-      armwrestling: 'Arm Wrestling (Rounds / Bouts)',
+      armwrestling: 'Arm Wrestling (8 Players · 4 Match Boxes)',
       rubiks: "Rubik's Cube Challenge (Timed Contestants)",
       crossbar: 'Crossbar Challenge (Team Attempts)',
       custom: 'Individual / Team Event (Team Result Only)'
@@ -2254,7 +2502,7 @@
           admField('Away team', admSelect('awayId', admOpts(teamOpts, d.awayId, 'Select team'))) +
         '</div>' +
         '<div id="competingTeams"><fieldset><legend>Competing Teams</legend><div class="pick">' + adminData.teams.map(t => admCheckbox('teamIds', t.id, t.name, defaultTeamIds.includes(t.id))).join('') + '</div></fieldset></div>' +
-        '<div id="rubiksContestants"><fieldset class="spaced"><legend>Rubik’s Cube Contestants (Select Players From Each Team)</legend><div class="pick" style="max-height:320px">' +
+        '<div id="rubiksContestants"><fieldset class="spaced"><legend id="contestantPickerLegend">Select Contestants From Each Team</legend><div class="pick" style="max-height:320px">' +
           adminData.teams.map(t => {
             const roster = adminData.players.filter(p => p.teamId === t.id).sort((a, b) => a.name.localeCompare(b.name));
             if (!roster.length) return '';
@@ -2267,6 +2515,7 @@
             </div>`;
           }).join('') +
         '</div></fieldset></div>' +
+        '<div id="armBoxesSetup"></div>' +
         '<div id="lineups"></div>' +
         '<div class="fields" id="setRulesBox">' +
           admField('Best of (sets)', admInput('bestOf', d.bestOf ?? 3, 'number', 'min="1" max="99" step="2"')) +
@@ -2322,19 +2571,58 @@
         }
       }
 
-      form.addEventListener('toggle', ev => { const det = ev.target.closest('[data-side-details]'); if (det) designerState[det.dataset.sideDetails].open = det.open; }, true);
+      function renderArmSetupBoxes() {
+        const boxHost = form.querySelector('#armBoxesSetup');
+        if (!boxHost) return;
+        if (form.sport.value !== 'armwrestling') {
+          boxHost.innerHTML = '';
+          return;
+        }
+        const fd = new FormData(form);
+        const pickedIds = fd.getAll('playerIds');
+        const pickedPlayers = pickedIds.map(id => adminData.players.find(p => p.id === id)).filter(Boolean);
+        const existingBoxes = createDefaultArmBoxes({ ...d, playerIds: pickedIds, teamIds: adminData.teams.map(t => t.id) }, adminData.players);
+
+        boxHost.innerHTML = `<fieldset class="spaced">
+          <legend>Initial 4 Match Boxes (Quarter-Finals · Cross-Team Pairings)</legend>
+          <p class="hint" style="margin:4px 0 10px">Pick 8 players above (2 per team), then pair any 2 players from different teams in each of the 4 boxes below (or edit pairings live in the Scoring Desk).</p>
+          <div class="sc-arm-boxes">
+            ${existingBoxes.map((b, idx) => {
+              const pA = adminData.players.find(p => p.id === b.playerAId);
+              const pB = adminData.players.find(p => p.id === b.playerBId);
+              const pool = pickedPlayers.length ? pickedPlayers : adminData.players;
+              const optsA = pool.filter(p => !pB || p.teamId !== pB.teamId).map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]);
+              const optsB = pool.filter(p => !pA || p.teamId !== pA.teamId).map(p => [p.id, `${p.name} (${teamName(p.teamId)})`]);
+              return `<div class="sc-arm-box">
+                <div class="sc-arm-box-head"><span>Match ${idx + 1}</span><span>Box ${idx + 1}</span></div>
+                <select name="armBoxA_${idx}" data-arm-setup-box="${idx}" data-arm-slot="A">${admOpts(optsA, b.playerAId, 'Select Player 1…')}</select>
+                <select name="armBoxB_${idx}" data-arm-setup-box="${idx}" data-arm-slot="B">${admOpts(optsB, b.playerBId, 'Select Player 2 (Different Team)…')}</select>
+              </div>`;
+            }).join('')}
+          </div>
+        </fieldset>`;
+      }
 
       function update() {
         const sport = form.sport.value, isTeam = form.format.value === 'team';
+        const showContestants = sport === 'rubiks' || sport === 'armwrestling';
+        const legendEl = form.querySelector('#contestantPickerLegend');
+        if (legendEl) {
+          legendEl.textContent = sport === 'armwrestling'
+            ? 'Arm Wrestling Participants (Pick 2 Players From Each Team = 8 Total)'
+            : 'Rubik’s Cube Contestants (Select Players From Each Team)';
+        }
         for (const [id, on] of [
           ['teams', isTeam],
-          ['competingTeams', !isTeam],
-          ['rubiksContestants', sport === 'rubiks'],
+          ['competingTeams', !isTeam && sport !== 'armwrestling'],
+          ['rubiksContestants', showContestants],
+          ['armBoxesSetup', sport === 'armwrestling'],
           ['setRulesBox', isSetSport(sport) && isTeam],
           ['crossbar', sport === 'crossbar']
         ]) {
           let group = form.querySelector('#' + id); group.hidden = !on; group.querySelectorAll('input,select').forEach(e => e.disabled = !on);
         }
+        renderArmSetupBoxes();
         renderLineups();
       }
 
@@ -2371,6 +2659,7 @@
           const boxes = [...(group?.querySelectorAll('input[type=checkbox]') || [])];
           const allChecked = boxes.length && boxes.every(b => b.checked);
           boxes.forEach(b => b.checked = !allChecked);
+          if (form.sport.value === 'armwrestling') renderArmSetupBoxes();
           return;
         }
         const resetBtn = ev.target.closest('[data-reset-dots]');
@@ -2399,12 +2688,34 @@
           }
           return;
         }
+        if (ev.target.name === 'playerIds' && form.sport.value === 'armwrestling') {
+          d.initialArmBoxes = [0, 1, 2, 3].map(idx => ({
+            id: 'qf-' + (idx + 1),
+            stage: 'Quarter-Final',
+            label: 'Match ' + (idx + 1),
+            playerAId: form.elements['armBoxA_' + idx]?.value || '',
+            playerBId: form.elements['armBoxB_' + idx]?.value || ''
+          }));
+          renderArmSetupBoxes();
+          return;
+        }
+        if (ev.target.dataset.armSetupBox !== undefined) {
+          d.initialArmBoxes = [0, 1, 2, 3].map(idx => ({
+            id: 'qf-' + (idx + 1),
+            stage: 'Quarter-Final',
+            label: 'Match ' + (idx + 1),
+            playerAId: form.elements['armBoxA_' + idx]?.value || '',
+            playerBId: form.elements['armBoxB_' + idx]?.value || ''
+          }));
+          renderArmSetupBoxes();
+          return;
+        }
         if (['homeId', 'awayId', 'sport', 'format'].includes(ev.target.name)) {
           if (ev.target.name === 'homeId') { designerState.Home.positions.forEach(p => p.playerId = ''); designerState.Home.open = true; }
           if (ev.target.name === 'awayId') { designerState.Away.positions.forEach(p => p.playerId = ''); designerState.Away.open = true; }
           if (ev.target.name === 'sport') {
-            if (form.sport.value === 'crossbar' || form.sport.value === 'rubiks') form.format.value = 'individual';
-            if (['football', 'volleyball', 'badminton', 'armwrestling'].includes(form.sport.value)) {
+            if (form.sport.value === 'crossbar' || form.sport.value === 'rubiks' || form.sport.value === 'armwrestling') form.format.value = 'individual';
+            if (['football', 'volleyball', 'badminton'].includes(form.sport.value)) {
               form.format.value = 'team';
               if (form.sport.value === 'badminton') {
                 form.pointLimit.value = 21;
@@ -2428,7 +2739,26 @@
       const values = new FormData(form), get = k => String(values.get(k) || '').trim(), all = k => values.getAll(k), sport = get('sport'), format = get('format');
       const selectedPlayerIds = all('playerIds');
       const playerTeamIds = [...new Set(selectedPlayerIds.map(pid => adminData.players.find(p => p.id === pid)?.teamId).filter(Boolean))];
-      const mergedTeamIds = sport === 'rubiks' ? [...new Set([...all('teamIds'), ...playerTeamIds])] : all('teamIds');
+      const mergedTeamIds = (sport === 'rubiks' || sport === 'armwrestling') ? [...new Set([...all('teamIds'), ...playerTeamIds])] : all('teamIds');
+
+      const initialArmBoxes = sport === 'armwrestling'
+        ? [0, 1, 2, 3].map(idx => {
+            const pA = get('armBoxA_' + idx);
+            const pB = get('armBoxB_' + idx);
+            if (pA && pB) {
+              const tA = adminData.players.find(p => p.id === pA)?.teamId;
+              const tB = adminData.players.find(p => p.id === pB)?.teamId;
+              if (tA && tB && tA === tB) throw Error(`Match ${idx + 1} must pair two players from different teams.`);
+            }
+            return {
+              id: 'qf-' + (idx + 1),
+              stage: 'Quarter-Final',
+              label: 'Match ' + (idx + 1),
+              playerAId: pA,
+              playerBId: pB
+            };
+          })
+        : undefined;
 
       let d = {
         ...current()?.details,
@@ -2441,7 +2771,8 @@
         homeId: get('homeId'),
         awayId: get('awayId'),
         teamIds: mergedTeamIds,
-        playerIds: sport === 'rubiks' ? selectedPlayerIds : [],
+        playerIds: (sport === 'rubiks' || sport === 'armwrestling') ? selectedPlayerIds : [],
+        initialArmBoxes,
         bestOf: Number(get('bestOf') || 3),
         pointLimit: Number(get('pointLimit') || (sport === 'badminton' ? 21 : 25)),
         decidingLimit: Number(get('decidingLimit') || (sport === 'badminton' ? 21 : 15)),
@@ -2454,7 +2785,7 @@
       if (!d.name || !d.venue) throw Error('Enter a fixture name and venue.');
       if (format === 'team' && (!d.homeId || !d.awayId || d.homeId === d.awayId)) throw Error('Choose two different teams.');
       if (format === 'individual' && !d.teamIds.length && !d.playerIds.length) throw Error('Select at least one competing team or contestant.');
-      if (['football', 'volleyball', 'badminton', 'armwrestling'].includes(sport) && format !== 'team') throw Error('This sport requires two head-to-head teams.');
+      if (['football', 'volleyball', 'badminton'].includes(sport) && format !== 'team') throw Error('This sport requires two head-to-head teams.');
       if (sport === 'crossbar' && format !== 'individual') throw Error('Select Multi-Team / Individual Program for crossbar team attempts.');
       for (const side of ['Home', 'Away']) {
         d['formation' + side] = designerState[side].formation;
