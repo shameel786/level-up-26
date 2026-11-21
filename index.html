@@ -1,6 +1,59 @@
 <!doctype html>
 <html lang="en">
 <head>
+  
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/logo_192x192_transparent.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="./assets/logo_512x512_transparent.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Level Up ’26">
+
+  <style>
+    /* Branded Launch Splash Screen */
+    #app-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at 50% 38%, #162820 0%, #0d1410 72%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #app-splash.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #app-splash img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 28px rgba(0, 210, 255, 0.28));
+      animation: splashPop 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #app-splash strong {
+      font: italic 800 30px/1 'Barlow Condensed', Impact, sans-serif;
+      letter-spacing: -0.02em;
+      color: #f3f5ec;
+      text-transform: uppercase;
+    }
+    #app-splash strong span { color: #c2f568; }
+    #app-splash small {
+      font: 700 11px/1 'DM Sans', system-ui, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9ea99c;
+    }
+    @keyframes splashPop {
+      from { opacity: 0; transform: scale(0.84) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0d1410">
@@ -530,6 +583,29 @@
 </head>
 <body>
 
+<!-- Launch Splash Screen -->
+  <div id="app-splash" aria-hidden="true">
+    <img src="./assets/logo_512x512_transparent.png" alt="Level Up ’26 Logo">
+    <strong>LEVEL UP <span>’26</span></strong>
+    <small>Match Centre</small>
+  </div>
+
+  <script>
+    // Register static Service Worker for full Android WebAPK installation
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // Fade out splash screen once app initializes
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('app-splash')?.classList.add('hide');
+      }, 950);
+    });
+  </script>
+  
   <!-- PUBLIC MATCH CENTRE -->
   <div id="public-shell" class="app-frame">
     <a class="skip" href="#content">Skip to match centre</a>
