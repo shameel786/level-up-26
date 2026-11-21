@@ -246,6 +246,12 @@
     .award-list { padding: 0 15px 12px 48px; font-size: 13px; color: var(--muted); }
     .award-list li { margin: 4px 0; }
     .badge-count { font: 700 11px var(--body); vertical-align: middle; margin-left: 6px; color: var(--lime); background: #253623; border: 1px solid #465d41; border-radius: 99px; padding: 2px 8px; }
+    .teammates-box { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #131c17; border: 1px solid var(--line); }
+    .teammates-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .teammate-pill { padding: 4px 9px; border-radius: 7px; background: var(--panel-2); border: 1px solid #35473a; color: var(--text); font-size: 12px; font-weight: 600; }
+    .result-podium-list { margin-top: 10px; padding-top: 8px; border-top: 1px solid #28352c; display: grid; gap: 5px; }
+    .result-podium-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--text); }
+    .result-place-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; padding: 1px 6px; border-radius: 5px; background: rgba(194, 245, 104, .16); border: 1px solid rgba(194, 245, 104, .4); color: var(--lime); font-weight: 800; font-size: 11px; margin-right: 6px; }
 
     /* Match Detail & Clock */
     .live-article { padding: 18px; margin-top: 12px; }
@@ -373,6 +379,29 @@
     #notice.error { color: #862b20; background: #ffeae6; }
     #admin-shell .award-row { display: grid; grid-template-columns: .7fr 1.3fr 1.3fr .8fr auto; align-items: end; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--admin-line); }
     #admin-shell main { padding-bottom: 55px; }
+
+    /* Admin User-Friendly Navigation & Fixture Cards */
+    .adm-nav-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px; scrollbar-width: none; }
+    .adm-nav-bar::-webkit-scrollbar { display: none; }
+    .adm-nav-tab { flex: none; padding: 10px 15px !important; border-radius: 11px !important; font-weight: 700 !important; font-size: .9rem !important; background: white !important; border: 1.5px solid #cbd5cb !important; color: var(--ink) !important; }
+    .adm-nav-tab.active { background: var(--forest) !important; border-color: var(--forest) !important; color: var(--admin-lime) !important; }
+    .adm-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .adm-search { flex: 1; min-width: 190px; min-height: 40px; }
+    .adm-filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .adm-filter-pill { padding: 7px 12px !important; font-size: .82rem !important; border-radius: 99px !important; }
+    .adm-filter-pill.active { background: var(--forest) !important; color: white !important; border-color: var(--forest) !important; }
+    .adm-fixture-card { border: 1.5px solid #d6ded5; border-radius: 13px; padding: 13px 14px; margin-bottom: 10px; background: #fbfcfa; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .adm-fixture-card.is-live { border-color: #6ea343; background: #f4faee; }
+    .adm-order-col { display: flex; flex-direction: column; gap: 5px; flex: none; }
+    .adm-order-btn { width: 36px; height: 34px; padding: 0 !important; display: grid; place-items: center; font-weight: 800 !important; font-size: 15px !important; border-radius: 8px !important; background: #eef3ec !important; }
+    .adm-order-btn:hover:not(:disabled) { background: var(--admin-lime) !important; border-color: #7ea349 !important; }
+    .adm-fixture-info { flex: 1; min-width: 0; }
+    .adm-fixture-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+    .adm-status-badge { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 2px 8px; border-radius: 6px; background: #e8ede7; color: #3d4f43; }
+    .adm-status-badge.live { background: #c4f66a; color: #142b22; }
+    .adm-status-badge.finished { background: #dce8f8; color: #1d3c6a; }
+    .adm-fixture-actions { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+    .adm-fixture-actions button { min-height: 40px; padding: 8px 13px !important; }
 
     /* Admin Pitch & Court Designer */
     .adm-pitch-wrap { margin-top: 12px; }
@@ -634,6 +663,7 @@
         announcements: Array.isArray(rawMeta.announcements) ? rawMeta.announcements : [{ title: 'Welcome to Level Up ’26', body: 'Follow live match updates, standings and championship points right here.' }],
         committee: Array.isArray(rawMeta.committee) ? rawMeta.committee : [{ role: 'General Convenor', name: 'Sports Committee · Level Up ’26' }, { role: 'Match Control', name: 'Gala Technical Desk' }],
         contacts,
+        fixtureOrder: Array.isArray(rawMeta.fixtureOrder) ? rawMeta.fixtureOrder : [],
         eventBranding: customBrand,
         teamOverrides,
         addedTeams,
@@ -645,6 +675,16 @@
       result.metaRecord = metaRec || null;
       result.fixtures = (result.fixtures || []).filter(f => f.id !== META_ID && !f.details?.isSiteMeta);
       return result;
+    }
+
+    function sortFixturesByOrder(list, orderIds = []) {
+      const idxMap = new Map((orderIds || []).map((id, idx) => [id, idx]));
+      return [...list].sort((a, b) => {
+        const ia = idxMap.has(a.id) ? idxMap.get(a.id) : Infinity;
+        const ib = idxMap.has(b.id) ? idxMap.get(b.id) : Infinity;
+        if (ia !== ib) return ia - ib;
+        return String(a.details?.startTime || '9999').localeCompare(String(b.details?.startTime || '9999'));
+      });
     }
 
     async function saveSiteMeta(nextSiteMeta) {
@@ -1456,10 +1496,11 @@
     }
 
     /* 4. PUBLIC MATCH CENTRE UI */
-    const main = document.querySelector('#content'), nav = document.querySelector('#navigation'), views = ['home', 'fixtures', 'standings', 'leaderboard', 'live'];
+    const main = document.querySelector('#content'), nav = document.querySelector('#navigation'), views = ['home', 'fixtures', 'results', 'leaderboard', 'live'];
     const symbols = {
       home: '<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
       fixtures: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v5m10-5v5M3 11h18"/>',
+      results: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
       standings: '<path d="M3 21V11h5v10zm6 0V4h6v17zm7 0v-8h5v8z"/>',
       leaderboard: '<path d="M7 3h10v5a5 5 0 0 1-10 0zm0 2H3v2a4 4 0 0 0 5 4m9-6h4v2a4 4 0 0 1-5 4m-4 2v5m-4 2h8"/>',
       live: '<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9m9-9a6.4 6.4 0 0 1 0 9M4.3 4.3a10.9 10.9 0 0 0 0 15.4m15.4-15.4a10.9 10.9 0 0 1 0 15.4"/>',
@@ -1491,8 +1532,9 @@
       custom: 'Individual / Team Event'
     };
     const label = s => String(s || '').replace(/^./, c => c.toUpperCase());
-    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [] } };
-    const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', leader: 'teams', pitchSide: 'home', selectedPlayer: '' };
+    const state = { teams: [], players: [], fixtures: [], branding: {}, siteMeta: { announcements: [], committee: [], contacts: [], fixtureOrder: [] } };
+    const filters = { status: 'all', sport: 'all', team: 'all', date: 'all', resSport: 'all', resTeam: 'all', pitchSide: 'home', selectedPlayer: '' };
+    const expandedTeamRoster = new Set();
     let loaded = false, failed = false, refreshing = false, lastHash = '', priorSignature = '';
 
     const team = id => state.teams.find(t => t.id === id), player = id => state.players.find(p => p.id === id);
@@ -1500,7 +1542,7 @@
     const mode = f => f.details.format === 'individual';
     const eventTeamIds = f => (f.details.teamIds && f.details.teamIds.length) ? f.details.teamIds : [...new Set((f.details.playerIds || []).map(id => player(id)?.teamId).filter(Boolean))];
     const groupTeam = (f, t) => f.details.homeId === t || f.details.awayId === t || eventTeamIds(f).includes(t);
-    const fixtures = () => [...state.fixtures].sort((a, b) => String(a.details.startTime || '9999').localeCompare(String(b.details.startTime || '9999')));
+    const fixtures = () => sortFixturesByOrder(state.fixtures, state.siteMeta?.fixtureOrder || []);
     const fixtureLink = f => '#match/' + encodeURIComponent(f.id);
 
     function crest(t) {
@@ -1596,47 +1638,121 @@
     function fixtureList() {
       let all = fixtures(), types = [...new Set(all.map(f => f.details.sport))], dates = new Map(all.filter(f => f.details.startTime).map(f => [day(f.details.startTime, fmtKey), day(f.details.startTime)]));
       let list = all.filter(f => (filters.status === 'all' || st(f) === filters.status) && (filters.sport === 'all' || f.details.sport === filters.sport) && (filters.team === 'all' || groupTeam(f, filters.team)) && (filters.date === 'all' || day(f.details.startTime, fmtKey) === filters.date));
+      const hasCustomOrder = (state.siteMeta?.fixtureOrder || []).length > 0;
+      if (hasCustomOrder) {
+        return pageHead('Fixtures', 'Event schedule in matchday order (IST).') +
+          `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` +
+          (list.length ? `<div class="fixture-list grid-2">${list.map(fixtureCard).join('')}</div>` : empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
+      }
       let groups = new Map; for (let f of list) { let k = day(f.details.startTime); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(f); }
       return pageHead('Fixtures', 'Kickoff times (IST) and venues.') + `<div class="tools">${segments('status', [['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']])}${options('sport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}${options('team', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}${options('date', [['all', 'All dates'], ...dates])}</div>` + ([...groups].map(([k, arr]) => `<section class="group"><h2 class="day-title">${e(k)}</h2><div class="fixture-list grid-2">${arr.map(fixtureCard).join('')}</div></section>`).join('') || empty('fixtures', all.length ? 'No matching fixtures' : 'No fixtures published yet', all.length ? 'Choose another filter to see more events.' : 'Event times and venues will appear here once published.'));
     }
 
-    function standings() {
-      const groups = new Map, knockout = [];
-      for (const f of fixtures().filter(f => !mode(f))) {
-        const stage = (f.details.stage || '').trim();
-        if (/knockout|eliminat|quarters?|semis?|final|play.?off|round of|third.?place|3rd.?place/i.test(stage)) { knockout.push(f); continue; }
-        const key = JSON.stringify([f.details.sport, stage]); if (!groups.has(key)) groups.set(key, []); groups.get(key).push(f);
-      }
-      const tables = [...groups.values()].map(fs => {
-        const { sport, stage } = fs[0].details, football = sport === 'football', isSet = isSetSport(sport), rows = new Map;
-        function side(id) { if (!rows.has(id)) rows.set(id, { id, played: 0, won: 0, drawn: 0, lost: 0, for: 0, against: 0, pts: 0, isLive: false }); return rows.get(id); }
-        for (const f of fs) {
-          const d = f.details; if (!team(d.homeId) || !team(d.awayId)) continue;
-          const a = side(d.homeId), b = side(d.awayId), matchSt = st(f);
-          if (matchSt !== 'finished' && matchSt !== 'live') continue;
-          if (matchSt === 'live') { a.isLive = true; b.isLive = true; }
-          const s = score(f), x = Number(isSet ? s.setsWon?.home : s.home) || 0, y = Number(isSet ? s.setsWon?.away : s.away) || 0;
-          a.played++; b.played++; a.for += x; b.against += x; b.for += y; a.against += y;
-          if (x > y) { a.won++; b.lost++; a.pts += 3; } else if (y > x) { b.won++; a.lost++; b.pts += 3; } else { a.drawn++; b.drawn++; a.pts++; b.pts++; }
+    function resultCard(f) {
+      const d = f.details, s = score(f), isSet = isSetSport(d.sport), individual = mode(f);
+      const awards = [...(f.awards?.entries || [])].sort((a, b) => (Number(a.place) || 999) - (Number(b.place) || 999));
+      let outcomeHtml = '';
+
+      if (!individual) {
+        const hScore = Number(isSet ? s.setsWon?.home : s.home) || 0;
+        const aScore = Number(isSet ? s.setsWon?.away : s.away) || 0;
+        const hWin = hScore > aScore, aWin = aScore > hScore;
+        outcomeHtml =
+          rowTeam(team(d.homeId), hScore, sideRosterSummary(d, 'home') + (hWin ? '<span class="win-badge" style="margin-left:6px">Winner</span>' : '')) +
+          rowTeam(team(d.awayId), aScore, sideRosterSummary(d, 'away') + (aWin ? '<span class="win-badge" style="margin-left:6px">Winner</span>' : ''));
+        if (isSet && s.sets?.length) {
+          outcomeHtml += `<p class="hint">Sets: ${s.sets.map(stItem => `${stItem.home}–${stItem.away}`).join(', ')}</p>`;
         }
-        const rank = [...rows.values()].sort((a, b) => (football ? b.pts - a.pts : b.won - a.won) || (b.for - b.against) - (a.for - a.against) || b.for - a.for || String(team(a.id)?.name).localeCompare(team(b.id)?.name));
-        const activeGames = fs.filter(f => st(f) === 'live' || st(f) === 'finished');
-        return `<section class="group">${sectionHead(e(standardName[sport] || label(sport)) + (stage ? ' · ' + e(stage) : ''))}
-          <div class="sport-table"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>${isSet ? 'SD' : football ? 'GD' : 'Diff'}</th>${football ? '<th>Pts</th>' : ''}</tr></thead><tbody>${rank.map((r, i) => `<tr><td>${i + 1}</td><td><a class="stand-team" href="#team/${encodeURIComponent(r.id)}">${crest(team(r.id))}<span>${e(team(r.id)?.name)}</span>${r.isLive ? '<span class="live-pill-mini">LIVE</span>' : ''}</a></td><td>${r.played}</td><td>${r.won}</td><td>${r.drawn}</td><td>${r.lost}</td><td>${r.for - r.against}</td>${football ? `<td><b>${r.pts}</b></td>` : ''}</tr>`).join('')}</tbody></table></div>
-          ${football ? '<p class="hint">Includes live &amp; full-time matches · Win 3 · Draw 1 · Loss 0</p>' : ''}
-          ${activeGames.length ? `<div class="fixture-list grid-2" style="margin-top:10px">${activeGames.map(fixtureCard).join('')}</div>` : ''}
-        </section>`;
-      }).join('');
-      return pageHead('Standings', 'Live & final group tables and knockout results.') + (tables + (knockout.length ? `<section class="group">${sectionHead('Knockout stage')}<div class="fixture-list grid-2">${knockout.map(fixtureCard).join('')}</div></section>` : '') || empty('standings', 'Waiting for the first fixtures', 'Sport tables will appear after team fixtures are scheduled.'));
+      } else if (d.sport === 'rubiks') {
+        const { entries } = getRubiksLeaderboard(d, s, state.teams, state.players);
+        const solvedTop = entries.filter(x => x.solved).slice(0, 3);
+        outcomeHtml = solvedTop.length
+          ? `<div class="result-podium-list">${solvedTop.map((ent, idx) => `<div class="result-podium-row"><span><span class="result-place-badge">#${idx + 1}</span><b>${e(ent.player.name)}</b> (${e(ent.team?.name || 'Team')})</span><strong>${e(ent.displayTime)}</strong></div>`).join('')}</div>`
+          : '<p class="hint">No completed solves recorded.</p>';
+      } else {
+        const tIds = [...eventTeamIds(f)].sort((x, y) => {
+          if (d.sport === 'crossbar') return (s.attempts?.[y]?.hits || 0) - (s.attempts?.[x]?.hits || 0);
+          return (Number(s.results?.[y]) || -Infinity) - (Number(s.results?.[x]) || -Infinity);
+        });
+        const shownTeams = tIds.slice(0, 3);
+        outcomeHtml = shownTeams.length
+          ? `<div class="result-podium-list">${shownTeams.map((tid, idx) => `<div class="result-podium-row"><span><span class="result-place-badge">#${idx + 1}</span><b>${e(team(tid)?.name || 'Team')}</b></span><strong>${d.sport === 'crossbar' ? `${e(s.attempts?.[tid]?.hits ?? 0)} hits` : e(s.results?.[tid] ?? '—')}</strong></div>`).join('')}</div>`
+          : '';
+      }
+
+      const awardsHtml = awards.length
+        ? `<div class="result-podium-list">${awards.map(a => `<div class="result-podium-row"><span>${a.place ? `<span class="result-place-badge">#${e(a.place)}</span>` : ''}<b>${e(team(a.teamId)?.name || 'Team')}</b>${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''}</span><strong style="color:var(--lime)">+${e(a.points)} pts</strong></div>`).join('')}</div>`
+        : '';
+
+      return `<a class="fixture" href="${fixtureLink(f)}">
+        <div class="info-line"><span class="fixture-sport">${e(sportName(f))}${d.stage ? ' · ' + e(d.stage) : ''}</span><span class="tag finished">Completed</span></div>
+        <h3 class="fixture-title">${e(title(f))}</h3>
+        ${outcomeHtml}
+        ${awardsHtml}
+        <div class="foot-line">${icon('clock')}${e(day(d.startTime))}${d.venue ? ' ' + icon('pin') + e(d.venue) : ''}</div>
+      </a>`;
+    }
+
+    function resultsPage() {
+      const finished = fixtures().filter(f => st(f) === 'finished');
+      const types = [...new Set(finished.map(f => f.details.sport))];
+      const list = finished.filter(f =>
+        (filters.resSport === 'all' || f.details.sport === filters.resSport) &&
+        (filters.resTeam === 'all' || groupTeam(f, filters.resTeam))
+      );
+
+      return pageHead('Results', 'Confirmed scores, winners and championship points from completed events.') +
+        `<div class="tools">
+          ${options('resSport', [['all', 'All sports'], ...types.map(t => [t, standardName[t] || label(t)])])}
+          ${options('resTeam', [['all', 'All teams'], ...state.teams.map(t => [t.id, t.name])])}
+        </div>` +
+        (list.length
+          ? `<div class="fixture-list grid-2">${list.map(resultCard).join('')}</div>`
+          : empty('results', finished.length ? 'No matching results' : 'No completed events yet', finished.length ? 'Try clearing a filter to see other finished events.' : 'Final results will appear here as soon as events finish.'));
     }
 
     function ledger() { return fixtures().filter(f => st(f) === 'finished').flatMap(f => (f.awards?.entries || []).map(a => ({ ...a, points: Number(a.points) || 0, event: f }))); }
 
     function leaderboard() {
-      let isTeam = filters.leader === 'teams', awards = ledger(), points = id => awards.filter(a => (isTeam ? a.teamId : a.playerId) === id);
-      let arr = (isTeam ? state.teams : state.players).map(p => ({ p, rows: points(p.id) })).map(r => ({ ...r, total: r.rows.reduce((n, a) => n + a.points, 0) })).sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
+      const awards = ledger();
+      const points = id => awards.filter(a => a.teamId === id);
+      const arr = state.teams
+        .map(t => ({ t, rows: points(t.id), squad: state.players.filter(p => p.teamId === t.id) }))
+        .map(r => ({ ...r, total: r.rows.reduce((n, a) => n + a.points, 0) }))
+        .sort((a, b) => b.total - a.total || a.t.name.localeCompare(b.t.name));
+
       let rank = 0;
-      return pageHead('Leaderboard', 'Championship points from confirmed results.') + `<div class="tools">${segments('leader', [['teams', 'Teams'], ['players', 'Participants']])}</div><div class="rank-list">${arr.map((r, i) => { if (!i || r.total !== arr[i - 1].total) rank = i + 1; let t = isTeam ? r.p : team(r.p.teamId); return `<details class="rank-row" data-persist="${e(r.p.id)}"><summary><span class="rank-index">${rank}</span>${crest(t)}<span class="rank-name"><b>${e(r.p.name)}</b><small>${isTeam ? `${state.players.filter(x => x.teamId === r.p.id).length} players` : e(t?.name || 'Unassigned')}</small></span><span class="rank-points">${r.total}<small>PTS</small></span></summary><div class="award-list">${r.rows.length ? `<ul>${r.rows.map(a => `<li><a href="${fixtureLink(a.event)}">${e(title(a.event))}</a>${a.place ? ' · #' + e(a.place) : ''}${isTeam && a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>` : 'No championship points awarded yet.'}</div></details>`; }).join('')}</div>`;
+      return pageHead('Leaderboard', 'Team championship standings. Tap a team to view points and teammates.') +
+        `<div class="rank-list">${arr.map((r, i) => {
+          if (!i || r.total !== arr[i - 1].total) rank = i + 1;
+          const showMates = expandedTeamRoster.has(r.t.id);
+          return `<details class="rank-row" data-persist="${e(r.t.id)}">
+            <summary>
+              <span class="rank-index">${rank}</span>
+              ${crest(r.t)}
+              <span class="rank-name">
+                <b>${e(r.t.name)}</b>
+                <small>${r.squad.length} ${r.squad.length === 1 ? 'teammate' : 'teammates'}</small>
+              </span>
+              <span class="rank-points">${r.total}<small>PTS</small></span>
+            </summary>
+            <div class="award-list">
+              ${r.rows.length
+                ? `<ul>${r.rows.map(a => `<li><a href="${fixtureLink(a.event)}">${e(title(a.event))}</a>${a.place ? ' · #' + e(a.place) : ''}${a.playerId ? ' · ' + e(player(a.playerId)?.name) : ''} · <b>${a.points} pts</b></li>`).join('')}</ul>`
+                : '<p class="hint">No championship points awarded yet.</p>'}
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+                <button type="button" class="seg ${showMates ? 'active' : ''}" data-toggle-teammates="${e(r.t.id)}">${icon('people')}<span>Teammates (${r.squad.length})</span></button>
+                <a class="seg" href="#team/${encodeURIComponent(r.t.id)}">Full Team Profile →</a>
+              </div>
+              ${showMates ? `<div class="teammates-box">
+                <strong style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--lime)">${e(r.t.name)} Squad</strong>
+                ${r.squad.length
+                  ? `<div class="teammates-chips">${r.squad.map(m => `<span class="teammate-pill">${e(m.name)}</span>`).join('')}</div>`
+                  : '<p class="hint">No players assigned to this team yet.</p>'}
+              </div>` : ''}
+            </div>
+          </details>`;
+        }).join('')}</div>`;
     }
 
     function teamPage(id) {
@@ -1811,8 +1927,9 @@
 
     function renderPublic() {
       let { tab, id } = route();
-      let panel = ({ home, fixtures: fixtureList, standings, leaderboard, live: livePage, announcements: announcementsPage, committee: committeePage, contact: contactPage, match: () => matchPage(state.fixtures.find(f => f.id === id)), team: () => teamPage(id) })[tab] || home;
-      let active = tab === 'team' ? 'home' : tab === 'match' ? (st(state.fixtures.find(f => f.id === id) || {}) === 'live' ? 'live' : 'fixtures') : tab;
+      if (tab === 'standings') tab = 'results';
+      let panel = ({ home, fixtures: fixtureList, results: resultsPage, leaderboard, live: livePage, announcements: announcementsPage, committee: committeePage, contact: contactPage, match: () => matchPage(state.fixtures.find(f => f.id === id)), team: () => teamPage(id) })[tab] || home;
+      let active = tab === 'team' ? 'home' : tab === 'match' ? (st(state.fixtures.find(f => f.id === id) || {}) === 'live' ? 'live' : st(state.fixtures.find(f => f.id === id) || {}) === 'finished' ? 'results' : 'fixtures') : tab;
       nav.innerHTML = views.map(v => `<a href="#${v}" ${v === active ? 'aria-current="page"' : ''}>${icon(v)}<span>${label(v)}</span></a>`).join('');
       const open = new Set([...main.querySelectorAll('details[open]')].map(el => el.dataset.persist));
       main.innerHTML = message() + (loaded ? panel() : (tab === 'home' ? home().split('<section class="section">')[0] : '') + (failed ? '' : `<div class="loading" role="status">Loading match centre…</div>`));
@@ -1912,6 +2029,7 @@
     };
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     let adminData, view = 'fixtures', activeId = '', authMode = 'login', busy = false;
+    let adminSearchQuery = '', adminStatusFilter = 'all';
     let designerState = { Home: { formation: '4-3-3', positions: [], selectedIdx: 0, open: true }, Away: { formation: '4-3-3', positions: [], selectedIdx: 0, open: false } };
 
     const current = () => adminData.fixtures.find(f => f.id === activeId);
@@ -1940,13 +2058,22 @@
       account.innerHTML = '';
       if (adminData.role !== 'admin' && adminData.role !== 'manager') { authAdmin(); return; }
       account.innerHTML = '<div class="account"><span class="pill">' + (adminData.role === 'admin' ? 'Main administrator' : 'Event manager') + '</span>' + admBtn('Sign out', 'logout') + '</div>';
-      if (view === 'new' || view === 'details') { fixtureForm(); return; }
-      if (view === 'access') { accessAdmin(); return; }
-      if (view === 'siteMeta') { siteMetaAdmin(); return; }
-      if (view === 'teams') { teamsAdmin(); return; }
-      if (view === 'players') { playersAdmin(); return; }
-      if (view === 'score' || view === 'awards') { if (!current()) { view = 'fixtures'; renderAdmin(); return; } editorAdmin(); return; }
-      listingAdmin();
+
+      const navBarHtml = `<nav class="adm-nav-bar" aria-label="Control room sections">
+        ${admBtn('Fixtures & Order', 'fixtures', 'adm-nav-tab ' + (['fixtures', 'new', 'details', 'score', 'awards'].includes(view) ? 'active' : ''))}
+        ${adminData.role === 'admin' ? admBtn('Teams & Logos', 'teams', 'adm-nav-tab ' + (view === 'teams' ? 'active' : '')) : ''}
+        ${adminData.role === 'admin' ? admBtn('Players', 'players', 'adm-nav-tab ' + (view === 'players' ? 'active' : '')) : ''}
+        ${adminData.role === 'admin' ? admBtn('Brand & Notices', 'siteMeta', 'adm-nav-tab ' + (view === 'siteMeta' ? 'active' : '')) : ''}
+        ${adminData.role === 'admin' ? admBtn('Managers', 'access', 'adm-nav-tab ' + (view === 'access' ? 'active' : '')) : ''}
+      </nav>`;
+
+      if (view === 'new' || view === 'details') { fixtureForm(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'access') { accessAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'siteMeta') { siteMetaAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'teams') { teamsAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'players') { playersAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      if (view === 'score' || view === 'awards') { if (!current()) { view = 'fixtures'; renderAdmin(); return; } editorAdmin(); app.insertAdjacentHTML('afterbegin', navBarHtml); return; }
+      listingAdmin(navBarHtml);
     }
 
     function authAdmin() {
@@ -1954,16 +2081,79 @@
       app.innerHTML = '<section class="panel login"><h2>' + (reg ? 'Manager registration' : 'Staff sign in') + '</h2><p class="hint">' + (reg ? 'Use the email address authorised by the main administrator.' : 'Sign in with your administrator or manager account.') + '</p><form id="auth"><div class="fields"><div class="full">' + admField('Email address', admInput('email', '', 'email', 'autocomplete="username" required')) + '</div><div class="full">' + admField('Password', admInput('password', '', 'password', 'autocomplete="' + (reg ? 'new-password' : 'current-password') + '" required')) + '</div></div><div class="actions"><button class="primary">' + (reg ? 'Register' : 'Sign in') + '</button>' + admBtn(reg ? 'Back to sign in' : 'Register as a manager', 'toggleAuth') + '</div></form></section>';
     }
 
-    function listingAdmin() {
-      let fixtures = [...adminData.fixtures].filter(f => adminData.role === 'admin' || !adminData.assigned.length || adminData.assigned.includes(f.id)).sort((a, b) => (a.details.startTime || '').localeCompare(b.details.startTime || ''));
-      app.innerHTML = '<section class="panel"><div class="bar"><h2>Fixtures & events</h2><div class="actions">' +
-        (allowed('schedule') ? admBtn('+ Add fixture', 'new', 'accent') : '') +
-        (adminData.role === 'admin' ? admBtn('Teams & Logos', 'teams') + admBtn('Players', 'players') + admBtn('Event & Notices', 'siteMeta') + admBtn('Managers', 'access') : '') +
-        admBtn('Refresh', 'refresh') +
-        '</div></div>' + (fixtures.length ? fixtures.map(f => {
-          let d = f.details, s = f.score.status || 'scheduled';
-          return '<article class="item"><div><strong>' + esc(d.name) + '</strong><span class="meta">' + esc([sports[d.sport], dateLabel(d.startTime), d.venue, s].filter(Boolean).join(' · ')) + '</span></div><div class="actions" data-id="' + esc(f.id) + '">' + (allowed('score', f) ? admBtn('Score', 'score', 'primary') : '') + (allowed('schedule', f) ? admBtn('Edit', 'details') : '') + (allowed('awards', f) ? admBtn('Awards', 'awards') : '') + (allowed('delete', f) ? admBtn('Delete', 'delete', 'danger') : '') + '</div></article>';
-        }).join('') : '<p class="hint">No fixtures to manage yet.</p>') + '</section>';
+    function listingAdmin(navBarHtml = '') {
+      const accessible = sortFixturesByOrder(
+        adminData.fixtures.filter(f => adminData.role === 'admin' || !adminData.assigned.length || adminData.assigned.includes(f.id)),
+        adminData.siteMeta?.fixtureOrder || []
+      );
+      const q = adminSearchQuery.trim().toLowerCase();
+      const filtered = accessible.filter(f => {
+        const s = f.score?.status || 'scheduled';
+        if (adminStatusFilter !== 'all' && s !== adminStatusFilter) return false;
+        if (q) {
+          const hay = [f.details?.name, sports[f.details?.sport], f.details?.venue, f.details?.stage].filter(Boolean).join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const canReorder = allowed('schedule') && adminStatusFilter === 'all' && !q;
+
+      app.innerHTML = navBarHtml +
+        `<section class="panel">
+          <div class="bar">
+            <div>
+              <h2>Fixtures &amp; Events (${accessible.length})</h2>
+              <p class="hint" style="margin:2px 0 0">Use ↑ / ↓ arrows to reorder events across the website.</p>
+            </div>
+            <div class="actions">
+              ${allowed('schedule') ? admBtn('+ Add Fixture', 'new', 'accent') : ''}
+              ${admBtn('Refresh', 'refresh')}
+            </div>
+          </div>
+          <div class="adm-toolbar">
+            <input type="search" id="adminFixtureSearch" class="adm-search" value="${esc(adminSearchQuery)}" placeholder="Search event, sport, or venue…">
+            <div class="adm-filter-pills">
+              ${[['all', 'All'], ['live', 'Live'], ['scheduled', 'Upcoming'], ['finished', 'Finished']].map(([val, lbl]) =>
+                `<button type="button" class="adm-filter-pill ${adminStatusFilter === val ? 'active' : ''}" data-admin-status="${val}">${lbl}</button>`
+              ).join('')}
+            </div>
+          </div>
+          ${filtered.length ? filtered.map((f, idx) => {
+            const d = f.details, s = f.score?.status || 'scheduled';
+            const badgeText = s === 'live' ? 'LIVE' : s === 'finished' ? 'FINISHED' : 'UPCOMING';
+            return `<article class="adm-fixture-card ${s === 'live' ? 'is-live' : ''}">
+              ${canReorder ? `<div class="adm-order-col" data-id="${esc(f.id)}">
+                <button type="button" class="adm-order-btn" data-action="moveUp" title="Move event up" ${idx === 0 ? 'disabled' : ''}>↑</button>
+                <button type="button" class="adm-order-btn" data-action="moveDown" title="Move event down" ${idx === filtered.length - 1 ? 'disabled' : ''}>↓</button>
+              </div>` : ''}
+              <div class="adm-fixture-info">
+                <div class="adm-fixture-title-row">
+                  <strong>${esc(d.name)}</strong>
+                  <span class="adm-status-badge ${esc(s)}">${badgeText}</span>
+                </div>
+                <span class="meta">${esc([sports[d.sport], dateLabel(d.startTime), d.venue].filter(Boolean).join(' · '))}</span>
+              </div>
+              <div class="adm-fixture-actions" data-id="${esc(f.id)}">
+                ${allowed('score', f) ? admBtn(s === 'live' ? 'Score Live' : 'Score', 'score', 'primary') : ''}
+                ${allowed('schedule', f) ? admBtn('Edit', 'details') : ''}
+                ${allowed('awards', f) ? admBtn('Awards', 'awards') : ''}
+                ${allowed('delete', f) ? admBtn('Delete', 'delete', 'danger') : ''}
+              </div>
+            </article>`;
+          }).join('') : '<p class="hint">No matching fixtures found.</p>'}
+        </section>`;
+
+      const searchEl = app.querySelector('#adminFixtureSearch');
+      if (searchEl) {
+        searchEl.oninput = () => {
+          adminSearchQuery = searchEl.value;
+          const pos = searchEl.selectionStart;
+          renderAdmin();
+          const nextInp = app.querySelector('#adminFixtureSearch');
+          if (nextInp) { nextInp.focus(); nextInp.setSelectionRange(pos, pos); }
+        };
+      }
     }
 
     function dateLabel(iso) { return iso ? new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : ''; }
@@ -2432,8 +2622,29 @@
     }
 
     async function onAdminClick(event) {
+      const stFilterBtn = event.target.closest('[data-admin-status]');
+      if (stFilterBtn) {
+        adminStatusFilter = stFilterBtn.dataset.adminStatus;
+        renderAdmin();
+        return;
+      }
       const b = event.target.closest('[data-action]'); if (!b) return;
       const action = b.dataset.action, id = b.closest('[data-id]')?.dataset.id;
+      if (action === 'moveUp' || action === 'moveDown') {
+        const ordered = sortFixturesByOrder(adminData.fixtures, adminData.siteMeta?.fixtureOrder || []);
+        const ids = ordered.map(f => f.id);
+        const idx = ids.indexOf(id);
+        const targetIdx = action === 'moveUp' ? idx - 1 : idx + 1;
+        if (idx < 0 || targetIdx < 0 || targetIdx >= ids.length) return;
+        [ids[idx], ids[targetIdx]] = [ids[targetIdx], ids[idx]];
+        await runAdmin(async () => {
+          const nextMeta = { ...adminData.siteMeta, fixtureOrder: ids };
+          await saveSiteMeta(nextMeta);
+          await reloadAdmin();
+          statusMsg('Event order updated.');
+        });
+        return;
+      }
       if (['fixtures', 'score', 'awards', 'details', 'new', 'access', 'siteMeta', 'teams', 'players'].includes(action)) {
         if (action === 'teams') editingTeamId = '';
         if (action === 'players') editingPlayerId = '';
@@ -2517,7 +2728,12 @@
         }
         if (form.id === 'fixture') {
           const d = readFixture(form), f = current();
-          await save(f?.id || crypto.randomUUID(), f?.version || 0, 'details', d);
+          const newId = f?.id || crypto.randomUUID();
+          await save(newId, f?.version || 0, 'details', d);
+          if (!f && Array.isArray(adminData.siteMeta?.fixtureOrder) && adminData.siteMeta.fixtureOrder.length) {
+            const nextOrder = [...adminData.siteMeta.fixtureOrder, newId];
+            await saveSiteMeta({ ...adminData.siteMeta, fixtureOrder: nextOrder });
+          }
           view = 'fixtures'; activeId = ''; await reloadAdmin(); statusMsg('Fixture saved.');
           return;
         }
@@ -2637,6 +2853,14 @@
 
     document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
     main.addEventListener('click', ev => {
+      const toggleMatesBtn = ev.target.closest('[data-toggle-teammates]');
+      if (toggleMatesBtn) {
+        const tid = toggleMatesBtn.dataset.toggleTeammates;
+        if (expandedTeamRoster.has(tid)) expandedTeamRoster.delete(tid);
+        else expandedTeamRoster.add(tid);
+        renderPublic();
+        return;
+      }
       const selectPlayerBtn = ev.target.closest('[data-select-player]');
       if (selectPlayerBtn) { const pid = selectPlayerBtn.dataset.selectPlayer; filters.selectedPlayer = filters.selectedPlayer === pid ? '' : pid; renderPublic(); return; }
       const el = ev.target.closest('button'); if (!el) return;
